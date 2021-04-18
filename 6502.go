@@ -9,7 +9,7 @@ import (
 )
 
 var (
-	second_timer = time.Tick(time.Second / 10)
+	second_timer = time.Tick(time.Nanosecond)
 )
 
 // Function used by readROM to avoid 'bytesread' return
@@ -55,23 +55,33 @@ func readROM(filename string) {
 	//fmt.Printf("%d\n", data)
 	//fmt.Printf("%X\n", data)
 
-	// 4KB roms
-	if romsize == 4096 {
-		// Load ROM to memory
-		for i := 0; i < len(data); i++ {
-			// F000 - FFFF // Cartridge ROM
-			VGS.Memory[0xF000+i] = data[i]
-		}
-	}
+	// // 4KB roms
+	// if romsize == 4096 {
+	// 	// Load ROM to memory
+	// 	for i := 0; i < len(data); i++ {
+	// 		// F000 - FFFF // Cartridge ROM
+	// 		VGS.Memory[0xF000+i] = data[i]
+	// 	}
+	// }
 
-	// 2KB roms (needs to duplicate it in memory)
-	if romsize == 2048 {
+	// // 2KB roms (needs to duplicate it in memory)
+	// if romsize == 2048 {
+	// 	// Load ROM to memory
+	// 	for i := 0; i < len(data); i++ {
+	// 		// F000 - F7FF (2KB Cartridge ROM)
+	// 		VGS.Memory[0xF000+i] = data[i]
+	// 		// F800 - FFFF (2KB Mirror Cartridge ROM)
+	// 		VGS.Memory[0xF800+i] = data[i]
+	// 	}
+	// }
+
+	if romsize == 65536 {
 		// Load ROM to memory
 		for i := 0; i < len(data); i++ {
 			// F000 - F7FF (2KB Cartridge ROM)
-			VGS.Memory[0xF000+i] = data[i]
+			VGS.Memory[i] = data[i]
 			// F800 - FFFF (2KB Mirror Cartridge ROM)
-			VGS.Memory[0xF800+i] = data[i]
+			VGS.Memory[i] = data[i]
 		}
 	}
 
@@ -86,7 +96,7 @@ func readROM(filename string) {
 	// }
 	// fmt.Println()
 
-	//Print Memory
+	// // Print Memory
 	// for i := 0; i < len(VGS.Memory); i++ {
 	// 	fmt.Printf("%X ", VGS.Memory[i])
 	// }
@@ -123,6 +133,7 @@ func main() {
 
 	// Read ROM to the memory
 	// readROM(os.Args[1])
+	// readROM("/Users/cassiano/go/src/Atari2600/TestPrograms/Bomber/8input.bin")
 	readROM("/Users/cassiano/go/src/6502/TestPrograms/6502_functional_test.bin")
 	// Reset system
 	VGS.Reset()

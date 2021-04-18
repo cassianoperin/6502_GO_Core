@@ -20,8 +20,6 @@ func opc_BEQ(value int8, bytes uint16, opc_cycles byte) { // value is SIGNED
 			// Add 1 to cycles if page boundery is crossed
 			if MemPageBoundary(PC, PC+uint16(value)+2) {
 				opc_cycle_extra = 1
-				fmt.Println("TEST BEQ COM PAGE BOUNDARY")
-				Pause = true
 			}
 		}
 

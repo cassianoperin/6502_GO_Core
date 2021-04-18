@@ -11,7 +11,6 @@ func Initialize() {
 
 	// Clean Memory Array
 	Memory = [65536]byte{}
-	Memory_TIA_RO = [64]byte{}
 	// Clean CPU Variables
 	PC = 0
 	opcode = 0
@@ -32,12 +31,16 @@ func InitializeTimers() {
 // Reset Vector // 0xFFFC | 0xFFFD (Little Endian)
 func Reset() {
 	// Read the Opcode from PC+1 and PC bytes (Little Endian)
-	PC = uint16(Memory[0xFFFD])<<8 | uint16(Memory[0xFFFC])
+	// PC = uint16(Memory[0xFFFD])<<8 | uint16(Memory[0xFFFC])
+
+	PC = 0x400
 }
 
 func Show() {
-	// fmt.Printf("\n\nCycle: %d\tOpcode: %02X\tPC: 0x%02X(%d)\tA: 0x%02X\tX: 0x%02X\tY: 0x%02X\tP: %d\tSP: %02X\tStack: [%d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d]\tRESPO0: %d\tGRP0: %08b\tCOLUP0: %02X\tCTRLPF: %08b", Cycle, Opcode, PC, PC, A, X, Y, P, SP, Memory[0xFF], Memory[0xFE], Memory[0xFD], Memory[0xFC], Memory[0xFB], Memory[0xFA], Memory[0xF9], Memory[0xF8], Memory[0xF7], Memory[0xF6], Memory[0xF5], Memory[0xF4], Memory[0xF3], Memory[0xF2], Memory[0xF1], Memory[0xF0], Memory[RESP0], Memory[GRP0], Memory[COLUP0], Memory[CTRLPF] )
-	fmt.Printf("\nCycle: %d\tOpcode: %02X\tPC: 0x%02X(%d)\tA: 0x%02X\tX: 0x%02X\tY: 0x%02X\tP: %d\tSP: %02X\n", counter_F_Cycle, opcode, PC, PC, A, X, Y, P, SP)
+	if Debug {
+		fmt.Printf("\n\n%04X : %02X\n\n", PC, opcode)
+		fmt.Printf("\nCycle: %d\tOpcode: %02X\tPC: 0x%02X(%d)\tA: 0x%02X\tX: 0x%02X\tY: 0x%02X\tP: %d\tSP: %02X\n", counter_F_Cycle, opcode, PC, PC, A, X, Y, P, SP)
+	}
 }
 
 // CPU Interpreter
@@ -47,12 +50,12 @@ func CPU_Interpreter() {
 	opcode = Memory[PC]
 
 	// Print Cycle and Debug Information
-	if Debug {
-		// Just show in the first opcode cycle
-		if opc_cycle_count == 1 {
-			Show()
-		}
+	// if Debug {
+	// Just show in the first opcode cycle
+	if opc_cycle_count == 1 {
+		Show()
 	}
+	// }
 
 	// Map Opcode
 	switch opcode {
@@ -540,9 +543,9 @@ func CPU_Interpreter() {
 	// Increment Cycle
 	counter_F_Cycle++
 
-	if counter_F_Cycle > 2 {
-		fmt.Println("Exiting.")
-		os.Exit(0)
-	}
+	// if counter_F_Cycle > 300 {
+	// 	fmt.Println("Exiting.")
+	// 	os.Exit(0)
+	// }
 
 }
