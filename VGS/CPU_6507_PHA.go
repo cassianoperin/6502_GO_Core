@@ -1,6 +1,9 @@
 package VGS
 
-import "fmt"
+import (
+	"fmt"
+	"os"
+)
 
 // PHA  Push Accumulator on Stack
 //
@@ -24,10 +27,26 @@ func opc_PHA(bytes uint16, opc_cycles byte) {
 		// After spending the cycles needed, execute the opcode
 	} else {
 
-		Memory[SP] = A
+		var SP_Address uint
+
+		// Atari 2600 interpreter mode
+		if CPU_MODE == 0 {
+			SP_Address = uint(SP)
+
+			// Test
+			fmt.Printf("%d PHA TEST!", SP_Address)
+			os.Exit(2)
+
+			// 6502/6507 interpreter mode
+		} else {
+			// Stack is a 256-byte array whose location is hardcoded at page $01 ($0100-$01FF)
+			SP_Address = uint(SP) + 256
+		}
+
+		Memory[SP_Address] = A
 
 		if Debug {
-			dbg_show_message = fmt.Sprintf("\n\tOpcode %02X [1 byte] [Mode: Implied]\tPHA  Push Accumulator on Stack.\tMemory[%02X] = A (%d) | SP--\n", opcode, SP, Memory[SP])
+			dbg_show_message = fmt.Sprintf("\n\tOpcode %02X [1 byte] [Mode: Implied]\tPHA  Push Accumulator on Stack.\tMemory[%02X] = A (%d) | SP--\n", opcode, SP_Address, Memory[SP_Address])
 			fmt.Println(dbg_show_message)
 		}
 

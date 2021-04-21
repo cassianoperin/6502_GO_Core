@@ -21,6 +21,10 @@ func Initialize() {
 
 	// Initialize CPU
 	CPU_Enabled = true
+
+	// Initialize P (Bit 4 (Break) and Bit 5 (Unused) set as default)
+	// P[4] = 1
+	// P[5] = 1
 }
 
 func InitializeTimers() {
@@ -30,10 +34,22 @@ func InitializeTimers() {
 
 // Reset Vector // 0xFFFC | 0xFFFD (Little Endian)
 func Reset() {
-	// Read the Opcode from PC+1 and PC bytes (Little Endian)
-	// PC = uint16(Memory[0xFFFD])<<8 | uint16(Memory[0xFFFC])
 
-	PC = 0x400
+	// Atari 2600 interpreter mode
+	if CPU_MODE == 0 {
+
+		// Read the Opcode from PC+1 and PC bytes (Little Endian)
+		PC = uint16(Memory[0xFFFD])<<8 | uint16(Memory[0xFFFC])
+
+		// 6502/6507 interpreter mode
+	} else {
+
+		// Set the PC on the start of programs
+		PC = 0x400
+	}
+
+	// Reset the SP
+	//SP = 0xFF
 }
 
 func Show() {
@@ -100,6 +116,12 @@ func CPU_Interpreter() {
 
 	case 0x48: // Instruction PHA
 		opc_PHA(1, 3)
+
+	case 0x28: // Instruction PLP
+		opc_PLP(1, 4)
+
+	case 0x08: // Instruction PHP
+		opc_PHP(1, 3)
 
 	case 0x68: // Instruction PLA
 		opc_PLA(1, 4)
@@ -440,6 +462,12 @@ func CPU_Interpreter() {
 		}
 		opc_CMP(memAddr, memMode, 2, 4)
 
+	case 0xCD: // Instruction CMP (absolute)
+		if opc_cycle_count == 1 {
+			memAddr, memMode = addr_mode_Absolute(PC + 1)
+		}
+		opc_CMP(memAddr, memMode, 3, 4)
+
 	//-------------------------------------------------- STA --------------------------------------------------//
 
 	case 0x95: // Instruction STA (zeropage,X)
@@ -526,9 +554,10 @@ func CPU_Interpreter() {
 			fmt.Printf("\tOpcode 0xFF NOT IMPLEMENTED YET!! Exiting.\n")
 			os.Exit(0)
 
-			// 6507 interpreter mode
+			// 6502/6507 interpreter mode
 		} else {
 			// fmt.Println(Memory[0x20], Memory[0x21], Memory[0x22])
+			fmt.Println("Opcode 0xFF in 6507 mode. Exiting.")
 			os.Exit(0)
 		}
 
@@ -537,7 +566,6 @@ func CPU_Interpreter() {
 	default:
 		fmt.Printf("\tOPCODE %02X NOT IMPLEMENTED!\n\n", opcode)
 		os.Exit(0)
-
 	}
 
 	// Increment Cycle

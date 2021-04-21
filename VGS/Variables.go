@@ -5,7 +5,7 @@ import (
 )
 
 var (
-	CPU_MODE byte = 0 // 0 for Atari, 1 for pure 6502
+	CPU_MODE byte = 1 // 0 for Atari, 1 for pure 6502/6507 CPU interpreter
 
 	// ------------------------ Hardware Components ------------------------- //
 	Memory [65536]byte // Memory

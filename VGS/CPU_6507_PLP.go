@@ -5,15 +5,15 @@ import (
 	"os"
 )
 
-// PLA  Pull Accumulator from Stack
+// Pull  Processor Status from Stack
 //
-//      pull A                           N Z C I D V
-//                                       + + - - - -
-//
+//      pull SR                          N Z C I D V
+//                                       from stack
 //      addressing    assembler    opc  bytes  cyles
 //      --------------------------------------------
-//      implied       PLA           68    1     4
-func opc_PLA(bytes uint16, opc_cycles byte) {
+//      implied       PLP           28    1     4
+
+func opc_PLP(bytes uint16, opc_cycles byte) {
 
 	// Show current opcode cycle
 	if Debug {
@@ -34,7 +34,7 @@ func opc_PLA(bytes uint16, opc_cycles byte) {
 			SP_Address = uint(SP + 1)
 
 			// Test
-			fmt.Printf("%d PLA TEST!", SP_Address)
+			fmt.Printf("%d PLP TEST!", SP_Address)
 			os.Exit(2)
 
 			// 6502/6507 interpreter mode
@@ -43,18 +43,15 @@ func opc_PLA(bytes uint16, opc_cycles byte) {
 			SP_Address = uint(SP+1) + 256
 		}
 
-		A = Memory[SP_Address]
-
-		// Not documented, clean the value on the stack after pull it to accumulator
-		//Memory[SP_Address] = 0
-
-		if Debug {
-			dbg_show_message = fmt.Sprintf("\n\tOpcode %02X [1 byte] [Mode: Implied]\tPLA  Pull Accumulator from Stack.\tA = Memory[%02X] (%d) | SP++\n", opcode, SP_Address, A)
-			fmt.Println(dbg_show_message)
+		// Turn the stack value into the processor status
+		for i := 0; i < len(P); i++ {
+			P[i] = (Memory[SP_Address] >> i) & 0x01
 		}
 
-		flags_N(A)
-		flags_Z(A)
+		if Debug {
+			dbg_show_message = fmt.Sprintf("\n\tOpcode %02X [1 byte] [Mode: Implied]\tPLP  Processor Status from Stack.\tP = Memory[%02X] %d | SP++\n", opcode, SP_Address, P)
+			fmt.Println(dbg_show_message)
+		}
 
 		SP++
 
