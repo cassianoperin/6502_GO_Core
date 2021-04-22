@@ -2,7 +2,6 @@ package VGS
 
 import (
 	"fmt"
-	"os"
 )
 
 //      PHP  Push Processor Status on Stack
@@ -34,10 +33,6 @@ func opc_PHP(bytes uint16, opc_cycles byte) {
 		if CPU_MODE == 0 {
 			SP_Address = uint(SP)
 
-			// Test
-			fmt.Printf("%d PHP TEST!", SP_Address)
-			os.Exit(2)
-
 			// 6502/6507 interpreter mode
 		} else {
 			// Stack is a 256-byte array whose location is hardcoded at page $01 ($0100-$01FF)
@@ -46,7 +41,14 @@ func opc_PHP(bytes uint16, opc_cycles byte) {
 
 		// Put processor Status (P) on stack
 		for i := 7; i >= 0; i-- {
-			tmp_P = (tmp_P << 1) + P[i]
+
+			// The B Flag, for PHP or BRK, P[4] and P[5] will be always 1
+			if i == 4 || i == 5 {
+				tmp_P = (tmp_P << 1) + 1
+			} else {
+				tmp_P = (tmp_P << 1) + P[i]
+			}
+
 		}
 
 		Memory[SP_Address] = tmp_P

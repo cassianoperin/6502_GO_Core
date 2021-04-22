@@ -23,8 +23,8 @@ func Initialize() {
 	CPU_Enabled = true
 
 	// Initialize P (Bit 4 (Break) and Bit 5 (Unused) set as default)
-	// P[4] = 1
-	// P[5] = 1
+	P[4] = 1
+	P[5] = 1
 }
 
 func InitializeTimers() {
@@ -575,5 +575,11 @@ func CPU_Interpreter() {
 	// 	fmt.Println("Exiting.")
 	// 	os.Exit(0)
 	// }
+
+	// The B flag tester
+	if P[4] != 1 || P[5] != 1 {
+		fmt.Println("Someone tryed to change P[4] or P[5] to zero. Exiting!")
+		os.Exit(2)
+	}
 
 }

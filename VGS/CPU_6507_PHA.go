@@ -2,7 +2,6 @@ package VGS
 
 import (
 	"fmt"
-	"os"
 )
 
 // PHA  Push Accumulator on Stack
@@ -32,10 +31,6 @@ func opc_PHA(bytes uint16, opc_cycles byte) {
 		// Atari 2600 interpreter mode
 		if CPU_MODE == 0 {
 			SP_Address = uint(SP)
-
-			// Test
-			fmt.Printf("%d PHA TEST!", SP_Address)
-			os.Exit(2)
 
 			// 6502/6507 interpreter mode
 		} else {

@@ -2,7 +2,6 @@ package VGS
 
 import (
 	"fmt"
-	"os"
 )
 
 // Pull  Processor Status from Stack
@@ -33,10 +32,6 @@ func opc_PLP(bytes uint16, opc_cycles byte) {
 		if CPU_MODE == 0 {
 			SP_Address = uint(SP + 1)
 
-			// Test
-			fmt.Printf("%d PLP TEST!", SP_Address)
-			os.Exit(2)
-
 			// 6502/6507 interpreter mode
 		} else {
 			// Stack is a 256-byte array whose location is hardcoded at page $01 ($0100-$01FF)
@@ -45,7 +40,15 @@ func opc_PLP(bytes uint16, opc_cycles byte) {
 
 		// Turn the stack value into the processor status
 		for i := 0; i < len(P); i++ {
-			P[i] = (Memory[SP_Address] >> i) & 0x01
+
+			// The B Flag, PLP and RTI pull a byte from the stack and set all the flags. They ignore bits 5 and 4.
+			if i == 4 || i == 5 {
+				// P[i] = 1
+				// Just ignore both
+			} else {
+				P[i] = (Memory[SP_Address] >> i) & 0x01
+			}
+
 		}
 
 		if Debug {
