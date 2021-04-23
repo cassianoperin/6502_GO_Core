@@ -238,6 +238,12 @@ func CPU_Interpreter() {
 		}
 		opc_JMP(memAddr, memMode, 3, 3)
 
+	case 0x6C: // Instruction JMP (indirect)
+		if opc_cycle_count == 1 {
+			memAddr, memMode = addr_mode_Indirect(PC + 1)
+		}
+		opc_JMP(memAddr, memMode, 3, 5)
+
 	case 0x20: // Instruction JSR (absolute)
 		if opc_cycle_count == 1 {
 			memAddr, memMode = addr_mode_Absolute(PC + 1)
@@ -560,6 +566,20 @@ func CPU_Interpreter() {
 			fmt.Println("Opcode 0xFF in 6507 mode. Exiting.")
 			os.Exit(0)
 		}
+
+	//------------------------------------------- Unnoficial Opcodes ------------------------------------------//
+
+	case 0x27: // Instruction RLA (zeropage)
+		if opc_cycle_count == 1 {
+			memAddr, memMode = addr_mode_Zeropage(PC + 1)
+		}
+		opc_U_RLA(memAddr, memMode, 2, 5)
+
+	case 0x64: // Instruction NOP (zeropage)
+		if opc_cycle_count == 1 {
+			memAddr, memMode = addr_mode_Zeropage(PC + 1)
+		}
+		opc_U_NOP(memAddr, memMode, 2, 3)
 
 	//-------------------------------------------- No Opcode Found --------------------------------------------//
 

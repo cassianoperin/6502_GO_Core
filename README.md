@@ -1,12 +1,16 @@
 # 6502
 6502 / 6507 Emulator written in Go
 
-
-PC on 0x095c on 6502 test
+PC on 0x095c on 6502 test (now on loop on 0x3720, needs to be fixed)
 
 
 
 # TODO
+
+## Unofficial Opcodes
+
+https://wiki.nesdev.com/w/index.php/Programming_with_unofficial_opcodes
+
 
 ## BUSES
 

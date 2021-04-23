@@ -1,17 +1,18 @@
 package VGS
 
-import "fmt"
+import (
+	"fmt"
+)
 
-// JMP  Jump to New Location (absolute)
+// NOP  No Operation (Unofficial)
 //
-//      (PC+1) -> PCL                    N Z C I D V
-//      (PC+2) -> PCH                    - - - - - -
+//      ---                              N Z C I D V
+//                                       - - - - - -
 //
 //      addressing    assembler    opc  bytes  cyles
 //      --------------------------------------------
-//      absolute      JMP oper      4C    3     3
-//      indirect      JMP (oper)    6C    3     5
-func opc_JMP(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
+//      zeropage      NOP oper      64    2     3
+func opc_U_NOP(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 
 	// Show current opcode cycle
 	if Debug {
@@ -26,12 +27,12 @@ func opc_JMP(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 	} else {
 
 		if Debug {
-			dbg_show_message = fmt.Sprintf("\n\tOpcode %02X %02X%02X [3 bytes] [Mode: %s]\tJMP  Jump to New Location.\t\tPC = 0x%04X\n", opcode, Memory[PC+2], Memory[PC+1], mode, memAddr)
+			dbg_show_message = fmt.Sprintf("\n\tOpcode %02X%02X [2 bytes] [Mode: %s] [Unnoficial!!!]\tNOP  No Operation, ignore next byte (%02X).\n", opcode, Memory[PC+1], mode, Memory[PC+1])
 			fmt.Println(dbg_show_message)
 		}
 
-		// Update PC
-		PC = memAddr
+		// Increment PC
+		PC += bytes
 
 		// Reset Opcode Cycle counter
 		opc_cycle_count = 1

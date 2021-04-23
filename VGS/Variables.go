@@ -1,9 +1,5 @@
 package VGS
 
-import (
-	"time"
-)
-
 var (
 	CPU_MODE byte = 1 // 0 for Atari, 1 for pure 6502/6507 CPU interpreter
 
@@ -44,7 +40,7 @@ var (
 	memValue int8   // Receive the memory value needed by branches. Calculated in the first opc cycle to check for extra cycles, used in the last to perform the operation
 
 	// ------------------------------- Timers ------------------------------- //
-	clock_timer *time.Ticker // CPU Clock // CPU: MOS Technology 6507 @ 1.19 MHz;
+	// clock_timer *time.Ticker // CPU Clock // CPU: MOS Technology 6507 @ 1.19 MHz;
 
 	// --------------------------- Debug Interface -------------------------- //
 	dbg_show_message string // Debug opcode detail messages
