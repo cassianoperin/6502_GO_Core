@@ -1,5 +1,7 @@
 package VGS
 
+import "time"
+
 var (
 	CPU_MODE byte = 1 // 0 for Atari, 1 for pure 6502/6507 CPU interpreter
 
@@ -40,10 +42,22 @@ var (
 	memValue int8   // Receive the memory value needed by branches. Calculated in the first opc cycle to check for extra cycles, used in the last to perform the operation
 
 	// ------------------------------- Timers ------------------------------- //
-	// clock_timer *time.Ticker // CPU Clock // CPU: MOS Technology 6507 @ 1.19 MHz;
+	// clock_timer  *time.Ticker             // CPU Clock // CPU: MOS Technology 6507 @ 1.19 MHz;
+	second_timer = time.Tick(time.Nanosecond) // 1 second to track FPS and draws
 
 	// --------------------------- Debug Interface -------------------------- //
 	dbg_show_message string // Debug opcode detail messages
+
+	// ------------------------------ Graphics ------------------------------ //
+	// Screen Size
+	sizeX float64 = 160.0 // 68 color clocks (Horizontal Blank) + 160 color clocks (pixels)
+	sizeY float64 = 192.0 // 3 Vertical Sync, 37 Vertical Blank, 192 Visible Area and 30 Overscan
+	// Window Resolution
+	screenWidth  float64 = 1024
+	screenHeight float64 = 768
+	// Pixel size
+	width  float64
+	height float64
 
 	// Enable or disable CPU during WSYNC
 	CPU_Enabled bool

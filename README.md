@@ -5,6 +5,10 @@ PC on 0x095c on 6502 test (now on loop on 0x3720, needs to be fixed)
 
 
 
+IMPLEMENT PAUSE!
+
+
+
 # TODO
 
 ## Unofficial Opcodes

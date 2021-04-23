@@ -5,11 +5,8 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"time"
-)
 
-var (
-	second_timer = time.Tick(time.Nanosecond)
+	"github.com/faiface/pixel/pixelgl"
 )
 
 // Function used by readROM to avoid 'bytesread' return
@@ -134,25 +131,11 @@ func main() {
 	// Read ROM to the memory
 	// readROM(os.Args[1])
 	readROM("/Users/cassiano/go/src/6502/TestPrograms/6502_functional_test.bin")
+
 	// Reset system
 	VGS.Reset()
 
-	// Start the infinite loop
-	for {
-
-		select {
-		case <-second_timer: // Second
-			if !VGS.Pause {
-				// Runs the interpreter
-				if VGS.CPU_Enabled {
-					VGS.CPU_Interpreter()
-				}
-			}
-
-		default:
-			// No timer to handle
-		}
-
-	}
+	// Start Window System and draw Graphics
+	pixelgl.Run(VGS.Run)
 
 }

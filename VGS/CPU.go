@@ -3,7 +3,6 @@ package VGS
 import (
 	"fmt"
 	"os"
-	"time"
 )
 
 // Initialization
@@ -29,7 +28,7 @@ func Initialize() {
 
 func InitializeTimers() {
 	// Start Timers
-	clock_timer = time.NewTicker(time.Nanosecond) // CPU Clock
+	// clock_timer = time.NewTicker(time.Nanosecond) // CPU Clock
 }
 
 // Reset Vector // 0xFFFC | 0xFFFD (Little Endian)
@@ -49,7 +48,7 @@ func Reset() {
 	}
 
 	// Reset the SP
-	//SP = 0xFF
+	SP = 0xFF
 }
 
 func Show() {
