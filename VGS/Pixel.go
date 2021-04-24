@@ -45,30 +45,30 @@ func Run() {
 		}
 
 		// Internal Loop to avoid slowness of !win.Closed() loop
-		for i := 0; i < 50000; i++ {
+		// for i := 0; i < 50000; i++ {
 
-			// // Esc to quit program
-			// if win.JustPressed(pixelgl.KeyEscape) {
-			// 	os.Exit(0)
-			// }
+		// // Esc to quit program
+		// if win.JustPressed(pixelgl.KeyEscape) {
+		// 	os.Exit(0)
+		// }
 
-			select {
-			case <-second_timer: // Second
-				if !Pause {
-					// Runs the interpreter
-					if CPU_Enabled {
-						CPU_Interpreter()
-					}
+		select {
+		case <-second_timer: // Second
+			if !Pause {
+				// Runs the interpreter
+				if CPU_Enabled {
+					CPU_Interpreter()
 				}
-				// win.Update()
-
-			default:
-				// No timer to handle
 			}
+			// win.Update()
 
-			Keyboard(win)
-
+		default:
+			// No timer to handle
 		}
+
+		Keyboard(win)
+
+		// }
 		win.Update()
 
 	}

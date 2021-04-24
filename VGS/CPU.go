@@ -21,9 +21,23 @@ func Initialize() {
 	// Initialize CPU
 	CPU_Enabled = true
 
-	// Initialize P (Bit 4 (Break) and Bit 5 (Unused) set as default)
-	P[4] = 1
-	P[5] = 1
+	// Initialize P (Bit 4 (Break) and Bit 5 (Unused))
+	P[5] = 1 // Always set
+
+	// Atari 2600 interpreter mode
+	if CPU_MODE == 0 {
+
+		// Always Enabled since 6507 doesn't have interrupts
+		P[4] = 1
+
+		// 6502/6507 interpreter mode
+	} else {
+
+		// Will be set with BRK instruction
+		P[4] = 0
+
+	}
+
 }
 
 func InitializeTimers() {
@@ -568,17 +582,17 @@ func CPU_Interpreter() {
 
 	//------------------------------------------- Unnoficial Opcodes ------------------------------------------//
 
-	case 0x27: // Instruction RLA (zeropage)
-		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_Zeropage(PC + 1)
-		}
-		opc_U_RLA(memAddr, memMode, 2, 5)
+	// case 0x27: // Instruction RLA (zeropage)
+	// 	if opc_cycle_count == 1 {
+	// 		memAddr, memMode = addr_mode_Zeropage(PC + 1)
+	// 	}
+	// 	opc_U_RLA(memAddr, memMode, 2, 5)
 
-	case 0x64: // Instruction NOP (zeropage)
-		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_Zeropage(PC + 1)
-		}
-		opc_U_NOP(memAddr, memMode, 2, 3)
+	// case 0x64: // Instruction NOP (zeropage)
+	// 	if opc_cycle_count == 1 {
+	// 		memAddr, memMode = addr_mode_Zeropage(PC + 1)
+	// 	}
+	// 	opc_U_NOP(memAddr, memMode, 2, 3)
 
 	//-------------------------------------------- No Opcode Found --------------------------------------------//
 
@@ -596,13 +610,13 @@ func CPU_Interpreter() {
 	// }
 
 	// The B flag tester
-	if P[4] != 1 || P[5] != 1 {
-		fmt.Println("Someone tryed to change P[4] or P[5] to zero. Exiting!")
+	if P[5] != 1 {
+		fmt.Println("Someone tryed to change P[5] to zero. Exiting!")
 		os.Exit(2)
 	}
 
 	// // Pause
-	// if PC == 0x08fc {
+	// if PC == 0x9CE {
 	// 	Pause = true
 	// }
 

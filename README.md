@@ -63,5 +63,15 @@ A WRITE operation (the RjW line is at logic zero) causes eight bits of informati
 https://wiki.nesdev.com/w/index.php/Stack
 
 ## SPLIT MEMORY ACCESS 
+
+
+## Basic Architecture
+
+The only other reserved locations in the memory map are the very last 6 bytes of memory $FFFA to $FFFF which must be programmed with the addresses of the non-maskable interrupt handler ($FFFA/B), the power on reset location ($FFFC/D) and the BRK/interrupt request handler ($FFFE/F) respectively.
+
+
+http://www.obelisk.me.uk/6502/architecture.html
+
+
  
 
