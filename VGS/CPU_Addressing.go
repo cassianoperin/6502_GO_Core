@@ -2,6 +2,7 @@ package VGS
 
 import (
 	"fmt"
+	"os"
 )
 
 // Relative
@@ -98,17 +99,28 @@ func addr_mode_AbsoluteX(offset uint16) (uint16, string) {
 	if Debug {
 		fmt.Printf("\t%s addressing mode.\t\tMemory[%02X]\t\tValue obtained: %d\n", mode, memAddr, value)
 	}
+
 	return memAddr, mode
 }
 
 // Indirect
 func addr_mode_Indirect(offset uint16) (uint16, string) {
 
-	fmt.Println(offset)
-	// os.Exit(2)
-
-	// memAddr := (uint16(Memory[Memory[offset+1]])<<8 | uint16(Memory[Memory[offset]]))
+	// First format the destination address
 	memAddr := (uint16(Memory[offset+1])<<8 | uint16(Memory[offset]))
+
+	// PAUSE HERE TO FIX THE 6502 BUG WHEN THE ADDRESS is 0xFF
+	// https://www.reddit.com/r/EmuDev/comments/fi29ah/6502_jump_indirect_error/
+	//It's a bug in the 6502 that wraps around the LSB without incrementing the MSB.
+	//So instead of reading address from 0x02FF-0x0300 you should be looking at 0x02FF-0x0200.
+	// The A900 printed in the log is the value at 0x02FF-0x0300 which is not what's actually being used.
+	if Memory[offset+1] == 0xFF || Memory[offset] == 0xFF {
+		fmt.Printf("Controled Exit on Indirect Memory mode to correct a bug in 6502. Mem1: %02X Mem2: %02X. Exiting", Memory[offset+1], Memory[offset])
+		os.Exit(2)
+	}
+
+	// Get the value in the memory of this address (Indirect)
+	memAddr = uint16(Memory[memAddr+1])<<8 | uint16(Memory[memAddr])
 	value := Memory[memAddr]
 	mode := "Indirect"
 

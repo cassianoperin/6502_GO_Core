@@ -2,7 +2,6 @@ package VGS
 
 import (
 	"fmt"
-	"os"
 )
 
 // JSR  Jump to New Location Saving Return Address
@@ -42,11 +41,18 @@ func opc_JSR(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 
 		// Push PC+2 (will be increased in 1 in RTS to match the next address (3 bytes operation))
 		// Store the first byte into the Stack
+		fmt.Printf("PC: %02X\n", PC)
+
 		Memory[SP_Address] = byte((PC + 2) >> 8)
+		fmt.Printf("FF %02X\n", Memory[SP_Address])
 		SP--
+		SP_Address--
 		// Store the second byte into the Stack
 		Memory[SP_Address] = byte((PC + 2) & 0xFF)
+		SP_Address--
 		SP--
+		fmt.Printf("FE %02X\n", Memory[SP_Address])
+
 		// fmt.Printf("\nPC+3: %02X",PC+3)
 		// fmt.Printf("\nF0: %02X",(PC+3) >> 8)
 		// fmt.Printf("\n42: %02X",(PC+3) & 0xFF)
@@ -57,8 +63,8 @@ func opc_JSR(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 		}
 
 		// TEST THE MODIFICATIONS FROM SP_Address
-		fmt.Println("JSR - Validate the SP_Address in 6502 mode. Exiting.")
-		os.Exit(2)
+		// fmt.Println("JSR - Validate the SP_Address in 6502 mode. Exiting.")
+		// os.Exit(2)
 
 		// Update PC
 		PC = memAddr

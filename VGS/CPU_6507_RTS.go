@@ -2,7 +2,6 @@ package VGS
 
 import (
 	"fmt"
-	"os"
 )
 
 // RTS  Return from Subroutine
@@ -56,9 +55,9 @@ func opc_RTS(bytes uint16, opc_cycles byte) {
 		// Increment PC
 		PC += bytes
 
-		// TEST THE MODIFICATIONS FROM SP_Address
-		fmt.Println("RTS - Validate the SP_Address in 6502 mode. Exiting.")
-		os.Exit(2)
+		// // TEST THE MODIFICATIONS FROM SP_Address
+		// fmt.Println("RTS - Validate the SP_Address in 6502 mode. Exiting.")
+		// os.Exit(2)
 
 		// Reset Opcode Cycle counter
 		opc_cycle_count = 1

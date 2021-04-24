@@ -601,4 +601,9 @@ func CPU_Interpreter() {
 		os.Exit(2)
 	}
 
+	// // Pause
+	// if PC == 0x08fc {
+	// 	Pause = true
+	// }
+
 }
