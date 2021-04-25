@@ -11,6 +11,7 @@ import "fmt"
 //      --------------------------------------------
 //      immidiate     EOR #oper     49    2     2
 //      zeropage      EOR oper      45    2     3
+
 func opc_EOR(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 
 	// // Check for extra cycles (*) in the first opcode cycle

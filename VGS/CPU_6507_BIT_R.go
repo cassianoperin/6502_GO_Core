@@ -16,6 +16,7 @@ import (
 //      --------------------------------------------
 //      zeropage      BIT oper      24    2     3
 //      absolute      BIT oper      2C    3     4
+
 func opc_BIT(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 
 	// Show current opcode cycle

@@ -11,6 +11,7 @@ import "fmt"
 //      --------------------------------------------
 //      zeropage      INC oper      E6    2     5
 //      zeropage,X    INC oper,X    F6    2     6
+
 func opc_INC(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 
 	// Show current opcode cycle

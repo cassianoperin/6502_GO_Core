@@ -10,6 +10,7 @@ import "fmt"
 //     addressing	   assembler    opc  bytes  cyles
 //     --------------------------------------------
 //     implied	     TYA	         98    1     2
+
 func opc_TYA(bytes uint16, opc_cycles byte) {
 
 	// Show current opcode cycle

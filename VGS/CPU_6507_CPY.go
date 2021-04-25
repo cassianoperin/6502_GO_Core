@@ -9,8 +9,10 @@ import "fmt"
 //
 //      addressing    assembler    opc  bytes  cyles
 //      --------------------------------------------
-//      immidiate     CPY #oper     C0    2     2
+//      immediate     CPY #oper     C0    2     2
 //      zeropage      CPY oper      C4    2     3
+//      absolute      CPY oper      CC    3     4
+
 func opc_CPY(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 
 	// Show current opcode cycle
@@ -29,13 +31,26 @@ func opc_CPY(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 
 		if Debug {
 			if tmp == 0 {
-				dbg_show_message = fmt.Sprintf("\n\tOpcode %02X%02X [2 bytes] [Mode: %s]\tCPY  Compare Memory and Index Y.\tY(%d) - Memory[%02X](%d) = (%d) EQUAL\n", opcode, Memory[PC+1], mode, Y, PC+1, Memory[memAddr], tmp)
-				fmt.Println(dbg_show_message)
-			} else {
-				dbg_show_message = fmt.Sprintf("\n\tOpcode %02X%02X [2 bytes] [Mode: %s]\tCPY  Compare Memory and Index Y.\tY(%d) - Memory[%02X](%d) = (%d) NOT EQUAL\n", opcode, Memory[PC+1], mode, Y, PC+1, Memory[memAddr], tmp)
-				fmt.Println(dbg_show_message)
-			}
 
+				if bytes == 2 {
+					dbg_show_message = fmt.Sprintf("\n\tOpcode %02X%02X [2 bytes] [Mode: %s]\tCPY  Compare Memory and Index Y.\tY(%d) - Memory[%02X](%d) = (%d) EQUAL\n", opcode, Memory[PC+1], mode, Y, PC+1, Memory[memAddr], tmp)
+					fmt.Println(dbg_show_message)
+				} else if bytes == 3 {
+					dbg_show_message = fmt.Sprintf("\n\tOpcode %02X %02X%02X [3 bytes] [Mode: %s]\tCPY  Compare Memory and Index Y.\tY(%d) - Memory[%02X](%d) = (%d) EQUAL\n", opcode, Memory[PC+2], Memory[PC+1], mode, Y, PC+1, Memory[memAddr], tmp)
+					fmt.Println(dbg_show_message)
+				}
+
+			} else {
+
+				if bytes == 2 {
+					dbg_show_message = fmt.Sprintf("\n\tOpcode %02X%02X [2 bytes] [Mode: %s]\tCPY  Compare Memory and Index Y.\tY(%d) - Memory[%02X](%d) = (%d) NOT EQUAL\n", opcode, Memory[PC+1], mode, Y, PC+1, Memory[memAddr], tmp)
+					fmt.Println(dbg_show_message)
+				} else if bytes == 3 {
+					dbg_show_message = fmt.Sprintf("\n\tOpcode %02X %02X%02X [3 bytes] [Mode: %s]\tCPY  Compare Memory and Index Y.\tY(%d) - Memory[%02X](%d) = (%d) NOT EQUAL\n", opcode, Memory[PC+2], Memory[PC+1], mode, Y, PC+1, Memory[memAddr], tmp)
+					fmt.Println(dbg_show_message)
+				}
+
+			}
 		}
 
 		flags_Z(tmp)

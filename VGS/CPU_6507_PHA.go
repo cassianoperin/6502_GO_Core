@@ -12,6 +12,7 @@ import (
 //      addressing    assembler    opc  bytes  cyles
 //      --------------------------------------------
 //      implied       PHA           48    1     3
+
 func opc_PHA(bytes uint16, opc_cycles byte) {
 
 	// Show current opcode cycle

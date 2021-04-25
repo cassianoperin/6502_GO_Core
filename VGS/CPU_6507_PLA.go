@@ -13,6 +13,7 @@ import (
 //      addressing    assembler    opc  bytes  cyles
 //      --------------------------------------------
 //      implied       PLA           68    1     4
+
 func opc_PLA(bytes uint16, opc_cycles byte) {
 
 	// Show current opcode cycle

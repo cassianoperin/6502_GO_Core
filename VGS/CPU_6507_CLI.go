@@ -2,16 +2,16 @@ package VGS
 
 import "fmt"
 
-// SEI  Set Interrupt Disable Status
+// CLI  Clear Interrupt Disable Bit
 //
-//      1 -> I                           N Z C I D V
-//                                       - - - 1 - -
+//      0 -> I                           N Z C I D V
+//                                       - - - 0 - -
 //
 //      addressing    assembler    opc  bytes  cyles
 //      --------------------------------------------
-//      implied       SEI           78    1     2
+//      implied       CLI           58     1     2
 
-func opc_SEI(bytes uint16, opc_cycles byte) {
+func opc_CLI(bytes uint16, opc_cycles byte) {
 
 	// Show current opcode cycle
 	if Debug {
@@ -25,10 +25,10 @@ func opc_SEI(bytes uint16, opc_cycles byte) {
 		// After spending the cycles needed, execute the opcode
 	} else {
 
-		P[2] = 1
+		P[2] = 0
 
 		if Debug {
-			dbg_show_message = fmt.Sprintf("\n\tOpcode %02X [1 byte] [Mode: Implied]\tSEI  Set Interrupt Disable Status.\tP[2]=%d\n", opcode, P[2])
+			dbg_show_message = fmt.Sprintf("\n\tOpcode %02X [1 byte] [Mode: Implied]\tCLI  Clear Interrupt Disable Bit.\tP[2]=%d\n", opcode, P[2])
 			fmt.Println(dbg_show_message)
 		}
 

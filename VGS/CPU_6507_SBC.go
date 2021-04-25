@@ -14,6 +14,7 @@ import (
 //      --------------------------------------------
 //      zeropage      SBC oper      E5    2     3
 //      immediate     SBC #oper     E9    2     2
+
 func opc_SBC(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 
 	// Inverted Carry

@@ -10,6 +10,7 @@ import "fmt"
 //      addressing    assembler    opc  bytes  cyles
 //      --------------------------------------------
 //      implied       DEC           88    1     2
+
 func opc_DEY(bytes uint16, opc_cycles byte) {
 
 	// Show current opcode cycle

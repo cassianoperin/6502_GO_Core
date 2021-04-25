@@ -10,6 +10,7 @@ import "fmt"
 //      addressing    assembler    opc  bytes  cyles
 //      --------------------------------------------
 //      relative      BCC oper      90    2     2**
+
 func opc_BCC(value int8, bytes uint16, opc_cycles byte) { // value is SIGNED
 
 	// If carry is clear

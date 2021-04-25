@@ -10,6 +10,9 @@ import "fmt"
 //      addressing    assembler    opc  bytes  cyles
 //      --------------------------------------------
 //      zeropage      STX oper      86    2     3
+//      zeropage,Y    STX oper,Y    96    2     4
+//      absolute      STX oper      8E    3     4
+
 func opc_STX(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 
 	// Show current opcode cycle
@@ -28,8 +31,15 @@ func opc_STX(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 		memUpdate(memAddr, X)
 
 		if Debug {
-			dbg_show_message = fmt.Sprintf("\n\tOpcode %02X%02X [2 bytes] [Mode: %s]\tSTX  Store Index X in Memory.\tMemory[%02X] = X (%d)\n", opcode, Memory[PC+1], mode, memAddr, X)
-			fmt.Println(dbg_show_message)
+
+			if bytes == 2 {
+				dbg_show_message = fmt.Sprintf("\n\tOpcode %02X%02X [2 bytes] [Mode: %s]\tSTX  Store Index X in Memory.\tMemory[%02X] = X (%d)\n", opcode, Memory[PC+1], mode, memAddr, X)
+				fmt.Println(dbg_show_message)
+			} else if bytes == 3 {
+				dbg_show_message = fmt.Sprintf("\n\tOpcode %02X %02X%02X [3 bytes] [Mode: %s]\tSTX  Store Index X in Memory.\tMemory[%02X] = X (%d)\n", opcode, Memory[PC+2], Memory[PC+1], mode, memAddr, X)
+				fmt.Println(dbg_show_message)
+			}
+
 		}
 
 		// Increment PC

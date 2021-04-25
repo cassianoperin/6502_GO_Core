@@ -10,6 +10,7 @@ import "fmt"
 //      addressing    assembler    opc  bytes  cyles
 //      --------------------------------------------
 //      relative      BVC oper      50    2     2**
+
 func opc_BVC(value int8, bytes uint16, opc_cycles byte) { // value is SIGNED
 
 	// If Overflow is clear

@@ -10,6 +10,9 @@ import "fmt"
 //      addressing    assembler    opc  bytes  cyles
 //      --------------------------------------------
 //      zeropage      STY oper      84    2     3
+//      zeropage,X    STY oper,X    94    2     4
+//      absolute      STY oper      8C    3     4
+
 func opc_STY(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 
 	// Show current opcode cycle
@@ -28,8 +31,15 @@ func opc_STY(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 		memUpdate(memAddr, Y)
 
 		if Debug {
-			dbg_show_message = fmt.Sprintf("\n\tOpcode %02X%02X [2 bytes] [Mode: %s]\tSTY  Store Index Y in Memory.\tMemory[%02X] = Y (%d)\n", opcode, Memory[PC+1], mode, memAddr, Y)
-			fmt.Println(dbg_show_message)
+
+			if bytes == 2 {
+				dbg_show_message = fmt.Sprintf("\n\tOpcode %02X%02X [2 bytes] [Mode: %s]\tSTY  Store Index Y in Memory.\tMemory[%02X] = Y (%d)\n", opcode, Memory[PC+1], mode, memAddr, Y)
+				fmt.Println(dbg_show_message)
+			} else if bytes == 3 {
+				dbg_show_message = fmt.Sprintf("\n\tOpcode %02X %02X%02X [3 bytes] [Mode: %s]\tSTY  Store Index Y in Memory.\tMemory[%02X] = Y (%d)\n", opcode, Memory[PC+2], Memory[PC+1], mode, memAddr, Y)
+				fmt.Println(dbg_show_message)
+			}
+
 		}
 
 		// Increment PC

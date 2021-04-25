@@ -12,6 +12,7 @@ import (
 //      addressing    assembler    opc  bytes  cyles
 //      --------------------------------------------
 //      implied       RTS           60    1     6
+
 func opc_RTS(bytes uint16, opc_cycles byte) {
 
 	// Show current opcode cycle

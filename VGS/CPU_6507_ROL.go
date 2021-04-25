@@ -13,6 +13,7 @@ import "fmt"
 
 //Move each of the bits in either A or M one place to the left.
 //Bit 0 is filled with the current value of the carry flag whilst the old bit 7 becomes the new carry flag value.
+
 func opc_ROL(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 
 	// Show current opcode cycle

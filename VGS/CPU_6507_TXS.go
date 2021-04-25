@@ -10,6 +10,7 @@ import "fmt"
 //      addressing    assembler    opc  bytes  cyles
 //      --------------------------------------------
 //      implied       TXS           9A    1     2
+
 func opc_TXS(bytes uint16, opc_cycles byte) {
 
 	// Show current opcode cycle

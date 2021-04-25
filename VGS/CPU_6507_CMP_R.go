@@ -1,6 +1,8 @@
 package VGS
 
-import "fmt"
+import (
+	"fmt"
+)
 
 // CMP  Compare Memory with Accumulator
 //
@@ -13,17 +15,20 @@ import "fmt"
 //      immediate     CMP #oper     C9    2     2
 //      zeropage,X    CMP oper,X    D5    2     4
 //      absolute      CMP oper      CD    3     4
+//      absolute,Y    CMP oper,Y    D9    3     4*
+//      absolute,X    CMP oper,X    DD    3     4*
+
 func opc_CMP(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 
-	// // Check for extra cycles (*) in the first opcode cycle
-	// if opc_cycle_count == 1 {
-	// 	if Opcode == 0xB9 || Opcode == 0xBD || Opcode == 0xB1 {
-	// 		// Add 1 to cycles if page boundery is crossed
-	// 		if MemPageBoundary(memAddr, PC) {
-	// 			opc_cycle_extra = 1
-	// 		}
-	// 	}
-	// }
+	// Check for extra cycles (*) in the first opcode cycle
+	if opc_cycle_count == 1 {
+		if opcode == 0xD9 || opcode == 0xDD {
+			// Add 1 to cycles if page boundery is crossed
+			if MemPageBoundary(memAddr, PC) {
+				opc_cycle_extra = 1
+			}
+		}
+	}
 
 	// Show current opcode cycle
 	if Debug {
@@ -44,11 +49,25 @@ func opc_CMP(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 		if Debug {
 
 			if tmp == 0 {
-				dbg_show_message = fmt.Sprintf("\n\tOpcode %02X%02X [2 bytes] [Mode: %s]\tCMP  Compare Memory with Accumulator.\tA(%d) - Memory[%02X](%d) = (%d) EQUAL\n", opcode, Memory[PC+1], mode, A, memAddr, Memory[memAddr], tmp)
-				fmt.Println(dbg_show_message)
+
+				if bytes == 2 {
+					dbg_show_message = fmt.Sprintf("\n\tOpcode %02X%02X [2 bytes] [Mode: %s]\tCMP  Compare Memory with Accumulator.\tA(%d) - Memory[%02X](%d) = (%d) EQUAL\n", opcode, Memory[PC+1], mode, A, memAddr, Memory[memAddr], tmp)
+					fmt.Println(dbg_show_message)
+				} else if bytes == 3 {
+					dbg_show_message = fmt.Sprintf("\n\tOpcode %02X %02X%02X [3 bytes] [Mode: %s]\tCMP  Compare Memory with Accumulator.\tA(%d) - Memory[%02X](%d) = (%d) EQUAL\n", opcode, Memory[PC+2], Memory[PC+1], mode, A, memAddr, Memory[memAddr], tmp)
+					fmt.Println(dbg_show_message)
+				}
+
 			} else {
-				dbg_show_message = fmt.Sprintf("\n\tOpcode %02X%02X [2 bytes] [Mode: %s]\tCMP  Compare Memory with Accumulator.\tA(%d) - Memory[%02X](%d) = (%d) NOT EQUAL\n", opcode, Memory[PC+1], mode, A, memAddr, Memory[memAddr], tmp)
-				fmt.Println(dbg_show_message)
+
+				if bytes == 2 {
+					dbg_show_message = fmt.Sprintf("\n\tOpcode %02X%02X [2 bytes] [Mode: %s]\tCMP  Compare Memory with Accumulator.\tA(%d) - Memory[%02X](%d) = (%d) NOT EQUAL\n", opcode, Memory[PC+1], mode, A, memAddr, Memory[memAddr], tmp)
+					fmt.Println(dbg_show_message)
+				} else if bytes == 3 {
+					dbg_show_message = fmt.Sprintf("\n\tOpcode %02X %02X%02X [3 bytes] [Mode: %s]\tCMP  Compare Memory with Accumulator.\tA(%d) - Memory[%02X](%d) = (%d) NOT EQUAL\n", opcode, Memory[PC+2], Memory[PC+1], mode, A, memAddr, Memory[memAddr], tmp)
+					fmt.Println(dbg_show_message)
+				}
+
 			}
 
 		}

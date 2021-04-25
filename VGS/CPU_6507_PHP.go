@@ -11,6 +11,7 @@ import (
 //      addressing    assembler    opc  bytes  cyles
 //      --------------------------------------------
 //      implied       PHP           08    1     3
+
 func opc_PHP(bytes uint16, opc_cycles byte) {
 
 	var tmp_P byte

@@ -8,8 +8,9 @@ import "fmt"
 //                                       - - - - - -
 //
 //      addressing	assembler	   opc	bytes	 cyles
-//      --------------------------------------------
-//      relative	  BEQ oper	    F0  	2	     2**
+//      ----------------------------------------------
+//      relative	  BEQ oper	    F0  	2	  2**
+
 func opc_BEQ(value int8, bytes uint16, opc_cycles byte) { // value is SIGNED
 
 	// If zero flag is set

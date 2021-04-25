@@ -11,6 +11,7 @@ import "fmt"
 //      --------------------------------------------
 //      immidiate     AND #oper     29    2     2
 //      zeropage      AND oper    	25    2   	3
+
 func opc_AND(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 
 	// Show current opcode cycle

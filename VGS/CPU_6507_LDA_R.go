@@ -16,6 +16,7 @@ import "fmt"
 //      zeropage,X    LDA oper,X    B5    2     4
 //      absolute      LDA oper      AD    3     4
 //      absolute,X    LDA oper,X    BD    3     4*
+
 func opc_LDA(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 
 	// Check for extra cycles (*) in the first opcode cycle

@@ -10,6 +10,7 @@ import "fmt"
 //      addressing    assembler    opc  bytes  cyles
 //      --------------------------------------------
 //      implied       INY           C8    1     2
+
 func opc_INY(bytes uint16, opc_cycles byte) {
 
 	// Show current opcode cycle

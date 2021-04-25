@@ -1,6 +1,8 @@
 package VGS
 
-import "fmt"
+import (
+	"fmt"
+)
 
 // LDX  Load Index X with Memory
 //
@@ -9,19 +11,23 @@ import "fmt"
 //
 //      addressing    assembler    opc  bytes  cyles
 //      --------------------------------------------
-//      immediate     LDX #oper     A2    2     2
-//      zeropage	    LDX oper	    A6  	2	    3
+//      immediate     LDX #oper     A2     2     2
+//      zeropage	  LDX oper	    A6     2     3
+//      zeropage,Y    LDX oper,Y    B6     2     4
+//      absolute      LDX oper      AE     3     4
+//      absolute,Y    LDX oper,Y    BE     3     4*
+
 func opc_LDX(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 
 	// Check for extra cycles (*) in the first opcode cycle
-	// if opc_cycle_count == 1 {
-	// 	if Opcode == 0xBE {
-	// 		// Add 1 to cycles if page boundery is crossed
-	// 		if MemPageBoundary(memAddr, PC) {
-	// 			opc_cycle_extra = 1
-	// 		}
-	// 	}
-	// }
+	if opc_cycle_count == 1 {
+		if opcode == 0xBE {
+			// Add 1 to cycles if page boundery is crossed
+			if MemPageBoundary(memAddr, PC) {
+				opc_cycle_extra = 1
+			}
+		}
+	}
 
 	// Show current opcode cycle
 	if Debug {

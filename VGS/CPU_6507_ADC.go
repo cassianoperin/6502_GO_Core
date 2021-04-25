@@ -14,7 +14,8 @@ import (
 // 	--------------------------------------------
 // 	zeropage      ADC oper      65    2     3
 //	absolute,X    ADC oper,X    7D    3     4*
-//	immidiate	    ADC #oper	   69    2     2
+//	immediate	  ADC #oper	    69    2     2
+
 func opc_ADC(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 
 	// Check for extra cycles (*) in the first opcode cycle
@@ -110,7 +111,6 @@ func opc_ADC(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 
 				if bytes == 2 {
 					dbg_show_message = fmt.Sprintf("\n\tOpcode %02X%02X [2 bytes] [Mode: %s]\tADC  Add Memory to Accumulator with Carry [Binary/Hex Mode]\tA = A(%d) + Memory[%02X](%d) + Carry (%d)) = %d\n", opcode, Memory[PC+1], mode, original_A, memAddr, Memory[memAddr], original_P0, A)
-
 					fmt.Println(dbg_show_message)
 				} else if bytes == 3 {
 					dbg_show_message = fmt.Sprintf("\n\tOpcode %02X %02X%02X [3 bytes] [Mode: %s]\tADC  Add Memory to Accumulator with Carry [Binary/Hex Mode]\tA = A(%d) + Memory[%02X](%d) + Carry (%d)) = %d\n", opcode, Memory[PC+2], Memory[PC+1], mode, original_A, memAddr, Memory[memAddr], original_P0, A)
@@ -122,7 +122,6 @@ func opc_ADC(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 
 				if bytes == 2 {
 					dbg_show_message = fmt.Sprintf("\n\tOpcode %02X%02X [2 bytes] [Mode: %s]\tADC  Add Memory to Accumulator with Carry [Decimal Mode]\tA = A(%02x) + Memory[%02X](%02x) + Carry (%02x)) = %02X\n", opcode, Memory[PC+1], mode, original_A, memAddr, Memory[memAddr], original_P0, A)
-
 					fmt.Println(dbg_show_message)
 				} else if bytes == 3 {
 					dbg_show_message = fmt.Sprintf("\n\tOpcode %02X %02X%02X [3 bytes] [Mode: %s]\tADC  Add Memory to Accumulator with Carry [Decimal Mode]\tA = A(%02x) + Memory[%02X](%02x) + Carry (%d)) = %02X\n", opcode, Memory[PC+2], Memory[PC+1], mode, original_A, memAddr, Memory[memAddr], original_P0, A)

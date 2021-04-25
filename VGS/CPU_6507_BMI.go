@@ -10,6 +10,7 @@ import "fmt"
 //      addressing    assembler    opc  bytes  cyles
 //      --------------------------------------------
 //      relative      BMI oper      30    2     2**
+
 func opc_BMI(value int8, bytes uint16, opc_cycles byte) { // value is SIGNED
 
 	// If Negative

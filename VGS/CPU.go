@@ -94,6 +94,12 @@ func CPU_Interpreter() {
 	case 0x78: // Instruction SEI
 		opc_SEI(1, 2)
 
+	case 0x58: // Instruction CLI
+		opc_CLI(1, 2)
+
+	case 0xB8: // Instruction CLV
+		opc_CLV(1, 2)
+
 	case 0x38: // Instruction SEC
 		opc_SEC(1, 2)
 
@@ -238,6 +244,24 @@ func CPU_Interpreter() {
 		}
 		opc_LDX(memAddr, memMode, 2, 3)
 
+	case 0xB6: // Instruction LDX (zeropage,Y)
+		if opc_cycle_count == 1 {
+			memAddr, memMode = addr_mode_ZeropageY(PC + 1)
+		}
+		opc_LDX(memAddr, memMode, 2, 4)
+
+	case 0xBE: // Instruction LDX (absolute,Y)
+		if opc_cycle_count == 1 {
+			memAddr, memMode = addr_mode_AbsoluteY(PC + 1)
+		}
+		opc_LDX(memAddr, memMode, 3, 4)
+
+	case 0xAE: // Instruction LDX (absolute)
+		if opc_cycle_count == 1 {
+			memAddr, memMode = addr_mode_Absolute(PC + 1)
+		}
+		opc_LDX(memAddr, memMode, 3, 4)
+
 	//-------------------------------------------------- STX --------------------------------------------------//
 
 	case 0x86: // Instruction STX (zeropage)
@@ -245,6 +269,18 @@ func CPU_Interpreter() {
 			memAddr, memMode = addr_mode_Zeropage(PC + 1)
 		}
 		opc_STX(memAddr, memMode, 2, 3)
+
+	case 0x96: // Instruction STX (zeropage,Y)
+		if opc_cycle_count == 1 {
+			memAddr, memMode = addr_mode_ZeropageY(PC + 1)
+		}
+		opc_STX(memAddr, memMode, 2, 4)
+
+	case 0x8E: // Instruction STX (absolute)
+		if opc_cycle_count == 1 {
+			memAddr, memMode = addr_mode_Absolute(PC + 1)
+		}
+		opc_STX(memAddr, memMode, 3, 4)
 
 	//-------------------------------------------------- JMP --------------------------------------------------//
 
@@ -344,6 +380,18 @@ func CPU_Interpreter() {
 		}
 		opc_LDY(memAddr, memMode, 2, 4)
 
+	case 0xAC: // Instruction LDY (absolute)
+		if opc_cycle_count == 1 {
+			memAddr, memMode = addr_mode_Absolute(PC + 1)
+		}
+		opc_LDY(memAddr, memMode, 3, 4)
+
+	case 0xBC: // Instruction LDY (absolute,X)
+		if opc_cycle_count == 1 {
+			memAddr, memMode = addr_mode_AbsoluteX(PC + 1)
+		}
+		opc_LDY(memAddr, memMode, 3, 4)
+
 	//-------------------------------------------------- STY --------------------------------------------------//
 
 	case 0x84: // Instruction STY (zeropage)
@@ -351,6 +399,18 @@ func CPU_Interpreter() {
 			memAddr, memMode = addr_mode_Zeropage(PC + 1)
 		}
 		opc_STY(memAddr, memMode, 2, 3)
+
+	case 0x94: // Instruction STY (zeropage,X)
+		if opc_cycle_count == 1 {
+			memAddr, memMode = addr_mode_ZeropageX(PC + 1)
+		}
+		opc_STY(memAddr, memMode, 2, 4)
+
+	case 0x8C: // Instruction STY (absolute)
+		if opc_cycle_count == 1 {
+			memAddr, memMode = addr_mode_Absolute(PC + 1)
+		}
+		opc_STY(memAddr, memMode, 3, 4)
 
 	//-------------------------------------------------- CPY --------------------------------------------------//
 
@@ -360,11 +420,17 @@ func CPU_Interpreter() {
 		}
 		opc_CPY(memAddr, memMode, 2, 2)
 
-	case 0xC4: // Instruction STY (zeropage)
+	case 0xC4: // Instruction STCPYY (zeropage)
 		if opc_cycle_count == 1 {
 			memAddr, memMode = addr_mode_Zeropage(PC + 1)
 		}
 		opc_CPY(memAddr, memMode, 2, 3)
+
+	case 0xCC: // Instruction CPY (absolute)
+		if opc_cycle_count == 1 {
+			memAddr, memMode = addr_mode_Absolute(PC + 1)
+		}
+		opc_CPY(memAddr, memMode, 3, 4)
 
 	//-------------------------------------------------- CPX --------------------------------------------------//
 
@@ -379,6 +445,12 @@ func CPU_Interpreter() {
 			memAddr, memMode = addr_mode_Zeropage(PC + 1)
 		}
 		opc_CPX(memAddr, memMode, 2, 3)
+
+	case 0xEC: // Instruction CPX (absolute)
+		if opc_cycle_count == 1 {
+			memAddr, memMode = addr_mode_Absolute(PC + 1)
+		}
+		opc_CPX(memAddr, memMode, 3, 4)
 
 	//-------------------------------------------------- SBC --------------------------------------------------//
 
@@ -496,6 +568,18 @@ func CPU_Interpreter() {
 		}
 		opc_CMP(memAddr, memMode, 3, 4)
 
+	case 0xD9: // Instruction CMP (absolute,Y)
+		if opc_cycle_count == 1 {
+			memAddr, memMode = addr_mode_AbsoluteY(PC + 1)
+		}
+		opc_CMP(memAddr, memMode, 3, 4)
+
+	case 0xDD: // Instruction CMP (absolute,X)
+		if opc_cycle_count == 1 {
+			memAddr, memMode = addr_mode_AbsoluteX(PC + 1)
+		}
+		opc_CMP(memAddr, memMode, 3, 4)
+
 	//-------------------------------------------------- STA --------------------------------------------------//
 
 	case 0x95: // Instruction STA (zeropage,X)
@@ -527,6 +611,12 @@ func CPU_Interpreter() {
 			memAddr, memMode = addr_mode_IndirectY(PC + 1)
 		}
 		opc_STA(memAddr, memMode, 2, 6)
+
+	case 0x9D: // Instruction STA (absolute,X)
+		if opc_cycle_count == 1 {
+			memAddr, memMode = addr_mode_AbsoluteX(PC + 1)
+		}
+		opc_STA(memAddr, memMode, 3, 5)
 
 	//-------------------------------------------------- ADC --------------------------------------------------//
 
@@ -625,14 +715,12 @@ func CPU_Interpreter() {
 	}
 
 	// Pause
-	// if PC == 0x37E1 {
-	// 	// if PC == 0x37d5 {
+	if PC == 0x16FC {
+		Pause = true
+	}
+
+	// if opcode == 0xCC {
 	// 	Pause = true
 	// }
-
-	if opcode == 0x09 {
-		Pause = true
-
-	}
 
 }

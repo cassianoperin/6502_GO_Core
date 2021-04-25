@@ -10,6 +10,7 @@ import "fmt"
 //      addressing    assembler    opc  bytes  cyles
 //      --------------------------------------------
 //      implied       CLC           18    1     2
+
 func opc_CLC(bytes uint16, opc_cycles byte) {
 
 	// Show current opcode cycle

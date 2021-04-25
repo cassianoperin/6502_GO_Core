@@ -13,6 +13,7 @@ import "fmt"
 //      zeropage      ORA oper      05    2     3
 //      (indirect,X)  ORA (oper,X)  01    2     6
 //      (indirect),Y  ORA (oper),Y  11    2     5*
+
 func opc_ORA(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 
 	// Check for extra cycles (*) in the first opcode cycle

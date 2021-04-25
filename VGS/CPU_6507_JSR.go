@@ -13,6 +13,7 @@ import (
 //      addressing    assembler    opc  bytes  cyles
 //      --------------------------------------------
 //      absolute      JSR oper      20    3     6
+
 func opc_JSR(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 
 	// Show current opcode cycle

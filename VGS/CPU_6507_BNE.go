@@ -10,6 +10,7 @@ import "fmt"
 //      addressing    assembler    opc  bytes  cyles
 //      --------------------------------------------
 //      relative      BNE oper      D0    2     2**
+
 func opc_BNE(value int8, bytes uint16, opc_cycles byte) { // value is SIGNED
 
 	// If P[1] = 1 (Zero Flag)

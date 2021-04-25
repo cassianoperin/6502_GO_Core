@@ -12,17 +12,20 @@ import "fmt"
 //      immediate     LDY #oper     A0    2     2
 //      zeropage      LDY oper      A4    2     3
 //      zeropage,X    LDY oper,X    B4    2     4
+//      absolute      LDY oper      AC    3     4
+//      absolute,X    LDY oper,X    BC    3     4*
+
 func opc_LDY(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 
-	// // Check for extra cycles (*) in the first opcode cycle
-	// if opc_cycle_count == 1 {
-	// 	if Opcode == 0xB9 || Opcode == 0xBD || Opcode == 0xB1 {
-	// 		// Add 1 to cycles if page boundery is crossed
-	// 		if MemPageBoundary(memAddr, PC) {
-	// 			opc_cycle_extra = 1
-	// 		}
-	// 	}
-	// }
+	// Check for extra cycles (*) in the first opcode cycle
+	if opc_cycle_count == 1 {
+		if opcode == 0xBC {
+			// Add 1 to cycles if page boundery is crossed
+			if MemPageBoundary(memAddr, PC) {
+				opc_cycle_extra = 1
+			}
+		}
+	}
 
 	// Show current opcode cycle
 	if Debug {

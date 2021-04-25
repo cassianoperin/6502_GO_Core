@@ -11,6 +11,7 @@ import "fmt"
 //      --------------------------------------------
 //      absolute      JMP oper      4C    3     3
 //      indirect      JMP (oper)    6C    3     5
+
 func opc_JMP(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 
 	// Show current opcode cycle

@@ -10,6 +10,7 @@ import "fmt"
 //      addressing    assembler    opc  bytes  cyles
 //      --------------------------------------------
 //      relative      BPL oper      10    2     2**
+
 func opc_BPL(value int8, bytes uint16, opc_cycles byte) {
 
 	// If Positive

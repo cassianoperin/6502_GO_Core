@@ -12,6 +12,7 @@ import (
 //      addressing    assembler    opc  bytes  cyles
 //      --------------------------------------------
 //      zeropage      NOP oper      64    2     3
+
 func opc_U_NOP(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 
 	// Show current opcode cycle

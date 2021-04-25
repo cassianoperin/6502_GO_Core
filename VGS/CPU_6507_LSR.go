@@ -10,6 +10,7 @@ import "fmt"
 //      addressing    assembler    opc  bytes  cyles
 //      --------------------------------------------
 //      accumulator   LSR A         4A    1     2
+
 func opc_LSR(bytes uint16, opc_cycles byte) {
 
 	// Show current opcode cycle
