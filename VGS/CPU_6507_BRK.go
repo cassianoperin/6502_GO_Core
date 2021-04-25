@@ -34,15 +34,6 @@ func opc_BRK(bytes uint16, opc_cycles byte) {
 		// After spending the cycles needed, execute the opcode
 	} else {
 
-		// ------------ Flags ----------- //
-
-		// IRQ Disabled
-		P[2] = 1
-
-		// The B Flag, for PHP or BRK, P[4] and P[5] will be always 1
-		P[4] = 1
-		// P[5] = 1
-
 		// ---------- Store PC ---------- //
 
 		var SP_Address uint
@@ -58,12 +49,12 @@ func opc_BRK(bytes uint16, opc_cycles byte) {
 		}
 
 		// Push PC+2 (PC(hi))
-		Memory[SP_Address] = byte((PC) >> 8)
+		Memory[SP_Address] = byte((PC + 2) >> 8)
 		SP--
 		SP_Address--
 
 		// Push PC+1 (PC(lo))
-		Memory[SP_Address] = byte((PC) & 0xFF)
+		Memory[SP_Address] = byte((PC + 2) & 0xFF)
 		SP_Address--
 		SP--
 
@@ -93,6 +84,15 @@ func opc_BRK(bytes uint16, opc_cycles byte) {
 		// Read the Opcode from PC+1 and PC bytes (Little Endian)
 		PC = uint16(Memory[0xFFFF])<<8 | uint16(Memory[0xFFFE])
 
+		// ------------ Flags ----------- //
+
+		// IRQ Disabled
+		P[2] = 1
+
+		// The B Flag, for PHP or BRK, P[4] and P[5] will be always 1
+		P[4] = 1
+		// P[5] = 1
+
 		// Reset Opcode Cycle counter
 		opc_cycle_count = 1
 
@@ -100,7 +100,6 @@ func opc_BRK(bytes uint16, opc_cycles byte) {
 			dbg_show_message = fmt.Sprintf("\n\tOpcode %02X [1 byte] [Mode: Implied]\tBRK  Force Break.\tPush PC and P to Stack: Mem[%02X] = %02X ,Mem[%02X] = %02X, Mem[%02X] = %02X(%08b)\t\tNew PC = %04X(BRK/Interrupt)\n", opcode, SP_Address+3, Memory[SP_Address+3], SP_Address+2, Memory[SP_Address+2], SP_Address+1, Memory[SP_Address+1], Memory[SP_Address+1], uint16(Memory[0xFFFF])<<8|uint16(Memory[0xFFFE]))
 			println(dbg_show_message)
 		}
-		Pause = true
 
 	}
 

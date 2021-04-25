@@ -9,6 +9,7 @@ import "fmt"
 //
 //      addressing    assembler    opc  bytes  cyles
 //      --------------------------------------------
+//      immediate     ORA #oper     09    2     2
 //      zeropage      ORA oper      05    2     3
 //      (indirect,X)  ORA (oper,X)  01    2     6
 //      (indirect),Y  ORA (oper),Y  11    2     5*

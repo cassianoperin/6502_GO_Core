@@ -1,8 +1,7 @@
 # 6502
 6502 / 6507 Emulator written in Go
 
-PC on 0x37c9 on 6502 test
-
+PC on 0x0A33 on 6502 test
 
 # TODO
 

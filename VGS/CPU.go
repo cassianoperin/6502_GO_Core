@@ -68,7 +68,7 @@ func Reset() {
 func Show() {
 	if Debug {
 		fmt.Printf("\n\n%04X : %02X\n\n", PC, opcode)
-		fmt.Printf("\nCycle: %d\tOpcode: %02X\tPC: 0x%02X(%d)\tA: 0x%02X\tX: 0x%02X\tY: 0x%02X\tP: %d\tSP: %02X\n", counter_F_Cycle, opcode, PC, PC, A, X, Y, P, SP)
+		fmt.Printf("\nCycle: %d\tOpcode: %02X\tPC: 0x%02X(%d)\tA: 0x%02X\tX: 0x%02X\tY: 0x%02X\tP: %d\tSP: %02X\t\tStack:  Mem[1FF]: %02X   Mem[1FE]: %02X   Mem[1FD]: %02X   Mem[1FC]: %02X\n", counter_F_Cycle, opcode, PC, PC, A, X, Y, P, SP, Memory[0x1FF], Memory[0x1FE], Memory[0x1FD], Memory[0x1FC])
 	}
 }
 
@@ -141,6 +141,9 @@ func CPU_Interpreter() {
 
 	case 0x00: // Instruction BRK
 		opc_BRK(1, 7)
+
+	case 0x40: // Instruction RTI
+		opc_RTI(1, 6)
 
 	case 0xC8: // Instruction INY
 		opc_INY(1, 2)
@@ -421,6 +424,12 @@ func CPU_Interpreter() {
 
 	//-------------------------------------------------- ORA --------------------------------------------------//
 
+	case 0x09: // Instruction ORA (immediate)
+		if opc_cycle_count == 1 {
+			memAddr, memMode = addr_mode_Immediate(PC + 1)
+		}
+		opc_ORA(memAddr, memMode, 2, 2)
+
 	case 0x05: // Instruction ORA (zeropage)
 		if opc_cycle_count == 1 {
 			memAddr, memMode = addr_mode_Zeropage(PC + 1)
@@ -615,9 +624,15 @@ func CPU_Interpreter() {
 		os.Exit(2)
 	}
 
-	// // Pause
-	// if PC == 0x9CE {
+	// Pause
+	// if PC == 0x37E1 {
+	// 	// if PC == 0x37d5 {
 	// 	Pause = true
 	// }
+
+	if opcode == 0x09 {
+		Pause = true
+
+	}
 
 }
