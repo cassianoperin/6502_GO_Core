@@ -3,6 +3,7 @@ package VGS
 import (
 	"fmt"
 	"os"
+	"time"
 )
 
 // Initialization
@@ -42,7 +43,8 @@ func Initialize() {
 
 func InitializeTimers() {
 	// Start Timers
-	// clock_timer = time.NewTicker(time.Nanosecond) // CPU Clock
+	clock_timer = time.NewTicker(time.Nanosecond)          // CPU Clock
+	screenRefresh_timer = time.NewTicker(time.Second / 30) // 60Hz Clock for screen refresh rate
 }
 
 // Reset Vector // 0xFFFC | 0xFFFD (Little Endian)
@@ -703,10 +705,7 @@ func CPU_Interpreter() {
 	// Increment Cycle
 	counter_F_Cycle++
 
-	// if counter_F_Cycle > 300 {
-	// 	fmt.Println("Exiting.")
-	// 	os.Exit(0)
-	// }
+	// ---------------------- Tests ---------------------- //
 
 	// The B flag tester
 	if P[5] != 1 {
@@ -714,13 +713,20 @@ func CPU_Interpreter() {
 		os.Exit(2)
 	}
 
-	// Pause
-	if PC == 0x16FC {
-		Pause = true
-	}
-
 	// if opcode == 0xCC {
 	// 	Pause = true
 	// }
+
+	Pause_addr := 0x16E7
+
+	// Pause
+	if PC > uint16(Pause_addr-20) {
+		Debug = true
+	}
+
+	// Pause
+	if PC == uint16(Pause_addr) {
+		Pause = true
+	}
 
 }

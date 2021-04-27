@@ -120,9 +120,6 @@ func addr_mode_AbsoluteX(offset uint16) (uint16, string) {
 // Indirect
 func addr_mode_Indirect(offset uint16) (uint16, string) {
 
-	// First format the destination address
-	memAddr := (uint16(Memory[offset+1])<<8 | uint16(Memory[offset]))
-
 	// PAUSE HERE TO FIX THE 6502 BUG WHEN THE ADDRESS is 0xFF
 	// https://www.reddit.com/r/EmuDev/comments/fi29ah/6502_jump_indirect_error/
 	//It's a bug in the 6502 that wraps around the LSB without incrementing the MSB.
@@ -133,13 +130,17 @@ func addr_mode_Indirect(offset uint16) (uint16, string) {
 		os.Exit(2)
 	}
 
+	// First format the destination address
+	memAddr := uint16(Memory[offset+1])<<8 | uint16(Memory[offset])
 	// Get the value in the memory of this address (Indirect)
 	memAddr = uint16(Memory[memAddr+1])<<8 | uint16(Memory[memAddr])
-	value := Memory[memAddr]
+	// value := Memory[memAddr]
 	mode := "Indirect"
 
+	Pause = true
+
 	if Debug {
-		fmt.Printf("\t%s addressing mode.\tMemory[%04X]\t\tValue obtained: %02X\n", mode, memAddr, value)
+		fmt.Printf("\t%s addressing mode.\t\tAddress in $%04X points to Memory[%04X]\n", mode, (uint16(Memory[offset+1])<<8 | uint16(Memory[offset])), memAddr)
 	}
 	return memAddr, mode
 }
@@ -147,18 +148,27 @@ func addr_mode_Indirect(offset uint16) (uint16, string) {
 // Indirect,Y
 func addr_mode_IndirectY(offset uint16) (uint16, string) {
 
-	memAddr := (uint16(Memory[Memory[offset+1]])<<8 | uint16(Memory[Memory[offset]])) + uint16(Y)
+	fmt.Printf("offset: %04X\tMemory[Memory[offset]]: %04X\tX: %02X\t result: %04X\t result2: %04X\n", offset, Memory[Memory[offset]], Y, uint16(Memory[Memory[offset]])+uint16(Y), uint16(Memory[Memory[offset+uint16(Y)]]))
+
+	// memAddr := (uint16(Memory[Memory[offset+1]])<<8 | uint16(Memory[Memory[offset]])) + uint16(Y)
+	memAddr := uint16(Memory[Memory[offset+1]])<<8 | uint16(Memory[Memory[offset+uint16(Y)]])
 	value := Memory[memAddr]
 	mode := "Indirect,Y"
 
 	if Debug {
 		fmt.Printf("\t%s addressing mode.\tMemory[%04X]\t\tValue obtained: %02X\n", mode, memAddr, value)
 	}
+
+	fmt.Println("Proposital quit to validate addr_mode_IndirectY")
+	os.Exit(2)
+
 	return memAddr, mode
 }
 
 // Indirect,X
 func addr_mode_IndirectX(offset uint16) (uint16, string) {
+
+	fmt.Printf("offset: %04X\tX: %02X\t result: %04X\t result2: %04X\n", offset, X, uint16(Memory[Memory[offset]])+uint16(X), uint16(Memory[Memory[offset+uint16(X)]]))
 
 	memAddr := (uint16(Memory[Memory[offset+1]])<<8 | uint16(Memory[Memory[offset]])) + uint16(X)
 	value := Memory[memAddr]
@@ -167,18 +177,9 @@ func addr_mode_IndirectX(offset uint16) (uint16, string) {
 	if Debug {
 		fmt.Printf("\t%s addressing mode.\tMemory[%04X]\t\tValue obtained: %02X\n", mode, memAddr, value)
 	}
+
+	fmt.Println("Proposital quit to validate addr_mode_IndirectX")
+	os.Exit(2)
+
 	return memAddr, mode
 }
-
-// // Accumulator
-// func addr_mode_Accumulator(offset uint16) (uint16, string) {
-
-// 	memAddr := (uint16(Memory[Memory[offset+1]])<<8 | uint16(Memory[Memory[offset]])) + uint16(X)
-// 	value := Memory[memAddr]
-// 	mode := "Accumulator"
-
-// 	if Debug {
-// 		fmt.Printf("\t%s addressing mode.\tMemory[%04X]\t\tValue obtained: %02X\n", mode, memAddr, value)
-// 	}
-// 	return memAddr, mode
-// }

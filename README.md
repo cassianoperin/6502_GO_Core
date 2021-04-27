@@ -3,6 +3,9 @@
 
 PC on 0x16FC on 6502 test
 
+INDIRECT,Y ADD CARRY SE ESTIVER CERTO!
+ABSOLUTE,Y e X revisar
+
 # TODO
 
 ## Unofficial Opcodes
@@ -62,6 +65,8 @@ A WRITE operation (the RjW line is at logic zero) causes eight bits of informati
 https://wiki.nesdev.com/w/index.php/Stack
 
 ## SPLIT MEMORY ACCESS 
+
+## Extra cycles on memory address modes? pass initial page and check if it changes?
 
 
 ## Basic Architecture

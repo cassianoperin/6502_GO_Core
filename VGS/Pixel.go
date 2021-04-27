@@ -53,7 +53,7 @@ func Run() {
 		// }
 
 		select {
-		case <-second_timer: // Second
+		case <-clock_timer.C:
 			if !Pause {
 				// Runs the interpreter
 				if CPU_Enabled {
@@ -69,7 +69,14 @@ func Run() {
 		Keyboard(win)
 
 		// }
-		win.Update()
+
+		select {
+		case <-screenRefresh_timer.C: // Second
+			win.Update()
+
+		default:
+			// No timer to handle
+		}
 
 	}
 

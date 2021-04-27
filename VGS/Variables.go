@@ -42,8 +42,9 @@ var (
 	memValue int8   // Receive the memory value needed by branches. Calculated in the first opc cycle to check for extra cycles, used in the last to perform the operation
 
 	// ------------------------------- Timers ------------------------------- //
-	// clock_timer  *time.Ticker             // CPU Clock // CPU: MOS Technology 6507 @ 1.19 MHz;
-	second_timer = time.Tick(time.Nanosecond) // 1 second to track FPS and draws
+	clock_timer *time.Ticker // CPU Clock // CPU: MOS Technology 6507 @ 1.19 MHz;
+	// second_timer        = time.Tick(time.Second) // 1 second to track FPS and draws
+	screenRefresh_timer *time.Ticker // Screen Refresh
 
 	// --------------------------- Debug Interface -------------------------- //
 	dbg_show_message string // Debug opcode detail messages
@@ -66,5 +67,5 @@ var (
 	Pause bool = false
 
 	// Debug
-	Debug bool = true
+	Debug bool = false
 )
