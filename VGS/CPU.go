@@ -717,7 +717,7 @@ func CPU_Interpreter() {
 	// 	Pause = true
 	// }
 
-	Pause_addr := 0x16E7
+	Pause_addr := 0x16FC
 
 	// Pause
 	if PC > uint16(Pause_addr-20) {

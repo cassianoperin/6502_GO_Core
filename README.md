@@ -1,10 +1,8 @@
 # 6502
 6502 / 6507 Emulator written in Go
 
-PC on 0x16FC on 6502 test
+PC on 0x1752 on 6502 test
 
-INDIRECT,Y ADD CARRY SE ESTIVER CERTO!
-ABSOLUTE,Y e X revisar
 
 # TODO
 
@@ -19,7 +17,6 @@ http://6502.org/tutorials/6502opcodes.html
 https://www.reddit.com/r/EmuDev/comments/fi29ah/6502_jump_indirect_error/
 
 
-
 JMP transfers program execution to the following address (absolute) or to the location contained in the following address (indirect). Note that there is no carry associated with the indirect jump so:
 
 AN INDIRECT JUMP MUST NEVER USE A
@@ -29,6 +26,11 @@ OF A PAGE
 For example if address $3000 contains $40, $30FF contains $80, and $3100 contains $50, the result of JMP ($30FF) will be a transfer of control to $4080 rather than $5080 as you intended i.e. the 6502 took the low byte of the address from $30FF and the high byte from $3000. 
 
 It's a bug in the 6502 that wraps around the LSB without incrementing the MSB. So instead of reading address from 0x02FF-0x0300 you should be looking at 0x02FF-0x0200. The A900 printed in the log is the value at 0x02FF-0x0300 which is not what's actually being used.
+
+
+## Addressing modes:
+
+https://slark.me/c64-downloads/6502-addressing-modes.pdf
 
 
 ## Hex Calculator

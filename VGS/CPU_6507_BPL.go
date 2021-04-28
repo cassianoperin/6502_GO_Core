@@ -21,8 +21,6 @@ func opc_BPL(value int8, bytes uint16, opc_cycles byte) {
 			// Add 1 to cycles if page boundery is crossed
 			if MemPageBoundary(PC, PC+uint16(value)+2) { // REVISAR SE A LOGICA ESTA CORRETA
 				opc_cycle_extra = 1
-				fmt.Println("PAUSA PARA VALIDAR BPL COM PAGE BOUNDARY")
-				Pause = true
 			}
 		}
 
