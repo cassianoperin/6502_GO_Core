@@ -11,11 +11,12 @@ import "fmt"
 //      --------------------------------------------
 //      immediate     LDA #oper     A9    2     2
 //      zeropage      LDA oper      A5    2     3
-//      absolute,Y    LDA oper,Y    B9    3     4*
-//      (indirect),Y  LDA (oper),Y  B1    2     5*
 //      zeropage,X    LDA oper,X    B5    2     4
 //      absolute      LDA oper      AD    3     4
 //      absolute,X    LDA oper,X    BD    3     4*
+//      absolute,Y    LDA oper,Y    B9    3     4*
+//      (indirect,X)  LDA (oper,X)  A1    2     6
+//      (indirect),Y  LDA (oper),Y  B1    2     5*
 
 func opc_LDA(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 

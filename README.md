@@ -1,8 +1,7 @@
 # 6502
 6502 / 6507 Emulator written in Go
 
-PC on 0x1752 on 6502 test
-
+PC on 0x186E on 6502 test
 
 # TODO
 
@@ -27,6 +26,10 @@ For example if address $3000 contains $40, $30FF contains $80, and $3100 contain
 
 It's a bug in the 6502 that wraps around the LSB without incrementing the MSB. So instead of reading address from 0x02FF-0x0300 you should be looking at 0x02FF-0x0200. The A900 printed in the log is the value at 0x02FF-0x0300 which is not what's actually being used.
 
+## Tests
+
+https://github.com/Klaus2m5/6502_65C02_functional_tests/blob/master/bin_files/6502_functional_test.lst
+
 
 ## Addressing modes:
 
@@ -36,6 +39,11 @@ https://slark.me/c64-downloads/6502-addressing-modes.pdf
 ## Hex Calculator
 
 https://www.calculator.net/hex-calculator.html?number1=998&c2op=%2B&number2=2&calctype=op&x=93&y=29
+
+
+## Architecture
+
+http://www.weihenstephan.org/~michaste/pagetable/6502/6502.jpg
 
 
 ## BUSES
@@ -77,6 +85,13 @@ The only other reserved locations in the memory map are the very last 6 bytes of
 
 
 http://www.obelisk.me.uk/6502/architecture.html
+
+## Opcodes
+
+http://6502.org/tutorials/6502opcodes.html#CMP
+
+https://www.masswerk.at/6502/6502_instruction_set.html#CLD
+
 
 
  

@@ -362,6 +362,12 @@ func CPU_Interpreter() {
 		}
 		opc_LDA(memAddr, memMode, 3, 4)
 
+	case 0xA1: // Instruction LDA ((indirect,X))
+		if opc_cycle_count == 1 {
+			memAddr, memMode = addr_mode_IndirectX(PC + 1)
+		}
+		opc_LDA(memAddr, memMode, 2, 6)
+
 	//-------------------------------------------------- LDY --------------------------------------------------//
 
 	case 0xA0: // Instruction LDY (immediate)
@@ -582,6 +588,11 @@ func CPU_Interpreter() {
 		}
 		opc_CMP(memAddr, memMode, 3, 4)
 
+	case 0xD1: // Instruction CMP ((indirect),Y)
+		if opc_cycle_count == 1 {
+			memAddr, memMode = addr_mode_IndirectY(PC + 1)
+		}
+		opc_CMP(memAddr, memMode, 2, 5)
 	//-------------------------------------------------- STA --------------------------------------------------//
 
 	case 0x95: // Instruction STA (zeropage,X)
@@ -619,6 +630,12 @@ func CPU_Interpreter() {
 			memAddr, memMode = addr_mode_AbsoluteX(PC + 1)
 		}
 		opc_STA(memAddr, memMode, 3, 5)
+
+	case 0x81: // Instruction STA (indirect,X)
+		if opc_cycle_count == 1 {
+			memAddr, memMode = addr_mode_IndirectX(PC + 1)
+		}
+		opc_STA(memAddr, memMode, 2, 6)
 
 	//-------------------------------------------------- ADC --------------------------------------------------//
 
@@ -717,7 +734,7 @@ func CPU_Interpreter() {
 	// 	Pause = true
 	// }
 
-	Pause_addr := 0x16FC
+	Pause_addr := 0x1858
 
 	// Pause
 	if PC > uint16(Pause_addr-20) {

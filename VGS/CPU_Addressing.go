@@ -154,7 +154,7 @@ func addr_mode_IndirectY(offset uint16) (uint16, string) {
 	// Base indirect address
 	indirect_addr = Memory[offset]
 
-	// In Indirect mode, its necessary to sum the memory inside the indirect address + Y and keep the carry if exists to use in MSB
+	// In (Indirect),Y mode, its necessary to sum the memory inside the indirect address + Y and keep the carry if exists to use in MSB
 	LSB_tmp = uint16(Memory[indirect_addr]) + uint16(Y)
 
 	// Keep the bit 9 as the carry for MSB
@@ -162,8 +162,9 @@ func addr_mode_IndirectY(offset uint16) (uint16, string) {
 
 	// Temporary test
 	if carry == 1 {
-		fmt.Println("Indirect,Y mode, proposital exit: Y+indirect addr > 255, carry on. Validate the sum!!!")
-		os.Exit(2)
+		fmt.Printf("\n\nIndirect,Y mode, proposital exit: Y+indirect addr > 255, carry on. Validate the sum!!!\n\n")
+		// os.Exit(2)
+		Pause = true
 	}
 
 	// Store only the first 8 bits as LSB (the 9th is on carry)
@@ -176,7 +177,7 @@ func addr_mode_IndirectY(offset uint16) (uint16, string) {
 	mode := "Indirect,Y"
 
 	if Debug {
-		fmt.Printf("\t%s addressing mode. Indirect Addr: 0x%02X\tLSB: (Memory[indirect_addr]:0x%02X + Y:(0x%X)) = 0x%04X & 00FF = 0x%02X and carry: %d\tMSB: (Memory[indirect_addr(%02X) + 1 + carry(%d)]): 0x%02X     \tMemory[%04X]\t\tValue obtained: %02X\n", mode, indirect_addr, Memory[indirect_addr], Y, LSB_tmp, LSB, carry, indirect_addr, carry, MSB, memAddr, value)
+		fmt.Printf("\t%s addressing mode. Indirect Addr: 0x%02X\tLSB: (Memory[indirect_addr]:0x%02X + Y:(0x%02X)) = 0x%04X & 00FF = 0x%02X and carry: %d\tMSB: (Memory[indirect_addr(%02X) + 1 + carry(%d)]): 0x%02X\tMemory[%04X]\t\tValue obtained: %02X\n", mode, indirect_addr, Memory[indirect_addr], Y, LSB_tmp, LSB, carry, indirect_addr, carry, MSB, memAddr, value)
 	}
 
 	return memAddr, mode
@@ -185,18 +186,25 @@ func addr_mode_IndirectY(offset uint16) (uint16, string) {
 // Indirect,X
 func addr_mode_IndirectX(offset uint16) (uint16, string) {
 
-	fmt.Printf("offset: %04X\tX: %02X\t result: %04X\t result2: %04X\n", offset, X, uint16(Memory[Memory[offset]])+uint16(X), uint16(Memory[Memory[offset+uint16(X)]]))
+	var (
+		indirect_addr, LSB, MSB byte
+	)
 
-	memAddr := (uint16(Memory[Memory[offset+1]])<<8 | uint16(Memory[Memory[offset]])) + uint16(X)
+	// Base indirect address
+	indirect_addr = Memory[offset]
+
+	// In (Indirect,X) mode, its necessary to sum the address pointed on indirect address + X, ignoring the carry if exists
+	// Store only the first 8 bits as LSB, ignoring Carry (byte sum will do it itself rotating the number if greater than 255)
+	LSB = indirect_addr + X
+	MSB = LSB + 0x01 // Next byte
+
+	memAddr := uint16(Memory[MSB])<<8 | uint16(Memory[LSB])
 	value := Memory[memAddr]
 	mode := "Indirect,X"
 
 	if Debug {
-		fmt.Printf("\t%s addressing mode.\tMemory[%04X]\t\tValue obtained: %02X\n", mode, memAddr, value)
+		fmt.Printf("\t%s addressing mode. Indirect Addr: 0x%02X\tLSB: (indirect_addr:0x%02X + X:(0x%02X) = 0x%02X\tMSB: Address of LSB + 0x01: 0x%02X\tMemory[%04X]\t\tValue obtained: %02X\n", mode, indirect_addr, indirect_addr, Y, LSB, MSB, memAddr, value)
 	}
-
-	fmt.Println("Proposital quit to validate addr_mode_IndirectX")
-	os.Exit(2)
 
 	return memAddr, mode
 }
