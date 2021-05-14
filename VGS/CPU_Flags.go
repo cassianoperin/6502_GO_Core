@@ -1,6 +1,6 @@
 package VGS
 
-import	"fmt"
+import "fmt"
 
 //-------------------------------------------------- Processor Flags --------------------------------------------------//
 
@@ -41,6 +41,7 @@ func flags_C(value1, value2 byte) {
 
 	// Check if final value is 0
 	if value1 >= value2 {
+		// if uint16(value1)+uint16(value2) > 255 {
 		P[0] = 1
 	} else {
 		P[0] = 0
@@ -66,7 +67,7 @@ func flags_C_Subtraction(originalValue, newValue byte) {
 	}
 
 	if Debug {
-		fmt.Printf(" %d (SBC)\n" , P[0])
+		fmt.Printf(" %d (SBC)\n", P[0])
 	}
 }
 
@@ -74,8 +75,8 @@ func flags_C_Subtraction(originalValue, newValue byte) {
 // value1 = Accumulator, value2 = memory
 func Flags_V_ADC(value1, value2 byte) {
 	var (
-		carry_bit		[8]byte
-		carry_OUT 	byte = 0
+		carry_bit [8]byte
+		carry_OUT byte = 0
 	)
 	// fmt.Printf("\n  %08b\t%d",value1,value1)
 	// fmt.Printf("\n  %08b\t%d",value2,value2)
@@ -88,7 +89,7 @@ func Flags_V_ADC(value1, value2 byte) {
 	carry_bit[0] = P[0]
 
 	// Make the magic
-	for i:=0 ; i <= 7 ; i++{
+	for i := 0; i <= 7; i++ {
 		// sum the bit from value one + bit from value 2 + carry value
 		tmp := (value1 >> byte(i) & 0x01) + (value2 >> byte(i) & 0x01) + carry_bit[i]
 		if tmp >= 2 {
@@ -113,8 +114,8 @@ func Flags_V_ADC(value1, value2 byte) {
 // oVerflow Flag for SBC
 func Flags_V_SBC(value1, value2 byte) {
 	var (
-		carry_bit		= [8]byte{}
-		carry_OUT 	byte = 0
+		carry_bit      = [8]byte{}
+		carry_OUT byte = 0
 	)
 
 	// fmt.Printf("\n  \t %d\t(carry IN)",P[0])
@@ -135,7 +136,7 @@ func Flags_V_SBC(value1, value2 byte) {
 	carry_bit[0] = P[0]
 
 	// Make the magic
-	for i:=0 ; i <= 7 ; i++{
+	for i := 0; i <= 7; i++ {
 		// sum the bit from value one + bit from value 2 + carry value
 		tmp := (value1 >> byte(i) & 0x01) + (value2 >> byte(i) & 0x01) + carry_bit[i]
 		if tmp >= 2 {

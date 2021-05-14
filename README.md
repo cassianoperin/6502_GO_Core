@@ -1,7 +1,14 @@
 # 6502
 6502 / 6507 Emulator written in Go
 
-PC on 0x186E on 6502 test
+PC on 0x22d8 on 6502 test
+FIXED indirect,Y MSB calculation
+FIXED BIT OPCODE
+
+
+INVESTIGATE 
+
+and after, the indexed absolute IS WRONG
 
 # TODO
 

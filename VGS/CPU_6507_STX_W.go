@@ -2,7 +2,7 @@ package VGS
 
 import "fmt"
 
-// STX  Store Index X in Memory (zeropage)
+// STX  Store Index X in Memory
 //
 //      X -> M                           N Z C I D V
 //                                       - - - - - -

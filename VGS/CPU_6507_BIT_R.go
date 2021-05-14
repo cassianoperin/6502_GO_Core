@@ -45,7 +45,7 @@ func opc_BIT(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 		if Debug {
 			fmt.Printf("\tFlag N: %d -> ", P[7])
 		}
-		P[7] = A >> 7 & 0x1
+		P[7] = Memory[memAddr] >> 7 & 0x1
 		if Debug {
 			fmt.Printf("%d\n", P[7])
 		}
@@ -54,12 +54,12 @@ func opc_BIT(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 		if Debug {
 			fmt.Printf("\tFlag V: %d -> ", P[6])
 		}
-		P[6] = A >> 6 & 0x1
+		P[6] = Memory[memAddr] >> 6 & 0x1
 		if Debug {
 			fmt.Printf("%d\n", P[6])
 		}
 
-		A = Memory[memAddr]
+		flags_Z(A & Memory[memAddr])
 
 		// Increment PC
 		PC += bytes

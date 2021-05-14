@@ -70,7 +70,8 @@ func Reset() {
 func Show() {
 	if Debug {
 		fmt.Printf("\n\n%04X : %02X\n\n", PC, opcode)
-		fmt.Printf("\nCycle: %d\tOpcode: %02X\tPC: 0x%02X(%d)\tA: 0x%02X\tX: 0x%02X\tY: 0x%02X\tP: %d\tSP: %02X\t\tStack:  Mem[1FF]: %02X   Mem[1FE]: %02X   Mem[1FD]: %02X   Mem[1FC]: %02X\n", counter_F_Cycle, opcode, PC, PC, A, X, Y, P, SP, Memory[0x1FF], Memory[0x1FE], Memory[0x1FD], Memory[0x1FC])
+		fmt.Printf("\t\t\t\t\t\t\t\t\t\t   N V - B D I Z C")
+		fmt.Printf("\nCycle: %d\tOpcode: %02X\tPC: 0x%02X(%d)\tA: 0x%02X\tX: 0x%02X\tY: 0x%02X\tP: %d %d %d %d %d %d %d %d\tSP: %02X\t\tStack:  Mem[1FF]: %02X   Mem[1FE]: %02X   Mem[1FD]: %02X   Mem[1FC]: %02X\n", counter_F_Cycle, opcode, PC, PC, A, X, Y, P[7], P[6], P[5], P[4], P[3], P[2], P[1], P[0], SP, Memory[0x1FF], Memory[0x1FE], Memory[0x1FD], Memory[0x1FC])
 	}
 }
 
@@ -593,6 +594,13 @@ func CPU_Interpreter() {
 			memAddr, memMode = addr_mode_IndirectY(PC + 1)
 		}
 		opc_CMP(memAddr, memMode, 2, 5)
+
+	case 0xC1: // Instruction CMP ((indirect,X))
+		if opc_cycle_count == 1 {
+			memAddr, memMode = addr_mode_IndirectX(PC + 1)
+		}
+		opc_CMP(memAddr, memMode, 2, 6)
+
 	//-------------------------------------------------- STA --------------------------------------------------//
 
 	case 0x95: // Instruction STA (zeropage,X)
@@ -734,7 +742,9 @@ func CPU_Interpreter() {
 	// 	Pause = true
 	// }
 
-	Pause_addr := 0x1858
+	// Pause_addr := 0x1858
+	// Pause_addr := 0x22cb // validado tudo antes
+	Pause_addr := 0x5ab // validado tudo antes
 
 	// Pause
 	if PC > uint16(Pause_addr-20) {
