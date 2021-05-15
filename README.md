@@ -5,6 +5,10 @@
 
 ## Show everything in hex mode? Put 0x on hex?
 
+## Invert bytes from from opcodes (all opcodes with 3 bytes) -> Improve to detect and show correctly 2 or 3 without the if (create a string?)
+
+## create a function for extra cycle detection (and invert to first check the opcode and later the cycle?)
+
 ## Unofficial Opcodes
 
 https://wiki.nesdev.com/w/index.php/Programming_with_unofficial_opcodes

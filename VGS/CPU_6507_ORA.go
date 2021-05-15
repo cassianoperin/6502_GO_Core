@@ -11,6 +11,10 @@ import "fmt"
 //      --------------------------------------------
 //      immediate     ORA #oper     09    2     2
 //      zeropage      ORA oper      05    2     3
+//      zeropage,X    ORA oper,X    15    2     4
+//      absolute      ORA oper      0D    3     4
+//      absolute,X    ORA oper,X    1D    3     4*
+//      absolute,Y    ORA oper,Y    19    3     4*
 //      (indirect,X)  ORA (oper,X)  01    2     6
 //      (indirect),Y  ORA (oper),Y  11    2     5*
 
@@ -18,8 +22,8 @@ func opc_ORA(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 
 	// Check for extra cycles (*) in the first opcode cycle
 	if opc_cycle_count == 1 {
-		if opcode == 0x11 {
-			// Add 1 to cycles if page boundery is crossed
+		if opcode == 0x1D || opcode == 0x19 || opcode == 0x11 {
+			// Add 1 to cycles if page boundary is crossed
 			if MemPageBoundary(memAddr, PC) {
 				opc_cycle_extra = 1
 			}
@@ -39,7 +43,17 @@ func opc_ORA(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 	} else {
 
 		if Debug {
-			dbg_show_message = fmt.Sprintf("\n\tOpcode %02X%02X [2 bytes] [Mode: %s]\tORA  OR Memory with Accumulator.\tA = A(%d) | Memory[%02X](%d)\t(%d)\n", opcode, Memory[PC+1], mode, A, memAddr, Memory[memAddr], A|Memory[memAddr])
+
+			if bytes == 2 {
+				dbg_show_message = fmt.Sprintf("\n\tOpcode %02X%02X [2 bytes] [Mode: %s]\tORA  OR Memory with Accumulator.\tA = A(%d) | Memory[%02X](%d)\t(%d)\n", opcode, Memory[PC+1], mode, A, memAddr, Memory[memAddr], A|Memory[memAddr])
+			} else if bytes == 3 {
+				dbg_show_message = fmt.Sprintf("\n\tOpcode %02X %02X%02X [3 bytes] [Mode: %s]\tORA  OR Memory with Accumulator.\tA = A(%d) | Memory[%02X](%d)\t(%d)\n", opcode, Memory[PC+2], Memory[PC+1], mode, A, memAddr, Memory[memAddr], A|Memory[memAddr])
+			}
+			fmt.Println(dbg_show_message)
+
+		}
+
+		if Debug {
 			fmt.Println(dbg_show_message)
 		}
 

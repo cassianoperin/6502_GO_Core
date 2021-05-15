@@ -44,7 +44,7 @@ func opc_BNE(value int8, bytes uint16, opc_cycles byte) { // value is SIGNED
 
 		// Check for extra cycles (*) in the first opcode cycle
 		if opc_cycle_count == 1 {
-			// Add 1 to cycles if page boundery is crossed
+			// Add 1 to cycles if page boundary is crossed
 			if MemPageBoundary(PC, PC+uint16(value)+2) { // REVISAR SE A LOGICA ESTA CORRETA
 				opc_cycle_extra = 1
 			}

@@ -25,7 +25,7 @@ func opc_CMP(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 	// Check for extra cycles (*) in the first opcode cycle
 	if opc_cycle_count == 1 {
 		if opcode == 0xD9 || opcode == 0xDD || opcode == 0xD1 {
-			// Add 1 to cycles if page boundery is crossed
+			// Add 1 to cycles if page boundary is crossed
 			if MemPageBoundary(memAddr, PC) {
 				opc_cycle_extra = 1
 			}

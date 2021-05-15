@@ -2,7 +2,7 @@ package VGS
 
 import "fmt"
 
-// LDA  Load Accumulator with Memory (immidiate)
+// LDA  Load Accumulator with Memory
 //
 //      M -> A                           N Z C I D V
 //                                       + + - - - -
@@ -23,7 +23,7 @@ func opc_LDA(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 	// Check for extra cycles (*) in the first opcode cycle
 	if opc_cycle_count == 1 {
 		if opcode == 0xB9 || opcode == 0xBD || opcode == 0xB1 {
-			// Add 1 to cycles if page boundery is crossed
+			// Add 1 to cycles if page boundary is crossed
 			if MemPageBoundary(memAddr, PC) {
 				opc_cycle_extra = 1
 			}

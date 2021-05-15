@@ -2,7 +2,7 @@ package VGS
 
 import "fmt"
 
-// CPY  Compare Memory and Index Y (immidiate)
+// CPY  Compare Memory and Index Y
 //
 //      Y - M                            N Z C I D V
 //                                       + + + - - -

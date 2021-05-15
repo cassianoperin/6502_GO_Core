@@ -1,6 +1,8 @@
 package VGS
 
-import "fmt"
+import (
+	"fmt"
+)
 
 // AND  AND Memory with Accumulator
 //
@@ -9,10 +11,26 @@ import "fmt"
 //
 //      addressing    assembler    opc  bytes  cyles
 //      --------------------------------------------
-//      immidiate     AND #oper     29    2     2
+//      immediate     AND #oper     29    2     2
 //      zeropage      AND oper    	25    2   	3
+//      zeropage,X    AND oper,X    35    2     4
+//      absolute      AND oper      2D    3     4
+//      absolute,X    AND oper,X    3D    3     4*
+//      absolute,Y    AND oper,Y    39    3     4*
+//      (indirect,X)  AND (oper,X)  21    2     6
+//      (indirect),Y  AND (oper),Y  31    2     5*
 
 func opc_AND(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
+
+	// Check for extra cycles (*) in the first opcode cycle
+	if opc_cycle_count == 1 {
+		if opcode == 0x3D || opcode == 0x39 || opcode == 0x31 {
+			// Add 1 to cycles if page boundary is crossed
+			if MemPageBoundary(memAddr, PC) {
+				opc_cycle_extra = 1
+			}
+		}
+	}
 
 	// Show current opcode cycle
 	if Debug {
@@ -27,8 +45,14 @@ func opc_AND(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 	} else {
 
 		if Debug {
-			dbg_show_message = fmt.Sprintf("\n\tOpcode %02X%02X [2 bytes] [Mode: %s]\tAND  AND Memory with Accumulator.\tA = A(%d) & Memory[%02X](%d)\t(%d)\n", opcode, Memory[PC+1], mode, A, memAddr, Memory[memAddr], A&Memory[memAddr])
+
+			if bytes == 2 {
+				dbg_show_message = fmt.Sprintf("\n\tOpcode %02X%02X [2 bytes] [Mode: %s]\tAND  AND Memory with Accumulator.\tA = A(%d) & Memory[%02X](%d)\t(%d)\n", opcode, Memory[PC+1], mode, A, memAddr, Memory[memAddr], A&Memory[memAddr])
+			} else if bytes == 3 {
+				dbg_show_message = fmt.Sprintf("\n\tOpcode %02X %02X%02X [3 bytes] [Mode: %s]\tAND  AND Memory with Accumulator.\tA = A(%d) & Memory[%02X](%d)\t(%d)\n", opcode, Memory[PC+2], Memory[PC+1], mode, A, memAddr, Memory[memAddr], A&Memory[memAddr])
+			}
 			fmt.Println(dbg_show_message)
+
 		}
 
 		A = A & Memory[memAddr]

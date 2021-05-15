@@ -11,6 +11,8 @@ import "fmt"
 //      --------------------------------------------
 //      zeropage      DEC oper      C6    2     5
 //      zeropage,X    DEC oper,X    D6    2     6
+//      absolute      DEC oper      CE    3     6
+//      absolute,X    DEC oper,X    DE    3     7
 
 func opc_DEC(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 
@@ -27,8 +29,14 @@ func opc_DEC(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 	} else {
 
 		if Debug {
-			dbg_show_message = fmt.Sprintf("\n\tOpcode %02X%02X [2 bytes] [Mode: %s]\tDEC  Decrement Memory by One.\tMemory[%02X] -= 1 (%d)\n", opcode, Memory[PC+1], mode, memAddr, Memory[memAddr]-1)
+
+			if bytes == 2 {
+				dbg_show_message = fmt.Sprintf("\n\tOpcode %02X%02X [2 bytes] [Mode: %s]\tDEC  Decrement Memory by One.\tMemory[%02X](%d) - 1:\t%d\n", opcode, Memory[PC+1], mode, memAddr, Memory[memAddr], Memory[memAddr]-1)
+			} else if bytes == 3 {
+				dbg_show_message = fmt.Sprintf("\n\tOpcode %02X %02X%02X [3 bytes] [Mode: %s]\tDEC  Decrement Memory by One.\tMemory[%02X](%d) - 1:\t%d\n", opcode, Memory[PC+2], Memory[PC+1], mode, memAddr, Memory[memAddr], Memory[memAddr]-1)
+			}
 			fmt.Println(dbg_show_message)
+
 		}
 
 		Memory[memAddr] -= 1

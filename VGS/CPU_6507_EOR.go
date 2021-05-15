@@ -2,27 +2,33 @@ package VGS
 
 import "fmt"
 
-// EOR  Exclusive-OR Memory with Accumulator (immidiate)
+// EOR  Exclusive-OR Memory with Accumulator
 //
 //      A EOR M -> A                     N Z C I D V
 //                                       + + - - - -
 //
 //      addressing    assembler    opc  bytes  cyles
 //      --------------------------------------------
-//      immidiate     EOR #oper     49    2     2
+//      immediate     EOR #oper     49    2     2
 //      zeropage      EOR oper      45    2     3
+//      zeropage,X    EOR oper,X    55    2     4
+//      absolute      EOR oper      4D    3     4
+//      absolute,X    EOR oper,X    5D    3     4*
+//      absolute,Y    EOR oper,Y    59    3     4*
+//      (indirect,X)  EOR (oper,X)  41    2     6
+//      (indirect),Y  EOR (oper),Y  51    2     5*
 
 func opc_EOR(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 
-	// // Check for extra cycles (*) in the first opcode cycle
-	// if opc_cycle_count == 1 {
-	// 	if Opcode == 0xB9 || Opcode == 0xBD || Opcode == 0xB1 {
-	// 		// Add 1 to cycles if page boundery is crossed
-	// 		if MemPageBoundary(memAddr, PC) {
-	// 			opc_cycle_extra = 1
-	// 		}
-	// 	}
-	// }
+	// Check for extra cycles (*) in the first opcode cycle
+	if opc_cycle_count == 1 {
+		if opcode == 0x5D || opcode == 0x59 || opcode == 0x51 {
+			// Add 1 to cycles if page boundary is crossed
+			if MemPageBoundary(memAddr, PC) {
+				opc_cycle_extra = 1
+			}
+		}
+	}
 
 	// Show current opcode cycle
 	if Debug {
@@ -37,7 +43,17 @@ func opc_EOR(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 	} else {
 
 		if Debug {
-			dbg_show_message = fmt.Sprintf("\n\tOpcode %02X%02X [2 bytes] [Mode: %s]\tEOR  Exclusive-OR Memory with Accumulator.\tA = A(%d) XOR Memory[%02X](%d)\t(%d)\n", opcode, Memory[PC+1], mode, A, memAddr, Memory[memAddr], A^Memory[memAddr])
+
+			if bytes == 2 {
+				dbg_show_message = fmt.Sprintf("\n\tOpcode %02X%02X [2 bytes] [Mode: %s]\tEOR  Exclusive-OR Memory with Accumulator.\tA = A(%d) XOR Memory[%02X](%d)\t(%d)\n", opcode, Memory[PC+1], mode, A, memAddr, Memory[memAddr], A^Memory[memAddr])
+			} else if bytes == 3 {
+				dbg_show_message = fmt.Sprintf("\n\tOpcode %02X %02X%02X [3 bytes] [Mode: %s]\tEOR  Exclusive-OR Memory with Accumulator.\tA = A(%d) XOR Memory[%02X](%d)\t(%d)\n", opcode, Memory[PC+2], Memory[PC+1], mode, A, memAddr, Memory[memAddr], A^Memory[memAddr])
+			}
+			fmt.Println(dbg_show_message)
+
+		}
+
+		if Debug {
 			fmt.Println(dbg_show_message)
 		}
 
