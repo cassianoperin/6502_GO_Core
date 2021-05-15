@@ -41,7 +41,6 @@ func flags_C(value1, value2 byte) {
 
 	// Check if final value is 0
 	if value1 >= value2 {
-		// if uint16(value1)+uint16(value2) > 255 {
 		P[0] = 1
 	} else {
 		P[0] = 0

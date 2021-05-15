@@ -71,7 +71,7 @@ func Show() {
 	if Debug {
 		fmt.Printf("\n\n%04X : %02X\n\n", PC, opcode)
 		fmt.Printf("\t\t\t\t\t\t\t\t\t\t   N V - B D I Z C")
-		fmt.Printf("\nCycle: %d\tOpcode: %02X\tPC: 0x%02X(%d)\tA: 0x%02X\tX: 0x%02X\tY: 0x%02X\tP: %d %d %d %d %d %d %d %d\tSP: %02X\t\tStack:  Mem[1FF]: %02X   Mem[1FE]: %02X   Mem[1FD]: %02X   Mem[1FC]: %02X\n", counter_F_Cycle, opcode, PC, PC, A, X, Y, P[7], P[6], P[5], P[4], P[3], P[2], P[1], P[0], SP, Memory[0x1FF], Memory[0x1FE], Memory[0x1FD], Memory[0x1FC])
+		fmt.Printf("\nCycle: %d\tOpcode: %02X\tPC: 0x%04X(%d)\tA: 0x%02X\tX: 0x%02X\tY: 0x%02X\tP: %d %d %d %d %d %d %d %d\tSP: %02X\t\tStack:  Mem[1FF]: %02X   Mem[1FE]: %02X   Mem[1FD]: %02X   Mem[1FC]: %02X\n", counter_F_Cycle, opcode, PC, PC, A, X, Y, P[7], P[6], P[5], P[4], P[3], P[2], P[1], P[0], SP, Memory[0x1FF], Memory[0x1FE], Memory[0x1FD], Memory[0x1FC])
 	}
 }
 
@@ -543,13 +543,63 @@ func CPU_Interpreter() {
 		}
 		opc_EOR(memAddr, memMode, 2, 3)
 
-	//-------------------------------------------------- SHIFT --------------------------------------------------//
+	//-------------------------------------------------- ASL --------------------------------------------------//
 
 	case 0x0A: // Instruction ASL (accumulator)
-		opc_ASL(1, 2)
+		opc_ASL_A(1, 2)
+
+	case 0x06: // Instruction ASL (zeropage)
+		if opc_cycle_count == 1 {
+			memAddr, memMode = addr_mode_Zeropage(PC + 1)
+		}
+		opc_ASL(memAddr, memMode, 2, 5)
+
+	case 0x16: // Instruction ASL (zeropage,X)
+		if opc_cycle_count == 1 {
+			memAddr, memMode = addr_mode_ZeropageX(PC + 1)
+		}
+		opc_ASL(memAddr, memMode, 2, 6)
+
+	case 0x0E: // Instruction ASL (absolute)
+		if opc_cycle_count == 1 {
+			memAddr, memMode = addr_mode_Absolute(PC + 1)
+		}
+		opc_ASL(memAddr, memMode, 3, 6)
+
+	case 0x1E: // Instruction ASL (absolute,X)
+		if opc_cycle_count == 1 {
+			memAddr, memMode = addr_mode_AbsoluteX(PC + 1)
+		}
+		opc_ASL(memAddr, memMode, 3, 7)
+
+	//-------------------------------------------------- LSR --------------------------------------------------//
 
 	case 0x4A: // Instruction LSR (accumulator)
-		opc_LSR(1, 2)
+		opc_LSR_A(1, 2)
+
+	case 0x46: // Instruction LSR (zeropage)
+		if opc_cycle_count == 1 {
+			memAddr, memMode = addr_mode_Zeropage(PC + 1)
+		}
+		opc_LSR(memAddr, memMode, 2, 5)
+
+	case 0x56: // Instruction LSR (zeropage,X)
+		if opc_cycle_count == 1 {
+			memAddr, memMode = addr_mode_ZeropageX(PC + 1)
+		}
+		opc_LSR(memAddr, memMode, 2, 6)
+
+	case 0x4E: // Instruction LSR (absolute)
+		if opc_cycle_count == 1 {
+			memAddr, memMode = addr_mode_Absolute(PC + 1)
+		}
+		opc_LSR(memAddr, memMode, 3, 6)
+
+	case 0x5E: // Instruction LSR (absolute,X)
+		if opc_cycle_count == 1 {
+			memAddr, memMode = addr_mode_AbsoluteX(PC + 1)
+		}
+		opc_LSR(memAddr, memMode, 3, 7)
 
 	//-------------------------------------------------- CMP --------------------------------------------------//
 
@@ -667,16 +717,61 @@ func CPU_Interpreter() {
 
 	//-------------------------------------------------- ROL --------------------------------------------------//
 
+	case 0x2A: // Instruction ROL (Accumulator)
+		opc_ROL_A(1, 2)
+
 	case 0x26: // Instruction ROL (zeropage)
 		if opc_cycle_count == 1 {
 			memAddr, memMode = addr_mode_Zeropage(PC + 1)
 		}
 		opc_ROL(memAddr, memMode, 2, 5)
 
+	case 0x36: // Instruction ROL (zeropage,X)
+		if opc_cycle_count == 1 {
+			memAddr, memMode = addr_mode_ZeropageX(PC + 1)
+		}
+		opc_ROL(memAddr, memMode, 2, 6)
+
+	case 0x2E: // Instruction ROL (absolute)
+		if opc_cycle_count == 1 {
+			memAddr, memMode = addr_mode_Absolute(PC + 1)
+		}
+		opc_ROL(memAddr, memMode, 3, 6)
+
+	case 0x3E: // Instruction ROL (absolute,X)
+		if opc_cycle_count == 1 {
+			memAddr, memMode = addr_mode_AbsoluteX(PC + 1)
+		}
+		opc_ROL(memAddr, memMode, 3, 7)
+
 	//-------------------------------------------------- ROR --------------------------------------------------//
 
 	case 0x6A: // Instruction ROR (Accumulator)
 		opc_ROR_A(1, 2)
+
+	case 0x66: // Instruction ROR (zeropage)
+		if opc_cycle_count == 1 {
+			memAddr, memMode = addr_mode_Zeropage(PC + 1)
+		}
+		opc_ROR(memAddr, memMode, 2, 5)
+
+	case 0x76: // Instruction ROR (zeropage,X)
+		if opc_cycle_count == 1 {
+			memAddr, memMode = addr_mode_ZeropageX(PC + 1)
+		}
+		opc_ROR(memAddr, memMode, 2, 6)
+
+	case 0x6E: // Instruction ROR (absolute)
+		if opc_cycle_count == 1 {
+			memAddr, memMode = addr_mode_Absolute(PC + 1)
+		}
+		opc_ROR(memAddr, memMode, 3, 6)
+
+	case 0x7E: // Instruction ROR (absolute,X)
+		if opc_cycle_count == 1 {
+			memAddr, memMode = addr_mode_AbsoluteX(PC + 1)
+		}
+		opc_ROR(memAddr, memMode, 3, 7)
 
 	//-------------------------------------------------- ISB? FF --------------------------------------------------//
 
@@ -738,13 +833,7 @@ func CPU_Interpreter() {
 		os.Exit(2)
 	}
 
-	// if opcode == 0xCC {
-	// 	Pause = true
-	// }
-
-	// Pause_addr := 0x1858
-	// Pause_addr := 0x22cb // validado tudo antes
-	Pause_addr := 0x5ab // validado tudo antes
+	Pause_addr := 0x2B04
 
 	// Pause
 	if PC > uint16(Pause_addr-20) {
