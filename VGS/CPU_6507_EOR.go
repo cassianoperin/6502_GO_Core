@@ -53,10 +53,6 @@ func opc_EOR(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 
 		}
 
-		if Debug {
-			fmt.Println(dbg_show_message)
-		}
-
 		A = A ^ Memory[memAddr]
 
 		flags_Z(A)

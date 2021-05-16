@@ -76,8 +76,8 @@ func opc_CMP(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 
 		flags_Z(tmp)
 		flags_N(tmp)
-		// Access to TIA RO Memory
-		flags_C_Subtraction(A, Memory[memAddr])
+		// Set if A >= M
+		flags_C(A, Memory[memAddr])
 
 		// Increment PC
 		PC += bytes

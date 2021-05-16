@@ -2,6 +2,7 @@ package VGS
 
 import (
 	"fmt"
+	"os"
 	"strconv"
 )
 
@@ -55,7 +56,19 @@ func opc_ADC(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 			Flags_V_ADC(original_A, Memory[memAddr])
 
 			// After, update the carry flag value
-			flags_C(original_A, A)
+			// Set if overflow in bit 7 (the sum of values are smaller than original A)
+			if A < original_A {
+				P[0] = 1
+				fmt.Println("Exit - ADC setou carry! Validar!")
+				os.Exit(2)
+			} else {
+				P[0] = 0
+			}
+
+			if Debug {
+				fmt.Printf("\tFlag C: %d -> %d\n", original_P0, P[0])
+			}
+
 			flags_Z(A)
 			flags_N(A)
 

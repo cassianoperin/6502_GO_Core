@@ -34,6 +34,7 @@ func flags_N(value byte) {
 }
 
 // Carry Flag
+// Used by CPX, CPY, CMP (values >=)
 func flags_C(value1, value2 byte) {
 	if Debug {
 		fmt.Printf("\tFlag C: %d ->", P[0])

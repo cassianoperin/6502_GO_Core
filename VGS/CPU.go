@@ -953,7 +953,7 @@ func CPU_Interpreter() {
 		os.Exit(2)
 	}
 
-	Pause_addr := 0x35C9
+	Pause_addr := 0x35a2
 
 	// Pause
 	if PC > uint16(Pause_addr-20) {
