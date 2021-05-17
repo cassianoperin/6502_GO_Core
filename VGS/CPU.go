@@ -475,17 +475,53 @@ func CPU_Interpreter() {
 
 	//-------------------------------------------------- SBC --------------------------------------------------//
 
-	case 0xE5: // Instruction STY ( zeropage )
+	case 0xE9: // Instruction SBC ( immediate )
+		if opc_cycle_count == 1 {
+			memAddr, memMode = addr_mode_Immediate(PC + 1)
+		}
+		opc_SBC(memAddr, memMode, 2, 2)
+
+	case 0xE5: // Instruction SBC ( zeropage )
 		if opc_cycle_count == 1 {
 			memAddr, memMode = addr_mode_Zeropage(PC + 1)
 		}
 		opc_SBC(memAddr, memMode, 2, 3)
 
-	case 0xE9: // Instruction STY ( immediate )
+	case 0xF5: // Instruction SBC ( zeropage,X )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_Immediate(PC + 1)
+			memAddr, memMode = addr_mode_ZeropageX(PC + 1)
 		}
-		opc_SBC(memAddr, memMode, 2, 2)
+		opc_SBC(memAddr, memMode, 2, 4)
+
+	case 0xED: // Instruction SBC ( absolute )
+		if opc_cycle_count == 1 {
+			memAddr, memMode = addr_mode_Absolute(PC + 1)
+		}
+		opc_SBC(memAddr, memMode, 3, 4)
+
+	case 0xFD: // Instruction SBC ( absolute,X )
+		if opc_cycle_count == 1 {
+			memAddr, memMode = addr_mode_AbsoluteX(PC + 1)
+		}
+		opc_SBC(memAddr, memMode, 3, 4)
+
+	case 0xF9: // Instruction SBC ( absolute,Y )
+		if opc_cycle_count == 1 {
+			memAddr, memMode = addr_mode_AbsoluteY(PC + 1)
+		}
+		opc_SBC(memAddr, memMode, 3, 4)
+
+	case 0xE1: // Instruction SBC ( (indirect,X) )
+		if opc_cycle_count == 1 {
+			memAddr, memMode = addr_mode_IndirectX(PC + 1)
+		}
+		opc_SBC(memAddr, memMode, 2, 6)
+
+	case 0xF1: // Instruction SBC ( (indirect),Y )
+		if opc_cycle_count == 1 {
+			memAddr, memMode = addr_mode_IndirectY(PC + 1)
+		}
+		opc_SBC(memAddr, memMode, 2, 5)
 
 	//-------------------------------------------------- DEC --------------------------------------------------//
 
@@ -817,11 +853,29 @@ func CPU_Interpreter() {
 
 	//-------------------------------------------------- ADC --------------------------------------------------//
 
+	case 0x69: // Instruction ADC ( immediate )
+		if opc_cycle_count == 1 {
+			memAddr, memMode = addr_mode_Immediate(PC + 1)
+		}
+		opc_ADC(memAddr, memMode, 2, 2)
+
 	case 0x65: // Instruction ADC ( zeropage )
 		if opc_cycle_count == 1 {
 			memAddr, memMode = addr_mode_Zeropage(PC + 1)
 		}
 		opc_ADC(memAddr, memMode, 2, 3)
+
+	case 0x75: // Instruction ADC ( zeropage,X )
+		if opc_cycle_count == 1 {
+			memAddr, memMode = addr_mode_ZeropageX(PC + 1)
+		}
+		opc_ADC(memAddr, memMode, 2, 4)
+
+	case 0x6D: // Instruction ADC ( absolute )
+		if opc_cycle_count == 1 {
+			memAddr, memMode = addr_mode_Absolute(PC + 1)
+		}
+		opc_ADC(memAddr, memMode, 3, 4)
 
 	case 0x7D: // Instruction ADC ( absolute,X )
 		if opc_cycle_count == 1 {
@@ -829,11 +883,23 @@ func CPU_Interpreter() {
 		}
 		opc_ADC(memAddr, memMode, 3, 4)
 
-	case 0x69: // Instruction ADC ( immediate )
+	case 0x79: // Instruction ADC ( absolute,Y )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_Immediate(PC + 1)
+			memAddr, memMode = addr_mode_AbsoluteY(PC + 1)
 		}
-		opc_ADC(memAddr, memMode, 2, 2)
+		opc_ADC(memAddr, memMode, 3, 4)
+
+	case 0x61: // Instruction ADC ( (indirect,X) )
+		if opc_cycle_count == 1 {
+			memAddr, memMode = addr_mode_IndirectX(PC + 1)
+		}
+		opc_ADC(memAddr, memMode, 2, 6)
+
+	case 0x71: // Instruction ADC ( (indirect),Y )
+		if opc_cycle_count == 1 {
+			memAddr, memMode = addr_mode_IndirectY(PC + 1)
+		}
+		opc_ADC(memAddr, memMode, 2, 5)
 
 	//-------------------------------------------------- ROL --------------------------------------------------//
 
@@ -953,7 +1019,7 @@ func CPU_Interpreter() {
 		os.Exit(2)
 	}
 
-	Pause_addr := 0x35a2
+	Pause_addr := 0x36DD
 
 	// Pause
 	if PC > uint16(Pause_addr-20) {

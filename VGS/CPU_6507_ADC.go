@@ -8,20 +8,25 @@ import (
 
 // ADC  Add Memory to Accumulator with Carry (zeropage)
 //
-// 	A + M + C -> A, C                N Z C I D V
-// 	                          	   + + + - - +
+//      A + M + C -> A, C                N Z C I D V
+//     	                                 + + + - - +
 //
-// 	addressing    assembler    opc  bytes  cyles
-// 	--------------------------------------------
-// 	zeropage      ADC oper      65    2     3
-//	absolute,X    ADC oper,X    7D    3     4*
-//	immediate	  ADC #oper	    69    2     2
+//      addressing    assembler    opc  bytes  cyles
+//      --------------------------------------------
+//      immediate	  ADC #oper	    69    2     2
+//      zeropage      ADC oper      65    2     3
+//      zeropage,X    ADC oper,X    75    2     4
+//      absolute      ADC oper      6D    3     4
+//      absolute,X    ADC oper,X    7D    3     4*
+//      absolute,Y    ADC oper,Y    79    3     4*
+//      (indirect,X)  ADC (oper,X)  61    2     6
+//      (indirect),Y  ADC (oper),Y  71    2     5*
 
 func opc_ADC(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 
 	// Check for extra cycles (*) in the first opcode cycle
 	if opc_cycle_count == 1 {
-		if opcode == 0x7D {
+		if opcode == 0x7D || opcode == 0x79 || opcode == 0x71 {
 			// Add 1 to cycles if page boundary is crossed
 			if MemPageBoundary(memAddr, PC) {
 				opc_cycle_extra = 1
@@ -75,6 +80,10 @@ func opc_ADC(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 			// ----------------------------------- Decimal Mode ----------------------------------- //
 
 		} else {
+
+			fmt.Println("ADC DECIMAL, IMPLEMENTADO, MAS PRIMEIRO TESTANDO HEX")
+			os.Exit(2)
+
 			var bcd_Mem int64
 
 			// Store the decimal value of the original A (hex)

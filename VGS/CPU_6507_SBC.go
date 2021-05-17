@@ -12,23 +12,29 @@ import (
 //
 //      addressing    assembler    opc  bytes  cyles
 //      --------------------------------------------
-//      zeropage      SBC oper      E5    2     3
 //      immediate     SBC #oper     E9    2     2
+//      zeropage      SBC oper      E5    2     3
+//      zeropage,X    SBC oper,X    F5    2     4
+//      absolute      SBC oper      ED    3     4
+//      absolute,X    SBC oper,X    FD    3     4*
+//      absolute,Y    SBC oper,Y    F9    3     4*
+//      (indirect,X)  SBC (oper,X)  E1    2     6
+//      (indirect),Y  SBC (oper),Y  F1    2     5*
 
 func opc_SBC(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 
 	// Inverted Carry
 	var borrow byte = P[0] ^ 1
 
-	// // Check for extra cycles (*) in the first opcode cycle
-	// if opc_cycle_count == 1 {
-	// 	if Opcode == 0xB9 || Opcode == 0xBD || Opcode == 0xB1 {
-	// 		// Add 1 to cycles if page boundary is crossed
-	// 		if MemPageBoundary(memAddr, PC) {
-	// 			opc_cycle_extra = 1
-	// 		}
-	// 	}
-	// }
+	// Check for extra cycles (*) in the first opcode cycle
+	if opc_cycle_count == 1 {
+		if opcode == 0xFD || opcode == 0xF9 || opcode == 0xF1 {
+			// Add 1 to cycles if page boundary is crossed
+			if MemPageBoundary(memAddr, PC) {
+				opc_cycle_extra = 1
+			}
+		}
+	}
 
 	// Show current opcode cycle
 	if Debug {
@@ -49,12 +55,19 @@ func opc_SBC(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 		if P[3] == 0 {
 
 			if Debug {
-				dbg_show_message = fmt.Sprintf("\n\tOpcode %02X%02X [2 bytes] [Mode: %s]\tSBC  Subtract Memory from Accumulator with Borrow.\tA = A(%d) - Memory[%02X](%d) - Borrow(Inverted Carry)(%d) = %d\n", opcode, Memory[PC+1], mode, A, memAddr, Memory[memAddr], borrow, A-Memory[memAddr]-borrow)
+				if bytes == 2 {
+					dbg_show_message = fmt.Sprintf("\n\tOpcode %02X%02X [2 bytes] [Mode: %s]\tSBC  Subtract Memory from Accumulator with Borrow.\tA = A(%d) - Memory[%02X](%d) - Borrow(Inverted Carry)(%d) = %d\n", opcode, Memory[PC+1], mode, A, memAddr, Memory[memAddr], borrow, A-Memory[memAddr]-borrow)
+				} else if bytes == 3 {
+					dbg_show_message = fmt.Sprintf("\n\tOpcode %02X %02X%02X [3 bytes] [Mode: %s]\tSBC  Subtract Memory from Accumulator with Borrow.\tA = A(%d) - Memory[%02X](%d) - Borrow(Inverted Carry)(%d) = %d\n", opcode, Memory[PC+2], Memory[PC+1], mode, A, memAddr, Memory[memAddr], borrow, A-Memory[memAddr]-borrow)
+				}
 				fmt.Println(dbg_show_message)
 			}
 
+			original_P0 := P[0]
+
 			// Result
-			A = A - Memory[memAddr] - borrow
+			// A = A - Memory[memAddr] - borrow
+			A = A + (255 - Memory[memAddr]) + P[0]
 
 			// For the flags:
 			// The subtraction is VALUE1 (A) - VALUE2 (Memory[PC+1] - (P[0] ^ 1)
@@ -63,7 +76,21 @@ func opc_SBC(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 			// First V because it need the original carry flag value
 			Flags_V_SBC(original_A, Memory[memAddr])
 			// After, update the carry flag value
-			flags_C_Subtraction(original_A, A)
+			// flags_C_Subtraction(original_A, A)
+
+			// After, update the carry flag value
+			// Set if overflow in bit 7 (the sum of values are smaller than original A)
+			if A < original_A {
+				P[0] = 1
+				fmt.Println("Exit - ADC setou carry! Validar!")
+				os.Exit(2)
+			} else {
+				P[0] = 0
+			}
+
+			if Debug {
+				fmt.Printf("\tFlag C: %d -> %d\n", original_P0, P[0])
+			}
 
 			// // Clear Carry if overflow in bit 7 // NOT NECESSARY
 			// if P[6] == 1 {
