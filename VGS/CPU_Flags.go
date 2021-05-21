@@ -34,8 +34,8 @@ func flags_N(value byte) {
 }
 
 // Carry Flag
-// Used by CPX, CPY, CMP (values >=)
-func flags_C(value1, value2 byte) {
+// Used by CPX, CPY, CMP
+func flags_C_CPX_CPY_CMP(value1, value2 byte) {
 	if Debug {
 		fmt.Printf("\tFlag C: %d ->", P[0])
 	}
@@ -52,28 +52,52 @@ func flags_C(value1, value2 byte) {
 	}
 }
 
-// Carry Flag for Subtractions (SBC and CMP)
-func flags_C_Subtraction(originalValue, newValue byte) {
+// Carry Flag
+// Used by ADC and SBC
+func flags_C_ADC_SBC(value_A, value_Mem, value_P0 byte) {
+
+	var A_16bit uint16 // 16 bit variable to detect carry
+
 	if Debug {
 		fmt.Printf("\tFlag C: %d ->", P[0])
 	}
 
-	// If the new value is bigger than the original clear the flag
-	// if originalValue < newValue {
-	if newValue > originalValue {
-		P[0] = 0
-	} else {
+	A_16bit = uint16(value_A) + uint16(value_Mem) + uint16(value_P0)
+
+	// Set if overflow in bit 7 (the sum of values are smaller than original A)
+	if A_16bit > 255 {
 		P[0] = 1
+	} else {
+		P[0] = 0
 	}
 
 	if Debug {
-		fmt.Printf(" %d (SBC)\n", P[0])
+		fmt.Printf(" %d\n", P[0])
 	}
 }
 
+// // Carry Flag for Subtractions (SBC and CMP)
+// func flags_C_Subtraction(originalValue, newValue byte) {
+// 	if Debug {
+// 		fmt.Printf("\tFlag C: %d ->", P[0])
+// 	}
+
+// 	// If the new value is bigger than the original clear the flag
+// 	// if originalValue < newValue {
+// 	if newValue > originalValue {
+// 		P[0] = 0
+// 	} else {
+// 		P[0] = 1
+// 	}
+
+// 	if Debug {
+// 		fmt.Printf(" %d (SBC)\n", P[0])
+// 	}
+// }
+
 // oVerflow Flag for ADC
-// value1 = Accumulator, value2 = memory
-func Flags_V_ADC(value1, value2 byte) {
+// oVerflow Flag for SBC (receiving one's complement of Memory value)
+func flags_V(value_A, value_Mem, value_P0 byte) {
 	var (
 		carry_bit [8]byte
 		carry_OUT byte = 0
@@ -86,12 +110,12 @@ func Flags_V_ADC(value1, value2 byte) {
 	}
 
 	// Set the carry flag on bit 0 of carry_bit Array to bring the carry if exists
-	carry_bit[0] = P[0]
+	carry_bit[0] = value_P0
 
 	// Make the magic
 	for i := 0; i <= 7; i++ {
 		// sum the bit from value one + bit from value 2 + carry value
-		tmp := (value1 >> byte(i) & 0x01) + (value2 >> byte(i) & 0x01) + carry_bit[i]
+		tmp := (value_A >> byte(i) & 0x01) + (value_Mem >> byte(i) & 0x01) + carry_bit[i]
 		if tmp >= 2 {
 			// set the carry out
 			if i == 7 {
@@ -112,49 +136,49 @@ func Flags_V_ADC(value1, value2 byte) {
 }
 
 // oVerflow Flag for SBC
-func Flags_V_SBC(value1, value2 byte) {
-	var (
-		carry_bit      = [8]byte{}
-		carry_OUT byte = 0
-	)
+// func Flags_V_SBC(value1, value2 byte) {
+// 	var (
+// 		carry_bit      = [8]byte{}
+// 		carry_OUT byte = 0
+// 	)
 
-	// fmt.Printf("\n  \t %d\t(carry IN)",P[0])
-	// fmt.Printf("\n  %08b\tDecimal: %d",value1,value1)
-	// Since internall subtraction is just addition of the ones-complement
-	// N can simply be replaced by 255-N in the formulas of Flags_V_ADC
-	value2 = 255 - value2
-	// fmt.Printf("\n  %08b\tDecimal: %d",value2,value2)
+// 	// fmt.Printf("\n  \t %d\t(carry IN)",P[0])
+// 	// fmt.Printf("\n  %08b\tDecimal: %d",value1,value1)
+// 	// Since internall subtraction is just addition of the ones-complement
+// 	// N can simply be replaced by 255-N in the formulas of Flags_V_ADC
+// 	value2 = 255 - value2
+// 	// fmt.Printf("\n  %08b\tDecimal: %d",value2,value2)
 
-	// Set the carry flag on bit 0 of carry_bit Array to bring the carry if exists
-	carry_bit[0] = P[0]
+// 	// Set the carry flag on bit 0 of carry_bit Array to bring the carry if exists
+// 	carry_bit[0] = P[0]
 
-	if Debug {
-		fmt.Printf("\tFlag V: %d ->", P[6])
-	}
+// 	if Debug {
+// 		fmt.Printf("\tFlag V: %d ->", P[6])
+// 	}
 
-	// Set the carry flag on bit 0 of carry_bit Array to bring the carry if exists
-	carry_bit[0] = P[0]
+// 	// Set the carry flag on bit 0 of carry_bit Array to bring the carry if exists
+// 	carry_bit[0] = P[0]
 
-	// Make the magic
-	for i := 0; i <= 7; i++ {
-		// sum the bit from value one + bit from value 2 + carry value
-		tmp := (value1 >> byte(i) & 0x01) + (value2 >> byte(i) & 0x01) + carry_bit[i]
-		if tmp >= 2 {
-			// set the carry out
-			if i == 7 {
-				carry_OUT = 1
-			} else {
-				carry_bit[i+1] = 1
-			}
-		}
-	}
+// 	// Make the magic
+// 	for i := 0; i <= 7; i++ {
+// 		// sum the bit from value one + bit from value 2 + carry value
+// 		tmp := (value1 >> byte(i) & 0x01) + (value2 >> byte(i) & 0x01) + carry_bit[i]
+// 		if tmp >= 2 {
+// 			// set the carry out
+// 			if i == 7 {
+// 				carry_OUT = 1
+// 			} else {
+// 				carry_bit[i+1] = 1
+// 			}
+// 		}
+// 	}
 
-	// Formula to calculate: V = C6 xor C7
-	P[6] = carry_bit[7] ^ carry_OUT
-	// fmt.Printf("\nV: %d", P[6])
+// 	// Formula to calculate: V = C6 xor C7
+// 	P[6] = carry_bit[7] ^ carry_OUT
+// 	// fmt.Printf("\nV: %d", P[6])
 
-	if Debug {
-		fmt.Printf(" %d\n", P[6])
-	}
+// 	if Debug {
+// 		fmt.Printf(" %d\n", P[6])
+// 	}
 
-}
+// }

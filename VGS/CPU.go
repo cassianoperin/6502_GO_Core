@@ -1020,12 +1020,18 @@ func CPU_Interpreter() {
 		fmt.Println("Someone tryed to change P[5] to zero. Exiting!")
 		os.Exit(2)
 	}
-	Pause_addr := 0x3361 // ciclos pra aumentar o 0E até zerar novamente
+
+	// Status from ADC
+	if PC == 0x335f {
+		fmt.Printf("%02X   %02X\n", Memory[0x0d], Memory[0x0e])
+	}
+
+	Pause_addr := 0x3361
 
 	// Pause
-	if PC > uint16(Pause_addr-5) {
-		// Debug = true
-	}
+	// if PC > uint16(Pause_addr-1) {
+	// 	Debug = true
+	// }
 
 	// END
 	if PC == uint16(Pause_addr) {

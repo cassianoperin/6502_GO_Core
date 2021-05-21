@@ -60,7 +60,7 @@ func opc_CPX(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 		// Set if bit 7 of the result is set
 		flags_N(tmp)
 		// Set if X >= M
-		flags_C(X, Memory[memAddr])
+		flags_C_CPX_CPY_CMP(X, Memory[memAddr])
 
 		// Increment PC
 		PC += bytes
