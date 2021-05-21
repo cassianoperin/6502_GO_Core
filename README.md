@@ -3,6 +3,8 @@
 
 # TODO
 
+## Documentar que SBC é um ADD mais os bits invertidos do operador
+
 ## Show everything in hex mode? Put 0x on hex?
 
 ## Invert bytes from from opcodes (all opcodes with 3 bytes) -> Improve to detect and show correctly 2 or 3 without the if (create a string?)
@@ -10,6 +12,8 @@
 ## create a function for extra cycle detection (and invert to first check the opcode and later the cycle?)
 
 ## Unofficial Opcodes
+
+## Optimize ADC and SBC codes and Carry detection
 
 https://wiki.nesdev.com/w/index.php/Programming_with_unofficial_opcodes
 
@@ -95,6 +99,11 @@ http://www.obelisk.me.uk/6502/architecture.html
 http://6502.org/tutorials/6502opcodes.html#CMP
 
 https://www.masswerk.at/6502/6502_instruction_set.html#CLD
+
+http://www.obelisk.me.uk/6502/reference.html
+
+https://web.archive.org/web/20160406122905/http://homepage.ntlworld.com/cyborgsystems/CS_Main/6502/6502.htm#ADC
+
 
 
 

@@ -62,10 +62,12 @@ func opc_ADC(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 
 			// After, update the carry flag value
 			// Set if overflow in bit 7 (the sum of values are smaller than original A)
-			if A < original_A {
+			var tst1 uint16
+
+			tst1 = uint16(original_A) + uint16(Memory[memAddr]) + uint16(P[0])
+
+			if tst1 > 255 {
 				P[0] = 1
-				fmt.Println("Exit - ADC setou carry! Validar!")
-				os.Exit(2)
 			} else {
 				P[0] = 0
 			}
