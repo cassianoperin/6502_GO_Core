@@ -1,5 +1,24 @@
-# 6502
-6502 / 6507 Emulator written in Go
+# 6502 Emulator
+
+MOS Technology 6502 8-bit microprocessor emulator written in Go.
+
+All opcodes and memory modes implemented and tested in Klaus Dormann test suite.
+
+
+# Emulation Status
+* ![100%](https://progress-bar.dev/100) 56 instructions (opcodes)
+* ![100%](https://progress-bar.dev/100) Pause and resume emulation     * ![100%](https://progress-bar.dev/100) Pause and resume emulation
+
+
+
+# Emulation Status
+
+| O | P | C |
+|----------|-------|-------------|
+| [ADC](https://www.masswerk.at/6502/6502_instruction_set.html#ADC)    | AND | ASL |
+| BCC | BCS | BEQ |
+| BIT | BNE | BPL |
+
 
 # TODO
 
@@ -10,6 +29,10 @@
 ## create a function for extra cycle detection (and invert to first check the opcode and later the cycle?)
 
 ## CLI
+
+
+
+
 
 https://wiki.nesdev.com/w/index.php/Programming_with_unofficial_opcodes
 
@@ -30,10 +53,11 @@ For example if address $3000 contains $40, $30FF contains $80, and $3100 contain
 
 It's a bug in the 6502 that wraps around the LSB without incrementing the MSB. So instead of reading address from 0x02FF-0x0300 you should be looking at 0x02FF-0x0200. The A900 printed in the log is the value at 0x02FF-0x0300 which is not what's actually being used.
 
-## Tests
+# Tests
 
-https://github.com/Klaus2m5/6502_65C02_functional_tests/blob/master/bin_files/6502_functional_test.lst
+[Klaus Dormann 6502 test suite](https://github.com/Klaus2m5/6502_65C02_functional_tests)
 
+# Documentation
 
 ## Addressing modes:
 
