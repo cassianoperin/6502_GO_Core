@@ -2,7 +2,7 @@ package VGS
 
 import (
 	"fmt"
-	"os"
+	"strconv"
 )
 
 // SBC  Subtract Memory from Accumulator with Borrow (zeropage)
@@ -49,16 +49,13 @@ func opc_SBC(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 		var (
 			original_A        byte = A
 			original_P0       byte = P[0]
+			original_P7       byte = P[7]
 			Mem_1s_complement byte = 255 - Memory[memAddr] // Memory value one's complement (bits inverted)
 		)
 
 		// --------------------------------- Binary / Hex Mode -------------------------------- //
 
 		if P[3] == 0 {
-
-			if Debug {
-
-			}
 
 			// Result
 			// SBC is an ADC but with Memory value as one's complement (bits inverted)
@@ -76,8 +73,63 @@ func opc_SBC(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 			// ----------------------------------- Decimal Mode ----------------------------------- //
 
 		} else {
-			fmt.Println("SBC DECIMAL NOT INPLEMENTED YET! EXITING")
-			os.Exit(2)
+
+			var (
+				bcd_Mem        int64
+				tmp_A          int
+				tmp_A_unsigned int
+			)
+
+			// Store the decimal value of the original A (hex)
+			bcd_A, _ := strconv.ParseInt(fmt.Sprintf("%X", A), 0, 32)
+
+			// Store the decimal value of the original Memory Address (hex)
+			bcd_Mem, _ = strconv.ParseInt(fmt.Sprintf("%X", Memory[memAddr]), 0, 32)
+
+			borrow := original_P0 ^ 1
+
+			// Store the decimal result of A (must be trasformed in hex to be stored)
+			tmp_A_unsigned = int(bcd_A) - int(bcd_Mem) - int(borrow)
+			// BCD wrap-around between 0 and 99
+			if tmp_A_unsigned < 0 {
+				tmp_A = tmp_A_unsigned + 100
+			} else {
+				tmp_A = tmp_A_unsigned
+			}
+
+			// Convert the Decimal Result in to Hex to be returned to Accumulator
+			bcd_Result, _ := strconv.ParseInt(fmt.Sprintf("%d", tmp_A), 16, 32)
+
+			// Tranform the uint64 into a byte
+			A = byte(bcd_Result)
+
+			// ------------------------------ Flags ------------------------------ //
+
+			// Update the oVerflow flag
+			flags_V(original_A, Memory[memAddr], original_P0)
+
+			// Update the carry flag value
+			if tmp_A_unsigned >= 0x00 {
+				P[0] = 1
+			} else {
+				P[0] = 0
+			}
+			if Debug {
+				fmt.Printf("\tFlag C: %d -> %d\n", original_P7, P[7])
+			}
+
+			flags_Z(A)
+
+			// Negative flag
+			if tmp_A_unsigned < 0x00 {
+				P[7] = 1
+			} else {
+				P[7] = 0
+			}
+			if Debug {
+				fmt.Printf("\tFlag N: %d -> %d\n", original_P0, P[0])
+			}
+
 		}
 
 		// --------------------------------------- Debug -------------------------------------- //
@@ -96,8 +148,11 @@ func opc_SBC(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 				// Decimal flag ON (Decimal Mode)
 			} else {
 
-				fmt.Printf("Implement Decimal mode sbc debug messages\n")
-				os.Exit(2)
+				if bytes == 2 {
+					dbg_show_message = fmt.Sprintf("\n\tOpcode %02X%02X [2 bytes] [Mode: %s]\tSBC  Subtract Memory from Accumulator with Borrow. [Decimal Mode]\tA = A(%02X) - Memory[%02X](%02X) - Borrow(Inverted Carry)(%d) = %02X\n", opcode, Memory[PC+1], mode, original_A, memAddr, Memory[memAddr], original_P0^1, A)
+				} else if bytes == 3 {
+					dbg_show_message = fmt.Sprintf("\n\tOpcode %02X %02X%02X [3 bytes] [Mode: %s]\tSBC  Subtract Memory from Accumulator with Borrow. [Decimal Mode]\tA = A(%02X) - Memory[%02X](%02X) - Borrow(Inverted Carry)(%d) = %02X\n", opcode, Memory[PC+2], Memory[PC+1], mode, original_A, memAddr, Memory[memAddr], original_P0^1, A)
+				}
 
 			}
 

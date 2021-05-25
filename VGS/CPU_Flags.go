@@ -76,6 +76,30 @@ func flags_C_ADC_SBC(value_A, value_Mem, value_P0 byte) {
 	}
 }
 
+// Carry Flag
+// Used by ADC in DECIMAL MODE
+func flags_C_ADC_Decimal(value_A, value_Mem, value_P0 byte) {
+
+	var A_16bit uint16 // 16 bit variable to detect carry
+
+	if Debug {
+		fmt.Printf("\tFlag C: %d ->", P[0])
+	}
+
+	A_16bit = uint16(value_A) + uint16(value_Mem) + uint16(value_P0)
+
+	// Set if overflow in bit 7 (the sum of values are smaller than original A)
+	if A_16bit > 255 {
+		P[0] = 1
+	} else {
+		P[0] = 0
+	}
+
+	if Debug {
+		fmt.Printf(" %d\n", P[0])
+	}
+}
+
 // // Carry Flag for Subtractions (SBC and CMP)
 // func flags_C_Subtraction(originalValue, newValue byte) {
 // 	if Debug {

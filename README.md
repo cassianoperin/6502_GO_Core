@@ -9,7 +9,7 @@
 
 ## create a function for extra cycle detection (and invert to first check the opcode and later the cycle?)
 
-## Decimal Flag for ADC and SBC
+## CLI
 
 https://wiki.nesdev.com/w/index.php/Programming_with_unofficial_opcodes
 

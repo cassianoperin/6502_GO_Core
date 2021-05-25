@@ -1023,10 +1023,15 @@ func CPU_Interpreter() {
 
 	// Status from ADC
 	if PC == 0x335f {
-		fmt.Printf("%02X   %02X\n", Memory[0x0d], Memory[0x0e])
+		fmt.Printf("ADC / SBC = BINARY: %02X   %02X\n", Memory[0x0d], Memory[0x0e])
 	}
 
-	Pause_addr := 0x3361
+	// Status from ADC
+	if PC == 0x3490 {
+		fmt.Printf("ADC / SBC = DECIMAL: %02X   %02X\n", Memory[0x0d], Memory[0x0e])
+	}
+
+	Pause_addr := 0x3469
 
 	// Pause
 	// if PC > uint16(Pause_addr-1) {
@@ -1034,11 +1039,18 @@ func CPU_Interpreter() {
 	// }
 
 	// END
+	// if PC == uint16(Pause_addr) && Memory[0x0E] == 0x99 && Memory[0x0D] == 0x00 {
+	// 	Pause = true
+	// 	Debug = true
+	// 	// fmt.Println("ACABOOOOOOOOOOU!!!!!!!")
+	// 	// os.Exit(2)
+	// }
+
 	if PC == uint16(Pause_addr) {
-		Pause = true
-		// Debug = true
-		fmt.Println("ACABOOOOOOOOOOU!!!!!!!")
-		// os.Exit(2)
+		// Pause = true
+		Debug = true
+		fmt.Println("ACABOOOOOOOOOOU o TESTEEEEE!!!!!!!")
+		os.Exit(2)
 	}
 
 }

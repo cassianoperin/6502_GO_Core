@@ -2,7 +2,6 @@ package VGS
 
 import (
 	"fmt"
-	"os"
 	"strconv"
 )
 
@@ -71,18 +70,13 @@ func opc_ADC(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 
 		} else {
 
-			fmt.Println("ADC DECIMAL, IMPLEMENTADO, MAS PRIMEIRO TESTANDO HEX")
-			fmt.Println(opcode)
-			os.Exit(2)
-
 			var bcd_Mem int64
 
 			// Store the decimal value of the original A (hex)
-			bcd_A, _ := strconv.ParseInt(fmt.Sprintf("%02X", A), 0, 32)
+			bcd_A, _ := strconv.ParseInt(fmt.Sprintf("%X", A), 0, 32)
 
-			// Immediate memory mode
 			// Store the decimal value of the original Memory Address (hex)
-			bcd_Mem, _ = strconv.ParseInt(fmt.Sprintf("%02X", Memory[memAddr]), 0, 32)
+			bcd_Mem, _ = strconv.ParseInt(fmt.Sprintf("%X", Memory[memAddr]), 0, 32)
 
 			// Store the decimal result of A (must be trasformed in hex to be stored)
 			tmp_A := byte(bcd_A) + byte(bcd_Mem) + P[0]
@@ -95,21 +89,20 @@ func opc_ADC(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 
 			// ------------------------------ Flags ------------------------------ //
 
-			// Immediate memory mode
-			// First V because it need the original carry flag value
+			// Update the oVerflow flag
 			flags_V(original_A, Memory[memAddr], original_P0)
 
-			// After, update the carry flag value
-			// For Decimal Mode works different, if the sum of the values is > 255, set it
-			if bcd_Result > 255 {
+			// Update the carry flag value
+			if bcd_Result > 0x99 {
 				P[0] = 1
 			} else {
 				P[0] = 0
 			}
-			// Show Carry debug
+			// fmt.Printf("P[0] novo (sem contar negativo): %d\n\n", P[0])
 			if Debug {
 				fmt.Printf("\tFlag C: %d -> %d\n", original_P0, P[0])
 			}
+
 			flags_Z(A)
 			flags_N(A)
 

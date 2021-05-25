@@ -40,23 +40,23 @@ func DecodeTwoComplement(num byte) int8 {
 	return sum
 }
 
-// BCD - Binary Coded Decimal
-func BCD(number byte) byte {
+// // BCD - Binary Coded Decimal
+// func BCD(number byte) byte {
 
-	var tmp_hundreds, tmp_tens, tmp_ones, bcd byte
+// 	var tmp_hundreds, tmp_tens, tmp_ones, bcd byte
 
-	// Split the Decimal Value
-	tmp_hundreds = number / 100    // Hundreds
-	tmp_tens = (number / 10) % 10  // Tens
-	tmp_ones = (number % 100) % 10 // Ones
+// 	// Split the Decimal Value
+// 	tmp_hundreds = number / 100    // Hundreds
+// 	tmp_tens = (number / 10) % 10  // Tens
+// 	tmp_ones = (number % 100) % 10 // Ones
 
-	fmt.Printf("H: %d\tT: %d\tO: %d\n", tmp_hundreds, tmp_tens, tmp_ones)
+// 	fmt.Printf("H: %d\tT: %d\tO: %d\n", tmp_hundreds, tmp_tens, tmp_ones)
 
-	// Combine in one decimal number
-	bcd = (tmp_hundreds * 100) + (tmp_tens * 10) + tmp_ones
+// 	// Combine in one decimal number
+// 	bcd = (tmp_hundreds * 100) + (tmp_tens * 10) + tmp_ones
 
-	return bcd
-}
+// 	return bcd
+// }
 
 // Memory Bus - Used by INC, STA, STY and STX to update memory and sinalize TIA about the actions
 func memUpdate(memAddr uint16, value byte) {
