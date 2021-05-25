@@ -5,40 +5,62 @@ MOS Technology 6502 8-bit microprocessor emulator written in Go.
 All opcodes and memory modes implemented and tested in Klaus Dormann test suite.
 
 
-# Emulation Status
-* ![100%](https://progress-bar.dev/100) 56 instructions (opcodes)
-* ![100%](https://progress-bar.dev/100) Pause and resume emulation     * ![100%](https://progress-bar.dev/100) Pause and resume emulation
+## Emulation Status
+* ![100%](https://progress-bar.dev/100) 56 Instructions (opcodes)
+* ![100%](https://progress-bar.dev/100) 13 Memory Addressing Modes
+* ![100%](https://progress-bar.dev/100) [Klaus Dormann 6502 Functional test suite](https://github.com/Klaus2m5/6502_65C02_functional_tests)
+
+## TODO
+
+* ![100%](https://progress-bar.dev/0) Review all debug messages and show in Hexadecimal
+* ![100%](https://progress-bar.dev/0) Invert bytes from opcodes
+* ![100%](https://progress-bar.dev/0) Improve debug functions to detect 1, 2 or 3 bytes opcodes
+* ![100%](https://progress-bar.dev/0) Create a function for extra cycle detection
+* ![100%](https://progress-bar.dev/0) Create a disassembler mode
+* ![100%](https://progress-bar.dev/0) Create a CLI
+
+## Documentation:
+
+### 6502:
+
+http://www.6502.org/
+
+https://web.archive.org/web/20150217073759/http://homepage.ntlworld.com/cyborgsystems
+
+## Architecture
+
+http://www.obelisk.me.uk/6502/architecture.html
+
+http://www.weihenstephan.org/~michaste/pagetable/6502/6502.jpg
 
 
+### Opcodes:
 
-# Emulation Status
+https://www.masswerk.at/6502/6502_instruction_set.html
 
-| O | P | C |
-|----------|-------|-------------|
-| [ADC](https://www.masswerk.at/6502/6502_instruction_set.html#ADC)    | AND | ASL |
-| BCC | BCS | BEQ |
-| BIT | BNE | BPL |
+http://www.obelisk.me.uk/6502/reference.html
 
+### Addressing:
 
-# TODO
+https://slark.me/c64-downloads/6502-addressing-modes.pdf
 
-## Show everything in hex mode? Put 0x on hex?
+http://www.obelisk.me.uk/6502/addressing.html
 
-## Invert bytes from from opcodes (all opcodes with 3 bytes) -> Improve to detect and show correctly 2 or 3 without the if (create a string?)
+http://www.emulator101.com/6502-addressing-modes.html
 
-## create a function for extra cycle detection (and invert to first check the opcode and later the cycle?)
+## Stack:
 
-## CLI
+https://wiki.nesdev.com/w/index.php/Stack
 
-
-
-
+## Unofficial opcodes:
 
 https://wiki.nesdev.com/w/index.php/Programming_with_unofficial_opcodes
 
-## JMP Indirect - Handle addresses with FF
 
-http://6502.org/tutorials/6502opcodes.html
+
+# REVIEW
+
+## JMP Indirect - Handle addresses with FF
 
 https://www.reddit.com/r/EmuDev/comments/fi29ah/6502_jump_indirect_error/
 
@@ -53,25 +75,10 @@ For example if address $3000 contains $40, $30FF contains $80, and $3100 contain
 
 It's a bug in the 6502 that wraps around the LSB without incrementing the MSB. So instead of reading address from 0x02FF-0x0300 you should be looking at 0x02FF-0x0200. The A900 printed in the log is the value at 0x02FF-0x0300 which is not what's actually being used.
 
-# Tests
-
-[Klaus Dormann 6502 test suite](https://github.com/Klaus2m5/6502_65C02_functional_tests)
-
-# Documentation
-
-## Addressing modes:
-
-https://slark.me/c64-downloads/6502-addressing-modes.pdf
 
 
-## Hex Calculator
-
-https://www.calculator.net/hex-calculator.html?number1=998&c2op=%2B&number2=2&calctype=op&x=93&y=29
 
 
-## Architecture
-
-http://www.weihenstephan.org/~michaste/pagetable/6502/6502.jpg
 
 
 ## BUSES
@@ -98,31 +105,12 @@ A WRITE operation (the RjW line is at logic zero) causes eight bits of informati
 // add Memory Data Register (MDR) holds data which has just arrived along the data bus or is just about to  be sent along data bus
 // add Memory Address Register (MAR) it holds an address about to be sent out along the address bus 
 
-## Doubts with stack:
-
-https://wiki.nesdev.com/w/index.php/Stack
-
-## SPLIT MEMORY ACCESS 
-
-## Extra cycles on memory address modes? pass initial page and check if it changes?
-
 
 ## Basic Architecture
 
 The only other reserved locations in the memory map are the very last 6 bytes of memory $FFFA to $FFFF which must be programmed with the addresses of the non-maskable interrupt handler ($FFFA/B), the power on reset location ($FFFC/D) and the BRK/interrupt request handler ($FFFE/F) respectively.
 
 
-http://www.obelisk.me.uk/6502/architecture.html
-
-## Opcodes
-
-http://6502.org/tutorials/6502opcodes.html#CMP
-
-https://www.masswerk.at/6502/6502_instruction_set.html#CLD
-
-http://www.obelisk.me.uk/6502/reference.html
-
-https://web.archive.org/web/20160406122905/http://homepage.ntlworld.com/cyborgsystems/CS_Main/6502/6502.htm#ADC
 
 
 
