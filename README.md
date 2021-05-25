@@ -22,6 +22,7 @@ All opcodes and memory modes implemented and tested in Klaus Dormann test suite.
 * ![100%](https://progress-bar.dev/0) Create a disassembler mode
 * ![100%](https://progress-bar.dev/0) Create a CLI
 * ![100%](https://progress-bar.dev/0) Implement a BUS from CPU to Memory (address and data)
+* ![100%](https://progress-bar.dev/0) Map Read and Write instructions
 
 
 ## Documentation:
@@ -90,6 +91,8 @@ A WRITE operation (the RjW line is at logic zero) causes eight bits of informati
 * processor set MAR and OR receive the data of memory throug data bus OR send a value thtough data bus to that address
 
 https://www.bbc.co.uk/bitesize/guides/zr8kt39/revision/4
+
+https://tutorialedge.net/golang/reading-console-input-golang/
 
 
 

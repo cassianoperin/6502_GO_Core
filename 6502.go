@@ -1,7 +1,7 @@
 package main
 
 import (
-	"6502/VGS"
+	"6502/CORE"
 	"fmt"
 	"log"
 	"os"
@@ -76,9 +76,9 @@ func readROM(filename string) {
 		// Load ROM to memory
 		for i := 0; i < len(data); i++ {
 			// F000 - F7FF (2KB Cartridge ROM)
-			VGS.Memory[i] = data[i]
+			CORE.Memory[i] = data[i]
 			// F800 - FFFF (2KB Mirror Cartridge ROM)
-			VGS.Memory[i] = data[i]
+			CORE.Memory[i] = data[i]
 		}
 	}
 
@@ -124,9 +124,9 @@ func main() {
 	//testFile(os.Args[1])
 
 	// Set initial variables values
-	VGS.Initialize()
+	CORE.Initialize()
 	// Initialize Timers
-	VGS.InitializeTimers()
+	CORE.InitializeTimers()
 
 	// Read ROM to the memory
 	// readROM(os.Args[1])
@@ -134,9 +134,9 @@ func main() {
 	// readROM("/Users/cassiano/go/src/6502/TestPrograms/6502_decimal_test.bin")
 
 	// Reset system
-	VGS.Reset()
+	CORE.Reset()
 
 	// Start Window System and draw Graphics
-	pixelgl.Run(VGS.Run)
+	pixelgl.Run(CORE.Run)
 
 }
