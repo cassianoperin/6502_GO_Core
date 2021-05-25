@@ -8,6 +8,7 @@ All opcodes and memory modes implemented and tested in Klaus Dormann test suite.
 ## Emulation Status
 * ![100%](https://progress-bar.dev/100) 56 Instructions (opcodes)
 * ![100%](https://progress-bar.dev/100) 13 Memory Addressing Modes
+* ![100%](https://progress-bar.dev/100) 8-bit accumulator register (A), two 8-bit index registers (X and Y), 7 1-bit processor status flag bits (P)
 * ![100%](https://progress-bar.dev/100) [Klaus Dormann 6502 Functional test suite](https://github.com/Klaus2m5/6502_65C02_functional_tests)
 
 ## TODO
@@ -18,6 +19,8 @@ All opcodes and memory modes implemented and tested in Klaus Dormann test suite.
 * ![100%](https://progress-bar.dev/0) Create a function for extra cycle detection
 * ![100%](https://progress-bar.dev/0) Create a disassembler mode
 * ![100%](https://progress-bar.dev/0) Create a CLI
+* ![100%](https://progress-bar.dev/0) Implement a BUS from CPU to Memory (address and data)
+
 
 ## Documentation:
 
@@ -32,6 +35,8 @@ https://web.archive.org/web/20150217073759/http://homepage.ntlworld.com/cyborgsy
 http://www.obelisk.me.uk/6502/architecture.html
 
 http://www.weihenstephan.org/~michaste/pagetable/6502/6502.jpg
+
+https://www.bbc.co.uk/bitesize/guides/zr8kt39/revision/4
 
 
 ### Opcodes:
@@ -52,34 +57,16 @@ http://www.emulator101.com/6502-addressing-modes.html
 
 https://wiki.nesdev.com/w/index.php/Stack
 
+## Interrupts:
+
+http://www.cs.jhu.edu/~phi/csf/slides/lecture-6502-interrupt.pdf
+
 ## Unofficial opcodes:
 
 https://wiki.nesdev.com/w/index.php/Programming_with_unofficial_opcodes
 
 
-
 # REVIEW
-
-## JMP Indirect - Handle addresses with FF
-
-https://www.reddit.com/r/EmuDev/comments/fi29ah/6502_jump_indirect_error/
-
-
-JMP transfers program execution to the following address (absolute) or to the location contained in the following address (indirect). Note that there is no carry associated with the indirect jump so:
-
-AN INDIRECT JUMP MUST NEVER USE A
-VECTOR BEGINNING ON THE LAST BYTE
-OF A PAGE
-
-For example if address $3000 contains $40, $30FF contains $80, and $3100 contains $50, the result of JMP ($30FF) will be a transfer of control to $4080 rather than $5080 as you intended i.e. the 6502 took the low byte of the address from $30FF and the high byte from $3000. 
-
-It's a bug in the 6502 that wraps around the LSB without incrementing the MSB. So instead of reading address from 0x02FF-0x0300 you should be looking at 0x02FF-0x0200. The A900 printed in the log is the value at 0x02FF-0x0300 which is not what's actually being used.
-
-
-
-
-
-
 
 ## BUSES
 
@@ -100,16 +87,7 @@ A WRITE operation (the RjW line is at logic zero) causes eight bits of informati
 
 * processor set MAR and OR receive the data of memory throug data bus OR send a value thtough data bus to that address
 
-// P = Status Register (SR) turn into a byte
-// add Instruction Register (IR) hold instruction being decoded or executed
-// add Memory Data Register (MDR) holds data which has just arrived along the data bus or is just about to  be sent along data bus
-// add Memory Address Register (MAR) it holds an address about to be sent out along the address bus 
-
-
-## Basic Architecture
-
-The only other reserved locations in the memory map are the very last 6 bytes of memory $FFFA to $FFFF which must be programmed with the addresses of the non-maskable interrupt handler ($FFFA/B), the power on reset location ($FFFC/D) and the BRK/interrupt request handler ($FFFE/F) respectively.
-
+https://www.bbc.co.uk/bitesize/guides/zr8kt39/revision/4
 
 
 
