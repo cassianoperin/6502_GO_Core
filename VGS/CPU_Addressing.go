@@ -122,9 +122,16 @@ func addr_mode_Indirect(offset uint16) (uint16, string) {
 
 	// PAUSE HERE TO FIX THE 6502 BUG WHEN THE ADDRESS is 0xFF
 	// https://www.reddit.com/r/EmuDev/comments/fi29ah/6502_jump_indirect_error/
-	//It's a bug in the 6502 that wraps around the LSB without incrementing the MSB.
-	//So instead of reading address from 0x02FF-0x0300 you should be looking at 0x02FF-0x0200.
+	// It's a bug in the 6502 that wraps around the LSB without incrementing the MSB.
+	// So instead of reading address from 0x02FF-0x0300 you should be looking at 0x02FF-0x0200.
 	// The A900 printed in the log is the value at 0x02FF-0x0300 which is not what's actually being used.
+
+	// https://www.reddit.com/r/EmuDev/comments/fi29ah/6502_jump_indirect_error/
+	// JMP transfers program execution to the following address (absolute) or to the location contained in the following address (indirect). Note that there is no carry associated with the indirect jump so:
+	// AN INDIRECT JUMP MUST NEVER USE A VECTOR BEGINNING ON THE LAST BYTE OF A PAGE
+	// For example if address $3000 contains $40, $30FF contains $80, and $3100 contains $50, the result of JMP ($30FF) will be a transfer of control to $4080 rather than $5080 as you intended i.e. the 6502 took the low byte of the address from $30FF and the high byte from $3000.
+	// It's a bug in the 6502 that wraps around the LSB without incrementing the MSB. So instead of reading address from 0x02FF-0x0300 you should be looking at 0x02FF-0x0200. The A900 printed in the log is the value at 0x02FF-0x0300 which is not what's actually being used.
+
 	if Memory[offset+1] == 0xFF || Memory[offset] == 0xFF {
 		fmt.Printf("Controled Exit on Indirect Memory mode to correct a bug in 6502. Mem1: %02X Mem2: %02X. Exiting", Memory[offset+1], Memory[offset])
 		os.Exit(2)
