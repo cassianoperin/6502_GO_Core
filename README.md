@@ -4,11 +4,13 @@ MOS Technology 6502 8-bit microprocessor emulator written in Go.
 
 All opcodes and memory modes implemented and tested in Klaus Dormann test suite.
 
-
 ## Emulation Status
+
 * ![100%](https://progress-bar.dev/100) 56 Instructions (opcodes)
 * ![100%](https://progress-bar.dev/100) 13 Memory Addressing Modes
-* ![100%](https://progress-bar.dev/100) 8-bit accumulator register (A), two 8-bit index registers (X and Y), 7 1-bit processor status flag bits (P)
+* ![100%](https://progress-bar.dev/100) one 8-bit accumulator register (A)
+* ![100%](https://progress-bar.dev/100) two 8-bit index registers (X and Y)
+* ![100%](https://progress-bar.dev/100) seven 1-bit processor status flag bits (P)
 * ![100%](https://progress-bar.dev/100) [Klaus Dormann 6502 Functional test suite](https://github.com/Klaus2m5/6502_65C02_functional_tests)
 
 ## TODO
