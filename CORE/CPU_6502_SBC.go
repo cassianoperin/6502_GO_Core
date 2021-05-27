@@ -23,16 +23,6 @@ import (
 
 func opc_SBC(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 
-	// Check for extra cycles (*) in the first opcode cycle
-	if opc_cycle_count == 1 {
-		if opcode == 0xFD || opcode == 0xF9 || opcode == 0xF1 {
-			// Add 1 to cycles if page boundary is crossed
-			if MemPageBoundary(memAddr, PC) {
-				opc_cycle_extra = 1
-			}
-		}
-	}
-
 	// Show current opcode cycle
 	if Debug {
 		fmt.Printf("\tCPU Cycle: %d\t\tOpcode Cycle %d of %d\t(%d cycles + %d extra cycles)\n", counter_F_Cycle, opc_cycle_count, opc_cycles+opc_cycle_extra, opc_cycles, opc_cycle_extra)

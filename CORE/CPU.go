@@ -69,11 +69,11 @@ func Reset() {
 
 func Show() {
 	if Debug {
-		fmt.Printf("\n\n%04X : %02X\n\n", PC, opcode)
+		// fmt.Printf("\n\n%04X : %02X\n\n", PC, opcode)
 		fmt.Printf("\t\t\t\t\t\t\t\t\t\t   N V - B D I Z C")
 		fmt.Printf("\nCycle: %d\tOpcode: %02X\tPC: 0x%04X(%d)\tA: 0x%02X\tX: 0x%02X\tY: 0x%02X\tP: %d %d %d %d %d %d %d %d\tSP: %02X\t\tStack:  Mem[1FF]: %02X   Mem[1FE]: %02X   Mem[1FD]: %02X   Mem[1FC]: %02X\n", counter_F_Cycle, opcode, PC, PC, A, X, Y, P[7], P[6], P[5], P[4], P[3], P[2], P[1], P[0], SP, Memory[0x1FF], Memory[0x1FE], Memory[0x1FD], Memory[0x1FC])
 		// fmt.Printf("\nCycle: %d\tOpcode: %02X\tPC: 0x%04X(%d)\tA: 0x%02X\tX: 0x%02X\tY: 0x%02X\tP: %d %d %d %d %d %d %d %d\tSP: %02X\t\tStack:  Mem[1FF]: %02X   Mem[1FE]: %02X   Mem[1FD]: %02X   Mem[1FC]: %02X\t\tTEST: 0D: 0x%02X\t\tTEST: 0E: 0x%02X\n", counter_F_Cycle, opcode, PC, PC, A, X, Y, P[7], P[6], P[5], P[4], P[3], P[2], P[1], P[0], SP, Memory[0x1FF], Memory[0x1FE], Memory[0x1FD], Memory[0x1FC], Memory[0x0D], Memory[0x0E])
-		fmt.Printf("\n\n00: %02X\t01: %02X\t02: %02X\t03: %02X\t04: %02X\t05: %02X\t06: %02X\t07: %02X\t08: %02X\t09: %02X\t0A: %02X\t0B: %02X\t0C: %02X\t0D: %02X\t0E: %02X\t0F: %02X\t\n\n", Memory[0x00], Memory[0x01], Memory[0x02], Memory[0x03], Memory[0x04], Memory[0x05], Memory[0x06], Memory[0x07], Memory[0x08], Memory[0x09], Memory[0x0A], Memory[0x0B], Memory[0x0C], Memory[0x0D], Memory[0x0E], Memory[0x0F])
+		// fmt.Printf("\n\n00: %02X\t01: %02X\t02: %02X\t03: %02X\t04: %02X\t05: %02X\t06: %02X\t07: %02X\t08: %02X\t09: %02X\t0A: %02X\t0B: %02X\t0C: %02X\t0D: %02X\t0E: %02X\t0F: %02X\t\n\n", Memory[0x00], Memory[0x01], Memory[0x02], Memory[0x03], Memory[0x04], Memory[0x05], Memory[0x06], Memory[0x07], Memory[0x08], Memory[0x09], Memory[0x0A], Memory[0x0B], Memory[0x0C], Memory[0x0D], Memory[0x0E], Memory[0x0F])
 	}
 }
 
@@ -201,51 +201,99 @@ func CPU_Interpreter() {
 
 	case 0xD0: // Instruction BNE ( relative )
 		if opc_cycle_count == 1 {
+			// Get the value inside memory address
 			memValue = addr_mode_Relative(PC + 1)
+
+			// Check for an extra cycle (branch to another page)
+			if P[1] == 0 {
+				opc_cycle_extra = MemPageBoundary(PC, PC+uint16(memValue)+2)
+			}
 		}
 		opc_BNE(memValue, 2, 2)
 
-	case 0x90: // Instruction BCC ( relative )
+	case 0xF0: // Instruction BEQ ( relative )
 		if opc_cycle_count == 1 {
+			// Get the value inside memory address
 			memValue = addr_mode_Relative(PC + 1)
+
+			// Check for an extra cycle (branch to another page)
+			if P[1] == 1 {
+				opc_cycle_extra = MemPageBoundary(PC, PC+uint16(memValue)+2)
+			}
 		}
-		opc_BCC(memValue, 2, 2)
+		opc_BEQ(memValue, 2, 2)
+
+	case 0x10: // Instruction BPL ( relative )
+		if opc_cycle_count == 1 {
+			// Get the value inside memory address
+			memValue = addr_mode_Relative(PC + 1)
+
+			// Check for an extra cycle (branch to another page)
+			if P[7] == 0 {
+				opc_cycle_extra = MemPageBoundary(PC, PC+uint16(memValue)+2)
+			}
+		}
+		opc_BPL(memValue, 2, 2)
+
+	case 0x30: // Instruction BMI ( relative )
+		if opc_cycle_count == 1 {
+			// Get the value inside memory address
+			memValue = addr_mode_Relative(PC + 1)
+
+			// Check for an extra cycle (branch to another page)
+			if P[7] == 1 {
+				opc_cycle_extra = MemPageBoundary(PC, PC+uint16(memValue)+2)
+			}
+		}
+		opc_BMI(memValue, 2, 2)
+
+	case 0x70: // Instruction BVS ( relative )
+		if opc_cycle_count == 1 {
+			// Get the value inside memory address
+			memValue = addr_mode_Relative(PC + 1)
+
+			// Check for an extra cycle (branch to another page)
+			if P[6] == 1 {
+				opc_cycle_extra = MemPageBoundary(PC, PC+uint16(memValue)+2)
+			}
+		}
+		opc_BVS(memValue, 2, 2)
 
 	case 0x50: // Instruction BVC ( relative )
 		if opc_cycle_count == 1 {
+			// Get the value inside memory address
 			memValue = addr_mode_Relative(PC + 1)
+
+			// Check for an extra cycle (branch to another page)
+			if P[6] == 0 {
+				opc_cycle_extra = MemPageBoundary(PC, PC+uint16(memValue)+2)
+			}
 		}
 		opc_BVC(memValue, 2, 2)
 
 	case 0xB0: // Instruction BCS ( relative )
 		if opc_cycle_count == 1 {
+			// Get the value inside memory address
 			memValue = addr_mode_Relative(PC + 1)
+
+			// Check for an extra cycle (branch to another page)
+			if P[0] == 1 {
+				opc_cycle_extra = MemPageBoundary(PC, PC+uint16(memValue)+2)
+			}
 		}
 		opc_BCS(memValue, 2, 2)
 
-	case 0x30: // Instruction BMI ( relative )
+	case 0x90: // Instruction BCC ( relative )
 		if opc_cycle_count == 1 {
+			// Get the value inside memory address
 			memValue = addr_mode_Relative(PC + 1)
-		}
-		opc_BMI(memValue, 2, 2)
 
-	case 0x10: // Instruction BPL ( relative )
-		if opc_cycle_count == 1 {
-			memValue = addr_mode_Relative(PC + 1)
+			// Check for an extra cycle (branch to another page)
+			if P[0] == 0 {
+				opc_cycle_extra = MemPageBoundary(PC, PC+uint16(memValue)+2)
+			}
 		}
-		opc_BPL(memValue, 2, 2)
-
-	case 0xF0: // Instruction BEQ ( relative )
-		if opc_cycle_count == 1 {
-			memValue = addr_mode_Relative(PC + 1)
-		}
-		opc_BEQ(memValue, 2, 2)
-
-	case 0x70: // Instruction BVS ( relative )
-		if opc_cycle_count == 1 {
-			memValue = addr_mode_Relative(PC + 1)
-		}
-		opc_BVS(memValue, 2, 2)
+		opc_BCC(memValue, 2, 2)
 
 	//-------------------------------------------------- LDX --------------------------------------------------//
 
@@ -269,7 +317,11 @@ func CPU_Interpreter() {
 
 	case 0xBE: // Instruction LDX ( absolute,Y )
 		if opc_cycle_count == 1 {
+			// Get the memory address
 			memAddr, memMode = addr_mode_AbsoluteY(PC + 1)
+
+			// Add an extra cycle if page boundary is crossed
+			opc_cycle_extra = MemPageBoundary(memAddr, PC)
 		}
 		opc_LDX(memAddr, memMode, 3, 4)
 
@@ -349,19 +401,31 @@ func CPU_Interpreter() {
 
 	case 0xB9: // Instruction LDA ( absolute,Y )
 		if opc_cycle_count == 1 {
+			// Get the memory address
 			memAddr, memMode = addr_mode_AbsoluteY(PC + 1)
+
+			// // Add an extra cycle if page boundary is crossed
+			opc_cycle_extra = MemPageBoundary(memAddr, PC)
 		}
 		opc_LDA(memAddr, memMode, 3, 4)
 
 	case 0xBD: // Instruction LDA ( absolute,X )
 		if opc_cycle_count == 1 {
+			// Get the memory address
 			memAddr, memMode = addr_mode_AbsoluteX(PC + 1)
+
+			// // Add an extra cycle if page boundary is crossed
+			opc_cycle_extra = MemPageBoundary(memAddr, PC)
 		}
 		opc_LDA(memAddr, memMode, 3, 4)
 
 	case 0xB1: // Instruction LDA ( (indirect),Y )
 		if opc_cycle_count == 1 {
+			// Get the memory address
 			memAddr, memMode = addr_mode_IndirectY(PC + 1)
+
+			// // Add an extra cycle if page boundary is crossed
+			opc_cycle_extra = MemPageBoundary(memAddr, PC)
 		}
 		opc_LDA(memAddr, memMode, 2, 5)
 
@@ -411,7 +475,11 @@ func CPU_Interpreter() {
 
 	case 0xBC: // Instruction LDY ( absolute,X )
 		if opc_cycle_count == 1 {
+			// Get the memory address
 			memAddr, memMode = addr_mode_AbsoluteX(PC + 1)
+
+			// Add an extra cycle if page boundary is crossed
+			opc_cycle_extra = MemPageBoundary(memAddr, PC)
 		}
 		opc_LDY(memAddr, memMode, 3, 4)
 
@@ -503,13 +571,21 @@ func CPU_Interpreter() {
 
 	case 0xFD: // Instruction SBC ( absolute,X )
 		if opc_cycle_count == 1 {
+			// Get the memory address
 			memAddr, memMode = addr_mode_AbsoluteX(PC + 1)
+
+			// Add an extra cycle if page boundary is crossed
+			opc_cycle_extra = MemPageBoundary(memAddr, PC)
 		}
 		opc_SBC(memAddr, memMode, 3, 4)
 
 	case 0xF9: // Instruction SBC ( absolute,Y )
 		if opc_cycle_count == 1 {
+			// Get the memory address
 			memAddr, memMode = addr_mode_AbsoluteY(PC + 1)
+
+			// Add an extra cycle if page boundary is crossed
+			opc_cycle_extra = MemPageBoundary(memAddr, PC)
 		}
 		opc_SBC(memAddr, memMode, 3, 4)
 
@@ -521,7 +597,11 @@ func CPU_Interpreter() {
 
 	case 0xF1: // Instruction SBC ( (indirect),Y )
 		if opc_cycle_count == 1 {
+			// Get the memory address
 			memAddr, memMode = addr_mode_IndirectY(PC + 1)
+
+			// Add an extra cycle if page boundary is crossed
+			opc_cycle_extra = MemPageBoundary(memAddr, PC)
 		}
 		opc_SBC(memAddr, memMode, 2, 5)
 
@@ -579,13 +659,21 @@ func CPU_Interpreter() {
 
 	case 0x3D: // Instruction AND ( absolute,X )
 		if opc_cycle_count == 1 {
+			// Get the memory address
 			memAddr, memMode = addr_mode_AbsoluteX(PC + 1)
+
+			// Add an extra cycle if page boundary is crossed
+			opc_cycle_extra = MemPageBoundary(memAddr, PC)
 		}
 		opc_AND(memAddr, memMode, 3, 4)
 
 	case 0x39: // Instruction AND ( absolute,Y )
 		if opc_cycle_count == 1 {
+			// Get the memory address
 			memAddr, memMode = addr_mode_AbsoluteY(PC + 1)
+
+			// Add an extra cycle if page boundary is crossed
+			opc_cycle_extra = MemPageBoundary(memAddr, PC)
 		}
 		opc_AND(memAddr, memMode, 3, 4)
 
@@ -597,7 +685,11 @@ func CPU_Interpreter() {
 
 	case 0x31: // Instruction AND ( (indirect),Y )
 		if opc_cycle_count == 1 {
+			// Get the memory address
 			memAddr, memMode = addr_mode_IndirectY(PC + 1)
+
+			// Add an extra cycle if page boundary is crossed
+			opc_cycle_extra = MemPageBoundary(memAddr, PC)
 		}
 		opc_AND(memAddr, memMode, 2, 5)
 
@@ -629,13 +721,21 @@ func CPU_Interpreter() {
 
 	case 0x1D: // Instruction ORA ( absolute,X )
 		if opc_cycle_count == 1 {
+			// Get the memory address
 			memAddr, memMode = addr_mode_AbsoluteX(PC + 1)
+
+			// Add an extra cycle if page boundary is crossed
+			opc_cycle_extra = MemPageBoundary(memAddr, PC)
 		}
 		opc_ORA(memAddr, memMode, 3, 4)
 
 	case 0x19: // Instruction ORA ( absolute,Y )
 		if opc_cycle_count == 1 {
+			// Get the memory address
 			memAddr, memMode = addr_mode_AbsoluteY(PC + 1)
+
+			// Add an extra cycle if page boundary is crossed
+			opc_cycle_extra = MemPageBoundary(memAddr, PC)
 		}
 		opc_ORA(memAddr, memMode, 3, 4)
 
@@ -647,7 +747,11 @@ func CPU_Interpreter() {
 
 	case 0x11: // Instruction ORA ( (indirect),Y )
 		if opc_cycle_count == 1 {
+			// Get the memory address
 			memAddr, memMode = addr_mode_IndirectY(PC + 1)
+
+			// Add an extra cycle if page boundary is crossed
+			opc_cycle_extra = MemPageBoundary(memAddr, PC)
 		}
 		opc_ORA(memAddr, memMode, 2, 5)
 
@@ -679,13 +783,21 @@ func CPU_Interpreter() {
 
 	case 0x5D: // Instruction EOR ( absolute,X )
 		if opc_cycle_count == 1 {
+			// Get the memory address
 			memAddr, memMode = addr_mode_AbsoluteX(PC + 1)
+
+			// Add an extra cycle if page boundary is crossed
+			opc_cycle_extra = MemPageBoundary(memAddr, PC)
 		}
 		opc_EOR(memAddr, memMode, 3, 4)
 
 	case 0x59: // Instruction EOR ( absolute,Y )
 		if opc_cycle_count == 1 {
+			// Get the memory address
 			memAddr, memMode = addr_mode_AbsoluteY(PC + 1)
+
+			// Add an extra cycle if page boundary is crossed
+			opc_cycle_extra = MemPageBoundary(memAddr, PC)
 		}
 		opc_EOR(memAddr, memMode, 3, 4)
 
@@ -697,7 +809,11 @@ func CPU_Interpreter() {
 
 	case 0x51: // Instruction EOR ( (indirect),Y )
 		if opc_cycle_count == 1 {
+			// Get the memory address
 			memAddr, memMode = addr_mode_IndirectY(PC + 1)
+
+			// Add an extra cycle if page boundary is crossed
+			opc_cycle_extra = MemPageBoundary(memAddr, PC)
 		}
 		opc_EOR(memAddr, memMode, 2, 5)
 
@@ -787,19 +903,31 @@ func CPU_Interpreter() {
 
 	case 0xD9: // Instruction CMP ( absolute,Y )
 		if opc_cycle_count == 1 {
+			// Get the memory address
 			memAddr, memMode = addr_mode_AbsoluteY(PC + 1)
+
+			// Add an extra cycle if page boundary is crossed
+			opc_cycle_extra = MemPageBoundary(memAddr, PC)
 		}
 		opc_CMP(memAddr, memMode, 3, 4)
 
 	case 0xDD: // Instruction CMP ( absolute,X )
 		if opc_cycle_count == 1 {
+			// Get the memory address
 			memAddr, memMode = addr_mode_AbsoluteX(PC + 1)
+
+			// Add an extra cycle if page boundary is crossed
+			opc_cycle_extra = MemPageBoundary(memAddr, PC)
 		}
 		opc_CMP(memAddr, memMode, 3, 4)
 
 	case 0xD1: // Instruction CMP ( (indirect),Y )
 		if opc_cycle_count == 1 {
+			// Get the memory address
 			memAddr, memMode = addr_mode_IndirectY(PC + 1)
+
+			// Add an extra cycle if page boundary is crossed
+			opc_cycle_extra = MemPageBoundary(memAddr, PC)
 		}
 		opc_CMP(memAddr, memMode, 2, 5)
 
@@ -881,13 +1009,21 @@ func CPU_Interpreter() {
 
 	case 0x7D: // Instruction ADC ( absolute,X )
 		if opc_cycle_count == 1 {
+			// Get the memory address
 			memAddr, memMode = addr_mode_AbsoluteX(PC + 1)
+
+			// Add an extra cycle if page boundary is crossed
+			opc_cycle_extra = MemPageBoundary(memAddr, PC)
 		}
 		opc_ADC(memAddr, memMode, 3, 4)
 
 	case 0x79: // Instruction ADC ( absolute,Y )
 		if opc_cycle_count == 1 {
+			// Get the memory address
 			memAddr, memMode = addr_mode_AbsoluteY(PC + 1)
+
+			// Add an extra cycle if page boundary is crossed
+			opc_cycle_extra = MemPageBoundary(memAddr, PC)
 		}
 		opc_ADC(memAddr, memMode, 3, 4)
 
@@ -899,7 +1035,11 @@ func CPU_Interpreter() {
 
 	case 0x71: // Instruction ADC ( (indirect),Y )
 		if opc_cycle_count == 1 {
+			// Get the memory address
 			memAddr, memMode = addr_mode_IndirectY(PC + 1)
+
+			// Add an extra cycle if page boundary is crossed
+			opc_cycle_extra = MemPageBoundary(memAddr, PC)
 		}
 		opc_ADC(memAddr, memMode, 2, 5)
 

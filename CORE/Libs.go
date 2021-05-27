@@ -1,30 +1,36 @@
 package CORE
 
-import "fmt"
+import (
+	"fmt"
+)
 
 // ---------------------------- Library Function ---------------------------- //
 
 // Memory Page Boundary cross detection
-func MemPageBoundary(Address1, Address2 uint16) bool {
+func MemPageBoundary(original_addr, new_addr uint16) byte {
 
-	var cross bool = false
+	var extra_cycle byte = 0
 
-	// Get the High byte only to compare
 	// Page Boundary Cross detected
-	if Address1>>8 != Address2>>8 {
-		cross = true
+	if original_addr>>8 != new_addr>>8 { // Get the High byte only to compare
+
+		extra_cycle = 1
 
 		if Debug {
-			fmt.Printf("\tMemory Page Boundary Cross detected! Add 1 cycle.\tPC High byte: %02X\tBranch High byte: %02X\n", Address1>>8, Address2>>8)
+			fmt.Printf("\tMemory Page Boundary Cross detected! Add 1 cycle.\tPC High byte: %02X\tBranch High byte: %02X\n", original_addr>>8, new_addr>>8)
 		}
+
 		// NO Page Boundary Cross detected
 	} else {
+
+		extra_cycle = 0
+
 		if Debug {
-			fmt.Printf("\tNo Memory Page Boundary Cross detected.\tPC High byte: %02X\tBranch High byte: %02X\n", Address1>>8, Address2>>8)
+			fmt.Printf("\tNo Memory Page Boundary Cross detected.\tPC High byte: %02X\tBranch High byte: %02X\n", original_addr>>8, new_addr>>8)
 		}
 	}
 
-	return cross
+	return extra_cycle
 }
 
 // Decode Two's Complement

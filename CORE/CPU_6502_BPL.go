@@ -16,14 +16,6 @@ func opc_BPL(value int8, bytes uint16, opc_cycles byte) {
 	// If Positive
 	if P[7] == 0 {
 
-		// Check for extra cycles (*) in the first opcode cycle
-		if opc_cycle_count == 1 {
-			// Add 1 to cycles if page boundary is crossed
-			if MemPageBoundary(PC, PC+uint16(value)+2) { // REVISAR SE A LOGICA ESTA CORRETA
-				opc_cycle_extra = 1
-			}
-		}
-
 		// Show current opcode cycle
 		if Debug {
 			fmt.Printf("\tCPU Cycle: %d\t\tOpcode Cycle %d of %d\t(%d cycles + 1 cycle for branch + %d extra cycles for branch in different page)\n", counter_F_Cycle, opc_cycle_count, opc_cycles+opc_cycle_extra+1, opc_cycles, opc_cycle_extra)
