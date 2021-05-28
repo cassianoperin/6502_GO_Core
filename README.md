@@ -15,14 +15,13 @@ All opcodes and memory modes implemented and tested in Klaus Dormann test suite.
 
 ## TODO
 
-* ![100%](https://progress-bar.dev/0) Review all debug messages and show in Hexadecimal
-* ![100%](https://progress-bar.dev/0) Invert bytes from opcodes
-* ![100%](https://progress-bar.dev/0) Improve debug functions to detect 1, 2 or 3 bytes opcodes
+* ![100%](https://progress-bar.dev/0) Review internal cycles opcode messages
+* ![100%](https://progress-bar.dev/0) Improve branches logic
 * ![100%](https://progress-bar.dev/0) Create a disassembler mode
 * ![100%](https://progress-bar.dev/0) Create a CLI
 * ![100%](https://progress-bar.dev/0) Implement a BUS from CPU to Memory (address and data) - Fetch-decode-execute loop
 * ![100%](https://progress-bar.dev/0) Map Read and Write instructions
-* ![100%](https://progress-bar.dev/0) Improve branches logic
+* ![100%](https://progress-bar.dev/0) Finish the ifs for 6502 our atari mode (create memory maps)
 
 
 ## Documentation:

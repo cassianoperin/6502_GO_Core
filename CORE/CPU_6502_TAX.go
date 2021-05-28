@@ -27,10 +27,8 @@ func opc_TAX(bytes uint16, opc_cycles byte) {
 
 		X = A
 
-		if Debug {
-			dbg_show_message = fmt.Sprintf("\n\tOpcode %02X [1 byte] [Mode: Implied]\tTAX  Transfer Accumulator to Index X.\tX = A (%d)\n", opcode, A)
-			fmt.Println(dbg_show_message)
-		}
+		// Print Opcode Debug Message
+		opc_TAX_DebugMsg(bytes)
 
 		flags_Z(X)
 		flags_N(X)
@@ -42,4 +40,12 @@ func opc_TAX(bytes uint16, opc_cycles byte) {
 		opc_cycle_count = 1
 	}
 
+}
+
+func opc_TAX_DebugMsg(bytes uint16) {
+	if Debug {
+		opc_string := debug_decode_opc(bytes)
+		dbg_show_message = fmt.Sprintf("\n\tOpcode %s [Mode: Implied]\tTAX  Transfer Accumulator to Index X.\tX = A (%d)\n", opc_string, A)
+		fmt.Println(dbg_show_message)
+	}
 }

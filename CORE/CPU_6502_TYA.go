@@ -27,10 +27,8 @@ func opc_TYA(bytes uint16, opc_cycles byte) {
 
 		A = Y
 
-		if Debug {
-			dbg_show_message = fmt.Sprintf("\n\tOpcode %02X [1 byte] [Mode: Implied]\tTYA  Transfer Index Y to Accumulator.\tA = Y (%d)\n", opcode, Y)
-			fmt.Println(dbg_show_message)
-		}
+		// Print Opcode Debug Message
+		opc_TYA_DebugMsg(bytes)
 
 		flags_Z(A)
 		flags_N(A)
@@ -42,4 +40,12 @@ func opc_TYA(bytes uint16, opc_cycles byte) {
 		opc_cycle_count = 1
 	}
 
+}
+
+func opc_TYA_DebugMsg(bytes uint16) {
+	if Debug {
+		opc_string := debug_decode_opc(bytes)
+		dbg_show_message = fmt.Sprintf("\n\tOpcode %s [Mode: Implied]\tTYA  Transfer Index Y to Accumulator.\tA = Y (%d)\n", opc_string, Y)
+		fmt.Println(dbg_show_message)
+	}
 }

@@ -54,10 +54,8 @@ func opc_PHP(bytes uint16, opc_cycles byte) {
 
 		Memory[SP_Address] = tmp_P
 
-		if Debug {
-			dbg_show_message = fmt.Sprintf("\n\tOpcode %02X [1 byte] [Mode: Implied]\tPHP  Push Processor Status on Stack.\tMemory[%02X] = Processor Status %08b | SP--\n", opcode, SP_Address, tmp_P)
-			fmt.Println(dbg_show_message)
-		}
+		// Print Opcode Debug Message
+		opc_PHP_DebugMsg(bytes, SP_Address, tmp_P)
 
 		SP--
 
@@ -68,4 +66,12 @@ func opc_PHP(bytes uint16, opc_cycles byte) {
 		opc_cycle_count = 1
 	}
 
+}
+
+func opc_PHP_DebugMsg(bytes uint16, SP_Address uint, tmp_P byte) {
+	if Debug {
+		opc_string := debug_decode_opc(bytes)
+		dbg_show_message = fmt.Sprintf("\n\tOpcode %s [Mode: Implied]\tPHP  Push Processor Status on Stack.\tMemory[0x%02X] = Processor Status %08b | SP--\n", opc_string, SP_Address, tmp_P)
+		fmt.Println(dbg_show_message)
+	}
 }

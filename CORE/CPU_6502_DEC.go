@@ -28,16 +28,8 @@ func opc_DEC(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 		// After spending the cycles needed, execute the opcode
 	} else {
 
-		if Debug {
-
-			if bytes == 2 {
-				dbg_show_message = fmt.Sprintf("\n\tOpcode %02X%02X [2 bytes] [Mode: %s]\tDEC  Decrement Memory by One.\tMemory[%02X](%d) - 1:\t%d\n", opcode, Memory[PC+1], mode, memAddr, Memory[memAddr], Memory[memAddr]-1)
-			} else if bytes == 3 {
-				dbg_show_message = fmt.Sprintf("\n\tOpcode %02X %02X%02X [3 bytes] [Mode: %s]\tDEC  Decrement Memory by One.\tMemory[%02X](%d) - 1:\t%d\n", opcode, Memory[PC+2], Memory[PC+1], mode, memAddr, Memory[memAddr], Memory[memAddr]-1)
-			}
-			fmt.Println(dbg_show_message)
-
-		}
+		// Print Opcode Debug Message
+		opc_DEC_DebugMsg(bytes, mode, memAddr)
 
 		Memory[memAddr] -= 1
 
@@ -51,4 +43,12 @@ func opc_DEC(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 		opc_cycle_count = 1
 	}
 
+}
+
+func opc_DEC_DebugMsg(bytes uint16, mode string, memAddr uint16) {
+	if Debug {
+		opc_string := debug_decode_opc(bytes)
+		dbg_show_message = fmt.Sprintf("\n\tOpcode %s [Mode: %s]\tDEC  Decrement Memory by One.\tMemory[0x%02X](%d) - 1:\t%d\n", opc_string, mode, memAddr, Memory[memAddr], Memory[memAddr]-1)
+		fmt.Println(dbg_show_message)
+	}
 }

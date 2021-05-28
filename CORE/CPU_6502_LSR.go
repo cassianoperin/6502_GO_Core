@@ -37,10 +37,8 @@ func opc_LSR_A(bytes uint16, opc_cycles byte) {
 		// Least significant bit turns into the new Carry
 		P[0] = A & 0x01
 
-		if Debug {
-			dbg_show_message = fmt.Sprintf("\n\tOpcode %02X [1 byte] [Mode: Accumulator]\tLSR  Shift One Bit Right.\tA = A(%d) Shift Right 1 bit\t(%d)\n", opcode, A, A>>1)
-			fmt.Println(dbg_show_message)
-		}
+		// Print Opcode Debug Message
+		opc_LSR_A_DebugMsg(bytes)
 
 		A = A >> 1
 
@@ -57,6 +55,14 @@ func opc_LSR_A(bytes uint16, opc_cycles byte) {
 		opc_cycle_count = 1
 	}
 
+}
+
+func opc_LSR_A_DebugMsg(bytes uint16) {
+	if Debug {
+		opc_string := debug_decode_opc(bytes)
+		dbg_show_message = fmt.Sprintf("\n\tOpcode %s [Mode: Accumulator]\tLSR  Shift One Bit Right.\tA = A(%d) Shift Right 1 bit\t(%d)\n", opc_string, A, A>>1)
+		fmt.Println(dbg_show_message)
+	}
 }
 
 // --------------------------------------- Memory -------------------------------------- //
@@ -81,16 +87,8 @@ func opc_LSR(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 		// Least significant bit turns into the new Carry
 		P[0] = Memory[memAddr] & 0x01
 
-		if Debug {
-
-			if bytes == 2 {
-				dbg_show_message = fmt.Sprintf("\n\tOpcode %02X%02X [2 bytes] [Mode: %s]\tLSR  Shift One Bit Right.\tMemory[%d]: (%d) Shift Right 1 bit\t(%d)\n", opcode, Memory[PC+1], mode, memAddr, Memory[memAddr], Memory[memAddr]>>1)
-			} else if bytes == 3 {
-				dbg_show_message = fmt.Sprintf("\n\tOpcode %02X %02X%02X [3 bytes] [Mode: %s]\tLSR  Shift One Bit Right.\tMemory[%d]: (%d) Shift Right 1 bit\t(%d)\n", opcode, Memory[PC+2], Memory[PC+1], mode, memAddr, Memory[memAddr], Memory[memAddr]>>1)
-			}
-			fmt.Println(dbg_show_message)
-
-		}
+		// Print Opcode Debug Message
+		opc_LSR_DebugMsg(bytes, mode, memAddr)
 
 		Memory[memAddr] = Memory[memAddr] >> 1
 
@@ -107,4 +105,12 @@ func opc_LSR(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 		opc_cycle_count = 1
 	}
 
+}
+
+func opc_LSR_DebugMsg(bytes uint16, mode string, memAddr uint16) {
+	if Debug {
+		opc_string := debug_decode_opc(bytes)
+		dbg_show_message = fmt.Sprintf("\n\tOpcode %s [Mode: %s]\tLSR  Shift One Bit Right.\tMemory[0x%02X]: (%d) Shift Right 1 bit\t(%d)\n", opc_string, mode, memAddr, Memory[memAddr], Memory[memAddr]>>1)
+		fmt.Println(dbg_show_message)
+	}
 }

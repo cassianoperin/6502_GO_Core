@@ -37,10 +37,8 @@ func opc_ROL_A(bytes uint16, opc_cycles byte) {
 		// Original Carry Value
 		carry_orig := P[0]
 
-		if Debug {
-			dbg_show_message = fmt.Sprintf("\n\tOpcode %02X [1 byte] [Mode: Accumulator]\tROL  Rotate One Bit Left.\tA(%d) Roll Left 1 bit + carry(%d)\t: %d\n", opcode, A, P[0], (A<<1)+carry_orig)
-			fmt.Println(dbg_show_message)
-		}
+		// Print Opcode Debug Message
+		opc_ROL_A_DebugMsg(bytes, carry_orig)
 
 		// Calculate the original bit7 and save it as the new Carry
 		P[0] = A & 0x80 >> 7
@@ -60,7 +58,14 @@ func opc_ROL_A(bytes uint16, opc_cycles byte) {
 		// Reset Opcode Cycle counter
 		opc_cycle_count = 1
 	}
+}
 
+func opc_ROL_A_DebugMsg(bytes uint16, carry_orig byte) {
+	if Debug {
+		opc_string := debug_decode_opc(bytes)
+		dbg_show_message = fmt.Sprintf("\n\tOpcode %s [Mode: Accumulator]\tROL  Rotate One Bit Left.\tA(%d) Roll Left 1 bit + carry(%d)\t: %d\n", opc_string, A, P[0], (A<<1)+carry_orig)
+		fmt.Println(dbg_show_message)
+	}
 }
 
 // --------------------------------------- Memory -------------------------------------- //
@@ -82,16 +87,8 @@ func opc_ROL(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 		// Original Carry Value
 		carry_orig := P[0]
 
-		if Debug {
-
-			if bytes == 2 {
-				dbg_show_message = fmt.Sprintf("\n\tOpcode %02X%02X [2 bytes] [Mode: %s]\tROL  Rotate One Bit Left.\tMemory[%d](%d) Roll Left 1 bit + Carry(%d)\t(%d)\n", opcode, Memory[PC+1], mode, memAddr, Memory[memAddr], carry_orig, (Memory[memAddr]<<1)+carry_orig)
-			} else if bytes == 3 {
-				dbg_show_message = fmt.Sprintf("\n\tOpcode %02X %02X%02X [3 bytes] [Mode: %s]\tROL  Rotate One Bit Left.\tMemory[%d](%d) Roll Left 1 bit + Carry(%d)\t(%d)\n", opcode, Memory[PC+2], Memory[PC+1], mode, memAddr, Memory[memAddr], carry_orig, (Memory[memAddr]<<1)+carry_orig)
-			}
-			fmt.Println(dbg_show_message)
-
-		}
+		// Print Opcode Debug Message
+		opc_ROL_DebugMsg(bytes, mode, memAddr, carry_orig)
 
 		// Calculate the original bit7 and save it as the new Carry
 		P[0] = Memory[memAddr] & 0x80 >> 7
@@ -112,4 +109,12 @@ func opc_ROL(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 		opc_cycle_count = 1
 	}
 
+}
+
+func opc_ROL_DebugMsg(bytes uint16, mode string, memAddr uint16, carry_orig byte) {
+	if Debug {
+		opc_string := debug_decode_opc(bytes)
+		dbg_show_message = fmt.Sprintf("\n\tOpcode %s [Mode: %s]\tROL  Rotate One Bit Left.\tMemory[0x%02X](%d) Roll Left 1 bit + Carry(%d)\t(%d)\n", opc_string, mode, memAddr, Memory[memAddr], carry_orig, (Memory[memAddr]<<1)+carry_orig)
+		fmt.Println(dbg_show_message)
+	}
 }

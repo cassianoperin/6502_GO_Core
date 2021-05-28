@@ -2,7 +2,6 @@ package CORE
 
 import (
 	"fmt"
-	"os"
 )
 
 // PLA  Pull Accumulator from Stack
@@ -34,10 +33,6 @@ func opc_PLA(bytes uint16, opc_cycles byte) {
 		if CPU_MODE == 0 {
 			SP_Address = uint(SP + 1)
 
-			// Test
-			fmt.Printf("%d PLA TEST!", SP_Address)
-			os.Exit(2)
-
 			// 6502/6507 interpreter mode
 		} else {
 			// Stack is a 256-byte array whose location is hardcoded at page $01 ($0100-$01FF)
@@ -46,13 +41,8 @@ func opc_PLA(bytes uint16, opc_cycles byte) {
 
 		A = Memory[SP_Address]
 
-		// Not documented, clean the value on the stack after pull it to accumulator
-		//Memory[SP_Address] = 0
-
-		if Debug {
-			dbg_show_message = fmt.Sprintf("\n\tOpcode %02X [1 byte] [Mode: Implied]\tPLA  Pull Accumulator from Stack.\tA = Memory[%02X] (%d) | SP++\n", opcode, SP_Address, A)
-			fmt.Println(dbg_show_message)
-		}
+		// Print Opcode Debug Message
+		opc_PLA_DebugMsg(bytes, SP_Address)
 
 		flags_N(A)
 		flags_Z(A)
@@ -66,4 +56,12 @@ func opc_PLA(bytes uint16, opc_cycles byte) {
 		opc_cycle_count = 1
 	}
 
+}
+
+func opc_PLA_DebugMsg(bytes uint16, SP_Address uint) {
+	if Debug {
+		opc_string := debug_decode_opc(bytes)
+		dbg_show_message = fmt.Sprintf("\n\tOpcode %s [Mode: Implied]\tPLA  Pull Accumulator from Stack.\tA = Memory[0x%02X] (%d) | SP++\n", opc_string, SP_Address, A)
+		fmt.Println(dbg_show_message)
+	}
 }

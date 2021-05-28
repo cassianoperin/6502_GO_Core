@@ -88,7 +88,6 @@ func opc_ADC(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 			} else {
 				P[0] = 0
 			}
-			// fmt.Printf("P[0] novo (sem contar negativo): %d\n\n", P[0])
 			if Debug {
 				fmt.Printf("\tFlag C: %d -> %d\n", original_P0, P[0])
 			}
@@ -98,33 +97,8 @@ func opc_ADC(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 
 		}
 
-		// --------------------------------------- Debug -------------------------------------- //
-
-		if Debug {
-
-			// Decimal flag OFF (Binary or Hex Mode)
-			if P[3] == 0 {
-
-				if bytes == 2 {
-					dbg_show_message = fmt.Sprintf("\n\tOpcode %02X%02X [2 bytes] [Mode: %s]\tADC  Add Memory to Accumulator with Carry [Binary/Hex Mode]\tA = A(%d) + Memory[%02X](%d) + Carry (%d)) = %d\n", opcode, Memory[PC+1], mode, original_A, memAddr, Memory[memAddr], original_P0, A)
-				} else if bytes == 3 {
-					dbg_show_message = fmt.Sprintf("\n\tOpcode %02X %02X%02X [3 bytes] [Mode: %s]\tADC  Add Memory to Accumulator with Carry [Binary/Hex Mode]\tA = A(%d) + Memory[%02X](%d) + Carry (%d)) = %d\n", opcode, Memory[PC+2], Memory[PC+1], mode, original_A, memAddr, Memory[memAddr], original_P0, A)
-				}
-
-				// Decimal flag ON (Decimal Mode)
-			} else {
-
-				if bytes == 2 {
-					dbg_show_message = fmt.Sprintf("\n\tOpcode %02X%02X [2 bytes] [Mode: %s]\tADC  Add Memory to Accumulator with Carry [Decimal Mode]\tA = A(%02x) + Memory[%02X](%02x) + Carry (%02x)) = %02X\n", opcode, Memory[PC+1], mode, original_A, memAddr, Memory[memAddr], original_P0, A)
-				} else if bytes == 3 {
-					dbg_show_message = fmt.Sprintf("\n\tOpcode %02X %02X%02X [3 bytes] [Mode: %s]\tADC  Add Memory to Accumulator with Carry [Decimal Mode]\tA = A(%02x) + Memory[%02X](%02x) + Carry (%d)) = %02X\n", opcode, Memory[PC+2], Memory[PC+1], mode, original_A, memAddr, Memory[memAddr], original_P0, A)
-				}
-
-			}
-
-			fmt.Println(dbg_show_message)
-
-		}
+		// Print Opcode Debug Message
+		opc_ADC_DebugMsg(bytes, mode, original_A, memAddr, original_P0)
 
 		// Increment PC
 		PC += bytes
@@ -134,7 +108,18 @@ func opc_ADC(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 
 		// Reset Opcode Extra Cycle counter
 		opc_cycle_extra = 0
-
 	}
+}
 
+func opc_ADC_DebugMsg(bytes uint16, mode string, original_A byte, memAddr uint16, original_P0 byte) {
+	if Debug {
+		opc_string := debug_decode_opc(bytes)
+		if P[3] == 0 { // Decimal flag OFF (Binary or Hex Mode)
+			dbg_show_message = fmt.Sprintf("\n\tOpcode %s [Mode: %s]\tADC  Add Memory to Accumulator with Carry [Binary/Hex Mode]\tA = A(%d) + Memory[0x%02X](%d) + Carry (%d)) = %d\n", opc_string, mode, original_A, memAddr, Memory[memAddr], original_P0, A)
+
+		} else { // Decimal flag ON (Decimal Mode)
+			dbg_show_message = fmt.Sprintf("\n\tOpcode %s [Mode: %s]\tADC  Add Memory to Accumulator with Carry [Decimal Mode]\tA = A(0x%02x) + Memory[0x%02X](0x%02x) + Carry (0x%02x)) = 0x%02X\n", opc_string, mode, original_A, memAddr, Memory[memAddr], original_P0, A)
+		}
+		fmt.Println(dbg_show_message)
+	}
 }

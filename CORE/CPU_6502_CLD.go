@@ -27,10 +27,8 @@ func opc_CLD(bytes uint16, opc_cycles byte) {
 
 		P[3] = 0
 
-		if Debug {
-			dbg_show_message = fmt.Sprintf("\n\tOpcode %02X [1 byte] [Mode: Implied]\tCLD  Clear Decimal Mode.\tP[3]=%d\n", opcode, P[3])
-			fmt.Println(dbg_show_message)
-		}
+		// Print Opcode Debug Message
+		opc_CLD_DebugMsg(bytes)
 
 		// Increment PC
 		PC += bytes
@@ -39,4 +37,12 @@ func opc_CLD(bytes uint16, opc_cycles byte) {
 		opc_cycle_count = 1
 	}
 
+}
+
+func opc_CLD_DebugMsg(bytes uint16) {
+	if Debug {
+		opc_string := debug_decode_opc(bytes)
+		dbg_show_message = fmt.Sprintf("\n\tOpcode %s [Mode: Implied]\tCLD  Clear Decimal Mode.\tP[3]=%d\n", opc_string, P[3])
+		fmt.Println(dbg_show_message)
+	}
 }

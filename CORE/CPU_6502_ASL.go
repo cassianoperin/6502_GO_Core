@@ -35,10 +35,8 @@ func opc_ASL_A(bytes uint16, opc_cycles byte) {
 		// After spending the cycles needed, execute the opcode
 	} else {
 
-		if Debug {
-			dbg_show_message = fmt.Sprintf("\n\tOpcode %02X [1 byte] [Mode: Accumulator]\tASL  Shift Left One Bit.\tA = A(%d) Shift Left 1 bit\t(%d).\tCarry (Original A bit 7): %d\n", opcode, A, A<<1, A>>7)
-			fmt.Println(dbg_show_message)
-		}
+		// Print Opcode Debug Message
+		opc_ASL_A_DebugMsg(bytes)
 
 		P[0] = A >> 7
 
@@ -54,6 +52,14 @@ func opc_ASL_A(bytes uint16, opc_cycles byte) {
 		opc_cycle_count = 1
 	}
 
+}
+
+func opc_ASL_A_DebugMsg(bytes uint16) {
+	if Debug {
+		opc_string := debug_decode_opc(bytes)
+		dbg_show_message = fmt.Sprintf("\n\tOpcode %s [Mode: Accumulator]\tASL  Shift Left One Bit.\tA = A(%d) Shift Left 1 bit\t(%d).\tCarry (Original A bit 7): %d\n", opc_string, A, A<<1, A>>7)
+		fmt.Println(dbg_show_message)
+	}
 }
 
 // --------------------------------------- Memory -------------------------------------- //
@@ -72,16 +78,8 @@ func opc_ASL(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 		// After spending the cycles needed, execute the opcode
 	} else {
 
-		if Debug {
-
-			if bytes == 2 {
-				dbg_show_message = fmt.Sprintf("\n\tOpcode %02X%02X [2 bytes] [Mode: %s]\tASL  Shift Left One Bit.\tMemory[%d]: (%d) Shift Left 1 bit\t(%d).\tCarry (Original Memory address bit 7): %d\n", opcode, Memory[PC+1], mode, memAddr, Memory[memAddr], Memory[memAddr]<<1, Memory[memAddr]>>7)
-			} else if bytes == 3 {
-				dbg_show_message = fmt.Sprintf("\n\tOpcode %02X %02X%02X [3 bytes] [Mode: %s]\tASL  Shift Left One Bit.\tMemory[%d]: (%d) Shift Left 1 bit\t(%d).\tCarry (Original Memory address bit 7): %d\n", opcode, Memory[PC+2], Memory[PC+1], mode, memAddr, Memory[memAddr], Memory[memAddr]<<1, Memory[memAddr]>>7)
-			}
-			fmt.Println(dbg_show_message)
-
-		}
+		// Print Opcode Debug Message
+		opc_ASL_DebugMsg(bytes, mode, memAddr)
 
 		P[0] = Memory[memAddr] >> 7
 
@@ -95,7 +93,13 @@ func opc_ASL(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 
 		// Reset Opcode Cycle counter
 		opc_cycle_count = 1
-
 	}
+}
 
+func opc_ASL_DebugMsg(bytes uint16, mode string, memAddr uint16) {
+	if Debug {
+		opc_string := debug_decode_opc(bytes)
+		dbg_show_message = fmt.Sprintf("\n\tOpcode %s [Mode: %s]\tASL  Shift Left One Bit.\tMemory[0x%02X]: (%d) Shift Left 1 bit\t(%d).\tCarry (Original Memory address bit 7): %d\n", opc_string, mode, memAddr, Memory[memAddr], Memory[memAddr]<<1, Memory[memAddr]>>7)
+		fmt.Println(dbg_show_message)
+	}
 }

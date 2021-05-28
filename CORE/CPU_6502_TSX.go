@@ -27,10 +27,8 @@ func opc_TSX(bytes uint16, opc_cycles byte) {
 
 		X = SP
 
-		if Debug {
-			dbg_show_message = fmt.Sprintf("\n\tOpcode %02X [1 byte] [Mode: Implied]\tTSX  Transfer Stack Pointer to Index X.\tX = SP (%d)\n", opcode, SP)
-			fmt.Println(dbg_show_message)
-		}
+		// Print Opcode Debug Message
+		opc_TSX_DebugMsg(bytes)
 
 		flags_Z(X)
 		flags_N(X)
@@ -42,4 +40,12 @@ func opc_TSX(bytes uint16, opc_cycles byte) {
 		opc_cycle_count = 1
 	}
 
+}
+
+func opc_TSX_DebugMsg(bytes uint16) {
+	if Debug {
+		opc_string := debug_decode_opc(bytes)
+		dbg_show_message = fmt.Sprintf("\n\tOpcode %s [Mode: Implied]\tTSX  Transfer Stack Pointer to Index X.\tX = SP (%d)\n", opc_string, SP)
+		fmt.Println(dbg_show_message)
+	}
 }

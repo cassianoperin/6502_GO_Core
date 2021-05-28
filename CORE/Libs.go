@@ -46,6 +46,32 @@ func DecodeTwoComplement(num byte) int8 {
 	return sum
 }
 
+// Decode opcode for debug messages
+func debug_decode_opc(bytes uint16) string {
+
+	var opc_string string
+
+	// Decode opcode and operators
+	for i := 0; i < int(bytes); i++ {
+		if i == 1 {
+			opc_string += fmt.Sprintf(" %02X", Memory[PC+uint16(i)])
+		} else {
+			opc_string += fmt.Sprintf("%02X", Memory[PC+uint16(i)])
+		}
+	}
+
+	// Insert number of bytes into the string
+	if bytes == 1 {
+		opc_string += " [1 byte]"
+	} else if bytes == 2 {
+		opc_string += " [2 bytes]"
+	} else {
+		opc_string += " [3 bytes]"
+	}
+
+	return opc_string
+}
+
 // // BCD - Binary Coded Decimal
 // func BCD(number byte) byte {
 

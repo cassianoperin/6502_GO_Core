@@ -13,8 +13,7 @@ import "fmt"
 
 func opc_BPL(value int8, bytes uint16, opc_cycles byte) {
 
-	// If Positive
-	if P[7] == 0 {
+	if P[7] == 0 { // If Positive
 
 		// Show current opcode cycle
 		if Debug {
@@ -27,10 +26,8 @@ func opc_BPL(value int8, bytes uint16, opc_cycles byte) {
 
 			// After spending the cycles needed, execute the opcode
 		} else {
-			if Debug {
-				dbg_show_message = fmt.Sprintf("\n\tOpcode %02X%02X [2 bytes] [Mode: Relative]\tBPL  Branch on Result POSITIVE.\tNEGATIVE flag DISABLED, JUMP TO %04X\n", opcode, Memory[PC+1], PC+2+uint16(value))
-				fmt.Println(dbg_show_message)
-			}
+			// Print Opcode Debug Message
+			opc_BPL_DebugMsg(bytes, value)
 
 			// PC + the number of bytes to jump on carry clear
 			PC += uint16(value)
@@ -45,8 +42,7 @@ func opc_BPL(value int8, bytes uint16, opc_cycles byte) {
 			opc_cycle_extra = 0
 		}
 
-		// If not positive
-	} else {
+	} else { // If not positive
 
 		// Show current opcode cycle
 		if Debug {
@@ -59,10 +55,8 @@ func opc_BPL(value int8, bytes uint16, opc_cycles byte) {
 
 			// After spending the cycles needed, execute the opcode
 		} else {
-			if Debug {
-				dbg_show_message = fmt.Sprintf("\n\tOpcode %02X%02X [2 bytes]\tBPL  Branch on Result POSITIVE.\t\tNEGATIVE flag enabled, PC+=2\n", opcode, Memory[PC+1])
-				fmt.Println(dbg_show_message)
-			}
+			// Print Opcode Debug Message
+			opc_BPL_DebugMsg(bytes, value)
 
 			// Increment PC
 			PC += bytes
@@ -70,7 +64,17 @@ func opc_BPL(value int8, bytes uint16, opc_cycles byte) {
 			// Reset Opcode Cycle counter
 			opc_cycle_count = 1
 		}
-
 	}
+}
 
+func opc_BPL_DebugMsg(bytes uint16, value int8) {
+	if Debug {
+		opc_string := debug_decode_opc(bytes)
+		if P[7] == 0 { // If Positive
+			dbg_show_message = fmt.Sprintf("\n\tOpcode %0s [Mode: Relative]\tBPL  Branch on Result POSITIVE.\tNEGATIVE flag DISABLED, JUMP TO 0x%04X\n", opc_string, PC+2+uint16(value))
+		} else { // If not positive
+			dbg_show_message = fmt.Sprintf("\n\tOpcode %s\tBPL  Branch on Result POSITIVE.\t\tNEGATIVE flag enabled, PC+=2\n", opc_string)
+		}
+		fmt.Println(dbg_show_message)
+	}
 }

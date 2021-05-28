@@ -96,11 +96,15 @@ func opc_BRK(bytes uint16, opc_cycles byte) {
 		// Reset Opcode Cycle counter
 		opc_cycle_count = 1
 
-		if Debug {
-			dbg_show_message = fmt.Sprintf("\n\tOpcode %02X [1 byte] [Mode: Implied]\tBRK  Force Break.\tPush PC and P to Stack: Mem[%02X] = %02X ,Mem[%02X] = %02X, Mem[%02X] = %02X(%08b)\t\tNew PC = %04X(BRK/Interrupt)\n", opcode, SP_Address+3, Memory[SP_Address+3], SP_Address+2, Memory[SP_Address+2], SP_Address+1, Memory[SP_Address+1], Memory[SP_Address+1], uint16(Memory[0xFFFF])<<8|uint16(Memory[0xFFFE]))
-			println(dbg_show_message)
-		}
-
+		// Print Opcode Debug Message
+		opc_BRK_DebugMsg(bytes, SP_Address)
 	}
+}
 
+func opc_BRK_DebugMsg(bytes uint16, SP_Address uint) {
+	if Debug {
+		opc_string := debug_decode_opc(bytes)
+		dbg_show_message = fmt.Sprintf("\n\tOpcode %s [Mode: Implied]\tBRK  Force Break.\tPush PC and P to Stack: Mem[0x%02X] = %02X, Mem[0x%02X] = 0x%02X, Mem[0x%02X] = 0x%02X(%08b)\t\tNew PC = 0x%04X(BRK/Interrupt)\n", opc_string, SP_Address+3, Memory[SP_Address+3], SP_Address+2, Memory[SP_Address+2], SP_Address+1, Memory[SP_Address+1], Memory[SP_Address+1], uint16(Memory[0xFFFF])<<8|uint16(Memory[0xFFFE]))
+		println(dbg_show_message)
+	}
 }

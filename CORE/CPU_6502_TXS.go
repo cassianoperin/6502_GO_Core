@@ -27,10 +27,8 @@ func opc_TXS(bytes uint16, opc_cycles byte) {
 
 		SP = X
 
-		if Debug {
-			dbg_show_message = fmt.Sprintf("\n\tOpcode %02X [1 bytes] [Mode: Implied]\tTXS  Transfer Index X to Stack Pointer.\tSP = X (%d)\n", opcode, SP)
-			fmt.Println(dbg_show_message)
-		}
+		// Print Opcode Debug Message
+		opc_TXS_DebugMsg(bytes)
 
 		// Increment PC
 		PC += bytes
@@ -39,4 +37,12 @@ func opc_TXS(bytes uint16, opc_cycles byte) {
 		opc_cycle_count = 1
 	}
 
+}
+
+func opc_TXS_DebugMsg(bytes uint16) {
+	if Debug {
+		opc_string := debug_decode_opc(bytes)
+		dbg_show_message = fmt.Sprintf("\n\tOpcode %s [Mode: Implied]\tTXS  Transfer Index X to Stack Pointer.\tSP = X (%d)\n", opc_string, SP)
+		fmt.Println(dbg_show_message)
+	}
 }

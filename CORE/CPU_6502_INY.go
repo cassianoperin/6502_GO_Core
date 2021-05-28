@@ -27,10 +27,8 @@ func opc_INY(bytes uint16, opc_cycles byte) {
 
 		Y++
 
-		if Debug {
-			dbg_show_message = fmt.Sprintf("\n\tOpcode %02X [1 byte] [Mode: Implied]\tINY  Increment Index Y by One (%02X)\n", opcode, Y)
-			fmt.Println(dbg_show_message)
-		}
+		// Print Opcode Debug Message
+		opc_INY_DebugMsg(bytes)
 
 		flags_Z(Y)
 		flags_N(Y)
@@ -42,4 +40,12 @@ func opc_INY(bytes uint16, opc_cycles byte) {
 		opc_cycle_count = 1
 	}
 
+}
+
+func opc_INY_DebugMsg(bytes uint16) {
+	if Debug {
+		opc_string := debug_decode_opc(bytes)
+		dbg_show_message = fmt.Sprintf("\n\tOpcode %s [Mode: Implied]\tINY  Increment Index Y by One (0x%02X)\n", opc_string, Y)
+		fmt.Println(dbg_show_message)
+	}
 }

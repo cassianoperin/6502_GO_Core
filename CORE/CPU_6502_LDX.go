@@ -33,16 +33,8 @@ func opc_LDX(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 
 		X = Memory[memAddr]
 
-		if Debug {
-			if bytes == 2 {
-				dbg_show_message = fmt.Sprintf("\n\tOpcode %02X%02X [2 bytes] [Mode: %s]\tLDX  Load Index X with Memory.\tX = Memory[%02X] (%d)\n", opcode, Memory[PC+1], mode, memAddr, X)
-				fmt.Println(dbg_show_message)
-			} else if bytes == 3 {
-				dbg_show_message = fmt.Sprintf("\n\tOpcode %02X %02X%02X [3 bytes] [Mode: %s]\tLDX  Load Index X with Memory.\tX = Memory[%02X] (%d)\n", opcode, Memory[PC+2], Memory[PC+1], mode, memAddr, X)
-				fmt.Println(dbg_show_message)
-			}
-
-		}
+		// Print Opcode Debug Message
+		opc_LDX_DebugMsg(bytes, mode, memAddr)
 
 		flags_Z(X)
 		flags_N(X)
@@ -57,4 +49,12 @@ func opc_LDX(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 		opc_cycle_extra = 0
 	}
 
+}
+
+func opc_LDX_DebugMsg(bytes uint16, mode string, memAddr uint16) {
+	if Debug {
+		opc_string := debug_decode_opc(bytes)
+		dbg_show_message = fmt.Sprintf("\n\tOpcode %s [Mode: %s]\tLDX  Load Index X with Memory.\tX = Memory[0x%02X] (%d)\n", opc_string, mode, memAddr, X)
+		fmt.Println(dbg_show_message)
+	}
 }

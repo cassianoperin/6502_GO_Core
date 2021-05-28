@@ -48,13 +48,10 @@ func opc_PLP(bytes uint16, opc_cycles byte) {
 			} else {
 				P[i] = (Memory[SP_Address] >> i) & 0x01
 			}
-
 		}
 
-		if Debug {
-			dbg_show_message = fmt.Sprintf("\n\tOpcode %02X [1 byte] [Mode: Implied]\tPLP  Processor Status from Stack.\tP = Memory[%02X] %d | SP++\n", opcode, SP_Address, P)
-			fmt.Println(dbg_show_message)
-		}
+		// Print Opcode Debug Message
+		opc_PLP_DebugMsg(bytes, SP_Address)
 
 		SP++
 
@@ -65,4 +62,12 @@ func opc_PLP(bytes uint16, opc_cycles byte) {
 		opc_cycle_count = 1
 	}
 
+}
+
+func opc_PLP_DebugMsg(bytes uint16, SP_Address uint) {
+	if Debug {
+		opc_string := debug_decode_opc(bytes)
+		dbg_show_message = fmt.Sprintf("\n\tOpcode %s [Mode: Implied]\tPLP  Processor Status from Stack.\tP = Memory[0x%02X] %d | SP++\n", opc_string, SP_Address, P)
+		fmt.Println(dbg_show_message)
+	}
 }

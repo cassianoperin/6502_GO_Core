@@ -27,10 +27,8 @@ func opc_SEC(bytes uint16, opc_cycles byte) {
 
 		P[0] = 1
 
-		if Debug {
-			dbg_show_message = fmt.Sprintf("\n\tOpcode %02X [1 byte] [Mode: Implied]\tSEC  Set Carry Flag.\tP[0]=1\n", opcode)
-			fmt.Println(dbg_show_message)
-		}
+		// Print Opcode Debug Message
+		opc_SEC_DebugMsg(bytes)
 
 		// Increment PC
 		PC += bytes
@@ -38,5 +36,12 @@ func opc_SEC(bytes uint16, opc_cycles byte) {
 		// Reset Opcode Cycle counter
 		opc_cycle_count = 1
 	}
+}
 
+func opc_SEC_DebugMsg(bytes uint16) {
+	if Debug {
+		opc_string := debug_decode_opc(bytes)
+		dbg_show_message = fmt.Sprintf("\n\tOpcode %s [Mode: Implied]\tSEC  Set Carry Flag.\tP[0]=1\n", opc_string)
+		fmt.Println(dbg_show_message)
+	}
 }

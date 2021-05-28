@@ -48,20 +48,22 @@ func opc_RTS(bytes uint16, opc_cycles byte) {
 		// Update the Stack Pointer (Increase the two values retrieved)
 		SP += 2
 
-		if Debug {
-			dbg_show_message = fmt.Sprintf("\n\tOpcode %02X [1 byte] [Mode: Implied]\tRTS  Return from Subroutine.\tPC = %04X (+ 1 RTS instruction byte).\n", opcode, PC)
-			fmt.Println(dbg_show_message)
-		}
+		// Print Opcode Debug Message
+		opc_RTS_DebugMsg(bytes)
 
 		// Increment PC
 		PC += bytes
-
-		// // TEST THE MODIFICATIONS FROM SP_Address
-		// fmt.Println("RTS - Validate the SP_Address in 6502 mode. Exiting.")
-		// os.Exit(2)
 
 		// Reset Opcode Cycle counter
 		opc_cycle_count = 1
 	}
 
+}
+
+func opc_RTS_DebugMsg(bytes uint16) {
+	if Debug {
+		opc_string := debug_decode_opc(bytes)
+		dbg_show_message = fmt.Sprintf("\n\tOpcode %s [Mode: Implied]\tRTS  Return from Subroutine.\tPC = 0x%04X (+ 1 RTS instruction byte) = 0x%04X\n", opc_string, PC, PC+0x01)
+		fmt.Println(dbg_show_message)
+	}
 }

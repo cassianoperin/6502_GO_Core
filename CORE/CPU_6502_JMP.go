@@ -26,10 +26,8 @@ func opc_JMP(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 		// After spending the cycles needed, execute the opcode
 	} else {
 
-		if Debug {
-			dbg_show_message = fmt.Sprintf("\n\tOpcode %02X %02X%02X [3 bytes] [Mode: %s]\tJMP  Jump to New Location.\t\tPC = 0x%04X\n", opcode, Memory[PC+2], Memory[PC+1], mode, memAddr)
-			fmt.Println(dbg_show_message)
-		}
+		// Print Opcode Debug Message
+		opc_JMP_DebugMsg(bytes, mode, memAddr)
 
 		// Update PC
 		PC = memAddr
@@ -38,4 +36,12 @@ func opc_JMP(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 		opc_cycle_count = 1
 	}
 
+}
+
+func opc_JMP_DebugMsg(bytes uint16, mode string, memAddr uint16) {
+	if Debug {
+		opc_string := debug_decode_opc(bytes)
+		dbg_show_message = fmt.Sprintf("\n\tOpcode %s [Mode: %s]\tJMP  Jump to New Location.\t\tPC = 0x%04X\n", opc_string, mode, memAddr)
+		fmt.Println(dbg_show_message)
+	}
 }

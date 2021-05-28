@@ -27,10 +27,8 @@ func opc_CLV(bytes uint16, opc_cycles byte) {
 
 		P[6] = 0
 
-		if Debug {
-			dbg_show_message = fmt.Sprintf("\n\tOpcode %02X [1 byte] [Mode: Implied]\tCLV  Clear Overflow Flag.\tP[6]=%d\n", opcode, P[6])
-			fmt.Println(dbg_show_message)
-		}
+		// Print Opcode Debug Message
+		opc_CLV_DebugMsg(bytes)
 
 		// Increment PC
 		PC += bytes
@@ -38,5 +36,12 @@ func opc_CLV(bytes uint16, opc_cycles byte) {
 		// Reset Opcode Cycle counter
 		opc_cycle_count = 1
 	}
+}
 
+func opc_CLV_DebugMsg(bytes uint16) {
+	if Debug {
+		opc_string := debug_decode_opc(bytes)
+		dbg_show_message = fmt.Sprintf("\n\tOpcode %s [Mode: Implied]\tCLV  Clear Overflow Flag.\tP[6]=%d\n", opc_string, P[6])
+		fmt.Println(dbg_show_message)
+	}
 }

@@ -34,15 +34,8 @@ func opc_LDA(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 
 		A = Memory[memAddr]
 
-		if Debug {
-			if bytes == 2 {
-				dbg_show_message = fmt.Sprintf("\n\tOpcode %02X%02X [2 bytes] [Mode: %s]\tLDA  Load Accumulator with Memory.\tA = Memory[%02X] (%d)\n", opcode, Memory[PC+1], mode, memAddr, A)
-				fmt.Println(dbg_show_message)
-			} else if bytes == 3 {
-				dbg_show_message = fmt.Sprintf("\n\tOpcode %02X %02X%02X [3 bytes] [Mode: %s]\tLDA  Load Accumulator with Memory.\tA = Memory[%02X] (%d)\n", opcode, Memory[PC+2], Memory[PC+1], mode, memAddr, A)
-				fmt.Println(dbg_show_message)
-			}
-		}
+		// Print Opcode Debug Message
+		opc_LDA_DebugMsg(bytes, mode, memAddr)
 
 		flags_Z(A)
 		flags_N(A)
@@ -57,4 +50,12 @@ func opc_LDA(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 		opc_cycle_extra = 0
 	}
 
+}
+
+func opc_LDA_DebugMsg(bytes uint16, mode string, memAddr uint16) {
+	if Debug {
+		opc_string := debug_decode_opc(bytes)
+		dbg_show_message = fmt.Sprintf("\n\tOpcode %s [Mode: %s]\tLDA  Load Accumulator with Memory.\tA = Memory[0x%02X] (%d)\n", opc_string, mode, memAddr, A)
+		fmt.Println(dbg_show_message)
+	}
 }

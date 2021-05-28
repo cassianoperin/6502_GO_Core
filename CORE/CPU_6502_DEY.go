@@ -27,10 +27,8 @@ func opc_DEY(bytes uint16, opc_cycles byte) {
 
 		Y--
 
-		if Debug {
-			dbg_show_message = fmt.Sprintf("\n\tOpcode %02X [1 byte] [Mode: Implied]\tDEY  Decrement Index Y by One.\tY-- (%d)\n", opcode, Y)
-			fmt.Println(dbg_show_message)
-		}
+		// Print Opcode Debug Message
+		opc_DEY_DebugMsg(bytes)
 
 		flags_Z(Y)
 		flags_N(Y)
@@ -41,5 +39,12 @@ func opc_DEY(bytes uint16, opc_cycles byte) {
 		// Reset Opcode Cycle counter
 		opc_cycle_count = 1
 	}
+}
 
+func opc_DEY_DebugMsg(bytes uint16) {
+	if Debug {
+		opc_string := debug_decode_opc(bytes)
+		dbg_show_message = fmt.Sprintf("\n\tOpcode %s [Mode: Implied]\tDEY  Decrement Index Y by One.\tY-- (%d)\n", opc_string, Y)
+		fmt.Println(dbg_show_message)
+	}
 }

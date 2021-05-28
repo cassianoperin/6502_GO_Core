@@ -40,32 +40,16 @@ func opc_JSR(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 			SP_Address = uint(SP) + 256
 		}
 
-		// Push PC+2 (will be increased in 1 in RTS to match the next address (3 bytes operation))
-		// Store the first byte into the Stack
-		// fmt.Printf("PC: %02X\n", PC)
-
 		Memory[SP_Address] = byte((PC + 2) >> 8)
-		// fmt.Printf("FF %02X\n", Memory[SP_Address])
 		SP--
 		SP_Address--
 		// Store the second byte into the Stack
 		Memory[SP_Address] = byte((PC + 2) & 0xFF)
 		SP_Address--
 		SP--
-		// fmt.Printf("FE %02X\n", Memory[SP_Address])
 
-		// fmt.Printf("\nPC+3: %02X",PC+3)
-		// fmt.Printf("\nF0: %02X",(PC+3) >> 8)
-		// fmt.Printf("\n42: %02X",(PC+3) & 0xFF)
-
-		if Debug {
-			dbg_show_message = fmt.Sprintf("\n\tOpcode %02X %02X%02X [3 bytes] [Mode: %s]\tJSR  Jump to New Location Saving Return Address.\tPC = Memory[%02X]\t|\t Stack[%02X] = %02X\t Stack[%02X] = %02X\n", opcode, Memory[PC+2], Memory[PC+1], mode, memAddr, SP_Address+2, Memory[SP_Address+2], SP_Address+1, Memory[SP_Address+1])
-			fmt.Println(dbg_show_message)
-		}
-
-		// TEST THE MODIFICATIONS FROM SP_Address
-		// fmt.Println("JSR - Validate the SP_Address in 6502 mode. Exiting.")
-		// os.Exit(2)
+		// Print Opcode Debug Message
+		opc_JSR_DebugMsg(bytes, mode, memAddr, SP_Address)
 
 		// Update PC
 		PC = memAddr
@@ -74,4 +58,12 @@ func opc_JSR(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 		opc_cycle_count = 1
 	}
 
+}
+
+func opc_JSR_DebugMsg(bytes uint16, mode string, memAddr uint16, SP_Address uint) {
+	if Debug {
+		opc_string := debug_decode_opc(bytes)
+		dbg_show_message = fmt.Sprintf("\n\tOpcode %s [Mode: %s]\tJSR  Jump to New Location Saving Return Address.\tPC = Memory[0x%02X]\t|\t Stack[0x%02X] = %02X\t Stack[0x%02X] = 0x%02X\n", opc_string, mode, memAddr, SP_Address+2, Memory[SP_Address+2], SP_Address+1, Memory[SP_Address+1])
+		fmt.Println(dbg_show_message)
+	}
 }

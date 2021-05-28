@@ -1,6 +1,8 @@
 package CORE
 
-import "fmt"
+import (
+	"fmt"
+)
 
 // BVS  Branch on Overflow Set
 //
@@ -13,8 +15,7 @@ import "fmt"
 
 func opc_BVS(value int8, bytes uint16, opc_cycles byte) { // value is SIGNED
 
-	// If overflow is set
-	if P[6] == 1 {
+	if P[6] == 1 { // If overflow is set
 
 		// Show current opcode cycle
 		if Debug {
@@ -27,10 +28,8 @@ func opc_BVS(value int8, bytes uint16, opc_cycles byte) { // value is SIGNED
 
 			// After spending the cycles needed, execute the opcode
 		} else {
-			if Debug {
-				dbg_show_message = fmt.Sprintf("\n\tOpcode %02X%02X [2 bytes] [Mode: Relative]\tBVS  Branch on Overflow Set.\tOverflow EQUAL 1, JUMP TO %04X\n", opcode, Memory[PC+1], PC+2+uint16(value))
-				fmt.Println(dbg_show_message)
-			}
+			// Print Opcode Debug Message
+			opc_BVS_DebugMsg(bytes, value)
 
 			// PC + the number of bytes to jump on overflow clear
 			PC += uint16(value)
@@ -45,8 +44,7 @@ func opc_BVS(value int8, bytes uint16, opc_cycles byte) { // value is SIGNED
 			opc_cycle_extra = 0
 		}
 
-		// If overflow is clear
-	} else {
+	} else { // If overflow is clear
 
 		// Show current opcode cycle
 		if Debug {
@@ -59,10 +57,8 @@ func opc_BVS(value int8, bytes uint16, opc_cycles byte) { // value is SIGNED
 
 			// After spending the cycles needed, execute the opcode
 		} else {
-			if Debug {
-				dbg_show_message = fmt.Sprintf("\n\tOpcode %02X%02X [2 bytes]\tBVS  Branch on Overflow Set.\tOverflow NOT EQUAL 1, PC+2 \n", opcode, Memory[PC+1])
-				fmt.Println(dbg_show_message)
-			}
+			// Print Opcode Debug Message
+			opc_BVS_DebugMsg(bytes, value)
 
 			// Increment PC
 			PC += bytes
@@ -70,7 +66,17 @@ func opc_BVS(value int8, bytes uint16, opc_cycles byte) { // value is SIGNED
 			// Reset Opcode Cycle counter
 			opc_cycle_count = 1
 		}
-
 	}
+}
 
+func opc_BVS_DebugMsg(bytes uint16, value int8) {
+	if Debug {
+		opc_string := debug_decode_opc(bytes)
+		if P[6] == 1 { // If overflow is set
+			dbg_show_message = fmt.Sprintf("\n\tOpcode %s [Mode: Relative]\tBVS  Branch on Overflow Set.\tOverflow EQUAL 1, JUMP TO 0x%04X\n", opc_string, PC+2+uint16(value))
+		} else { // If overflow is clear
+			dbg_show_message = fmt.Sprintf("\n\tOpcode %s\tBVS  Branch on Overflow Set.\tOverflow NOT EQUAL 1, PC+2 \n", opc_string)
+		}
+		fmt.Println(dbg_show_message)
+	}
 }

@@ -67,14 +67,9 @@ func Reset() {
 	SP = 0xFF
 }
 
-func Show() {
-	if Debug {
-		// fmt.Printf("\n\n%04X : %02X\n\n", PC, opcode)
-		fmt.Printf("\t\t\t\t\t\t\t\t\t\t   N V - B D I Z C")
-		fmt.Printf("\nCycle: %d\tOpcode: %02X\tPC: 0x%04X(%d)\tA: 0x%02X\tX: 0x%02X\tY: 0x%02X\tP: %d %d %d %d %d %d %d %d\tSP: %02X\t\tStack:  Mem[1FF]: %02X   Mem[1FE]: %02X   Mem[1FD]: %02X   Mem[1FC]: %02X\n", counter_F_Cycle, opcode, PC, PC, A, X, Y, P[7], P[6], P[5], P[4], P[3], P[2], P[1], P[0], SP, Memory[0x1FF], Memory[0x1FE], Memory[0x1FD], Memory[0x1FC])
-		// fmt.Printf("\nCycle: %d\tOpcode: %02X\tPC: 0x%04X(%d)\tA: 0x%02X\tX: 0x%02X\tY: 0x%02X\tP: %d %d %d %d %d %d %d %d\tSP: %02X\t\tStack:  Mem[1FF]: %02X   Mem[1FE]: %02X   Mem[1FD]: %02X   Mem[1FC]: %02X\t\tTEST: 0D: 0x%02X\t\tTEST: 0E: 0x%02X\n", counter_F_Cycle, opcode, PC, PC, A, X, Y, P[7], P[6], P[5], P[4], P[3], P[2], P[1], P[0], SP, Memory[0x1FF], Memory[0x1FE], Memory[0x1FD], Memory[0x1FC], Memory[0x0D], Memory[0x0E])
-		// fmt.Printf("\n\n00: %02X\t01: %02X\t02: %02X\t03: %02X\t04: %02X\t05: %02X\t06: %02X\t07: %02X\t08: %02X\t09: %02X\t0A: %02X\t0B: %02X\t0C: %02X\t0D: %02X\t0E: %02X\t0F: %02X\t\n\n", Memory[0x00], Memory[0x01], Memory[0x02], Memory[0x03], Memory[0x04], Memory[0x05], Memory[0x06], Memory[0x07], Memory[0x08], Memory[0x09], Memory[0x0A], Memory[0x0B], Memory[0x0C], Memory[0x0D], Memory[0x0E], Memory[0x0F])
-	}
+func ShowDebugHeader() {
+	fmt.Printf("\t\t\t\t\t\t\t\t\t\t   N V - B D I Z C")
+	fmt.Printf("\nCycle: %d\tOpcode: %02X\tPC: 0x%04X(%d)\tA: 0x%02X\tX: 0x%02X\tY: 0x%02X\tP: %d %d %d %d %d %d %d %d\tSP: %02X\t\tStack:  Mem[1FF]: %02X   Mem[1FE]: %02X   Mem[1FD]: %02X   Mem[1FC]: %02X\n", counter_F_Cycle, opcode, PC, PC, A, X, Y, P[7], P[6], P[5], P[4], P[3], P[2], P[1], P[0], SP, Memory[0x1FF], Memory[0x1FE], Memory[0x1FD], Memory[0x1FC])
 }
 
 // CPU Interpreter
@@ -83,13 +78,12 @@ func CPU_Interpreter() {
 	// Read the Next Instruction to be executed
 	opcode = Memory[PC]
 
-	// Print Cycle and Debug Information
-	// if Debug {
-	// Just show in the first opcode cycle
-	if opc_cycle_count == 1 {
-		Show()
+	// Show Debug Header
+	if Debug {
+		if opc_cycle_count == 1 { // Just in the first opcode cycle
+			ShowDebugHeader()
+		}
 	}
-	// }
 
 	// Map Opcode
 	switch opcode {

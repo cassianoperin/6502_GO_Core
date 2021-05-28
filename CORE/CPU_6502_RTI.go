@@ -70,14 +70,20 @@ func opc_RTI(bytes uint16, opc_cycles byte) {
 
 		SP += 2
 
-		if Debug {
-			dbg_show_message = fmt.Sprintf("\n\tOpcode %02X [1 byte] [Mode: Implied]\tRTI  Return from Interrupt (P and PC from Stack).\tP = Memory[%02X] %d | PC = %04X | SP: %02X\n", opcode, SP_Address, P, PC, SP)
-			fmt.Println(dbg_show_message)
-		}
+		// Print Opcode Debug Message
+		opc_RTI_DebugMsg(bytes, SP_Address)
 
 		// Reset Opcode Cycle counter
 		opc_cycle_count = 1
 
 	}
 
+}
+
+func opc_RTI_DebugMsg(bytes uint16, SP_Address uint) {
+	if Debug {
+		opc_string := debug_decode_opc(bytes)
+		dbg_show_message = fmt.Sprintf("\n\tOpcode %s [Mode: Implied]\tRTI  Return from Interrupt (P and PC from Stack).\tP = Memory[0x%02X] %d | PC = 0x%04X | SP: 0x%02X\n", opc_string, SP_Address, P, PC, SP)
+		fmt.Println(dbg_show_message)
+	}
 }

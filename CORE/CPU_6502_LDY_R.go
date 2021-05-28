@@ -31,15 +31,8 @@ func opc_LDY(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 
 		Y = Memory[memAddr]
 
-		if Debug {
-			if bytes == 2 {
-				dbg_show_message = fmt.Sprintf("\n\tOpcode %02X%02X [2 bytes] [Mode: %s]\tLDY  Index Y with Memory.\tY = Memory[%02X] (%d)\n", opcode, Memory[PC+1], mode, memAddr, Y)
-				fmt.Println(dbg_show_message)
-			} else if bytes == 3 {
-				dbg_show_message = fmt.Sprintf("\n\tOpcode %02X %02X%02X [3 bytes] [Mode: %s]\tLDY  Index Y with Memory.\tY = Memory[%02X] (%d)\n", opcode, Memory[PC+2], Memory[PC+1], mode, memAddr, Y)
-				fmt.Println(dbg_show_message)
-			}
-		}
+		// Print Opcode Debug Message
+		opc_LDY_DebugMsg(bytes, mode, memAddr)
 
 		flags_Z(Y)
 		flags_N(Y)
@@ -54,4 +47,12 @@ func opc_LDY(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 		opc_cycle_extra = 0
 	}
 
+}
+
+func opc_LDY_DebugMsg(bytes uint16, mode string, memAddr uint16) {
+	if Debug {
+		opc_string := debug_decode_opc(bytes)
+		dbg_show_message = fmt.Sprintf("\n\tOpcode %s [Mode: %s]\tLDY  Index Y with Memory.\tY = Memory[0x%02X] (%d)\n", opc_string, mode, memAddr, Y)
+		fmt.Println(dbg_show_message)
+	}
 }

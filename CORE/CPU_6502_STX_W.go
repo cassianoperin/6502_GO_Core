@@ -30,17 +30,8 @@ func opc_STX(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 		// Update Memory[memAddr] with value of X and notify TIA about the update
 		memUpdate(memAddr, X)
 
-		if Debug {
-
-			if bytes == 2 {
-				dbg_show_message = fmt.Sprintf("\n\tOpcode %02X%02X [2 bytes] [Mode: %s]\tSTX  Store Index X in Memory.\tMemory[%02X] = X (%d)\n", opcode, Memory[PC+1], mode, memAddr, X)
-				fmt.Println(dbg_show_message)
-			} else if bytes == 3 {
-				dbg_show_message = fmt.Sprintf("\n\tOpcode %02X %02X%02X [3 bytes] [Mode: %s]\tSTX  Store Index X in Memory.\tMemory[%02X] = X (%d)\n", opcode, Memory[PC+2], Memory[PC+1], mode, memAddr, X)
-				fmt.Println(dbg_show_message)
-			}
-
-		}
+		// Print Opcode Debug Message
+		opc_STX_DebugMsg(bytes, mode, memAddr)
 
 		// Increment PC
 		PC += bytes
@@ -49,4 +40,12 @@ func opc_STX(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 		opc_cycle_count = 1
 	}
 
+}
+
+func opc_STX_DebugMsg(bytes uint16, mode string, memAddr uint16) {
+	if Debug {
+		opc_string := debug_decode_opc(bytes)
+		dbg_show_message = fmt.Sprintf("\n\tOpcode %s [Mode: %s]\tSTX  Store Index X in Memory.\tMemory[0x%02X] = X (%d)\n", opc_string, mode, memAddr, X)
+		fmt.Println(dbg_show_message)
+	}
 }

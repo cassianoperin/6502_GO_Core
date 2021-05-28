@@ -32,16 +32,8 @@ func opc_EOR(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 		// After spending the cycles needed, execute the opcode
 	} else {
 
-		if Debug {
-
-			if bytes == 2 {
-				dbg_show_message = fmt.Sprintf("\n\tOpcode %02X%02X [2 bytes] [Mode: %s]\tEOR  Exclusive-OR Memory with Accumulator.\tA = A(%d) XOR Memory[%02X](%d)\t(%d)\n", opcode, Memory[PC+1], mode, A, memAddr, Memory[memAddr], A^Memory[memAddr])
-			} else if bytes == 3 {
-				dbg_show_message = fmt.Sprintf("\n\tOpcode %02X %02X%02X [3 bytes] [Mode: %s]\tEOR  Exclusive-OR Memory with Accumulator.\tA = A(%d) XOR Memory[%02X](%d)\t(%d)\n", opcode, Memory[PC+2], Memory[PC+1], mode, A, memAddr, Memory[memAddr], A^Memory[memAddr])
-			}
-			fmt.Println(dbg_show_message)
-
-		}
+		// Print Opcode Debug Message
+		opc_EOR_DebugMsg(bytes, mode, memAddr)
 
 		A = A ^ Memory[memAddr]
 
@@ -56,5 +48,13 @@ func opc_EOR(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 
 		// Reset Opcode Extra Cycle counter
 		opc_cycle_extra = 0
+	}
+}
+
+func opc_EOR_DebugMsg(bytes uint16, mode string, memAddr uint16) {
+	if Debug {
+		opc_string := debug_decode_opc(bytes)
+		dbg_show_message = fmt.Sprintf("\n\tOpcode %s [Mode: %s]\tEOR  Exclusive-OR Memory with Accumulator.\tA = A(%d) XOR Memory[0x%02X](%d)\t(%d)\n", opc_string, mode, A, memAddr, Memory[memAddr], A^Memory[memAddr])
+		fmt.Println(dbg_show_message)
 	}
 }

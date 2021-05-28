@@ -41,10 +41,8 @@ func opc_PHA(bytes uint16, opc_cycles byte) {
 
 		Memory[SP_Address] = A
 
-		if Debug {
-			dbg_show_message = fmt.Sprintf("\n\tOpcode %02X [1 byte] [Mode: Implied]\tPHA  Push Accumulator on Stack.\tMemory[%02X] = A (%d) | SP--\n", opcode, SP_Address, Memory[SP_Address])
-			fmt.Println(dbg_show_message)
-		}
+		// Print Opcode Debug Message
+		opc_PHA_DebugMsg(bytes, SP_Address)
 
 		SP--
 
@@ -54,5 +52,12 @@ func opc_PHA(bytes uint16, opc_cycles byte) {
 		// Reset Opcode Cycle counter
 		opc_cycle_count = 1
 	}
+}
 
+func opc_PHA_DebugMsg(bytes uint16, SP_Address uint) {
+	if Debug {
+		opc_string := debug_decode_opc(bytes)
+		dbg_show_message = fmt.Sprintf("\n\tOpcode %s [Mode: Implied]\tPHA  Push Accumulator on Stack.\tMemory[0x%02X] = A (%d) | SP--\n", opc_string, SP_Address, Memory[SP_Address])
+		fmt.Println(dbg_show_message)
+	}
 }

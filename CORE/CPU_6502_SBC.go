@@ -122,33 +122,8 @@ func opc_SBC(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 
 		}
 
-		// --------------------------------------- Debug -------------------------------------- //
-
-		if Debug {
-
-			// Decimal flag OFF (Binary or Hex Mode)
-			if P[3] == 0 {
-
-				if bytes == 2 {
-					dbg_show_message = fmt.Sprintf("\n\tOpcode %02X%02X [2 bytes] [Mode: %s]\tSBC  Subtract Memory from Accumulator with Borrow.\tA = A(%d) - Memory[%02X](%d) - Borrow(Inverted Carry)(%d) = %d\n", opcode, Memory[PC+1], mode, original_A, memAddr, Memory[memAddr], original_P0^1, A)
-				} else if bytes == 3 {
-					dbg_show_message = fmt.Sprintf("\n\tOpcode %02X %02X%02X [3 bytes] [Mode: %s]\tSBC  Subtract Memory from Accumulator with Borrow.\tA = A(%d) - Memory[%02X](%d) - Borrow(Inverted Carry)(%d) = %d\n", opcode, Memory[PC+2], Memory[PC+1], mode, original_A, memAddr, Memory[memAddr], original_P0^1, A)
-				}
-
-				// Decimal flag ON (Decimal Mode)
-			} else {
-
-				if bytes == 2 {
-					dbg_show_message = fmt.Sprintf("\n\tOpcode %02X%02X [2 bytes] [Mode: %s]\tSBC  Subtract Memory from Accumulator with Borrow. [Decimal Mode]\tA = A(%02X) - Memory[%02X](%02X) - Borrow(Inverted Carry)(%d) = %02X\n", opcode, Memory[PC+1], mode, original_A, memAddr, Memory[memAddr], original_P0^1, A)
-				} else if bytes == 3 {
-					dbg_show_message = fmt.Sprintf("\n\tOpcode %02X %02X%02X [3 bytes] [Mode: %s]\tSBC  Subtract Memory from Accumulator with Borrow. [Decimal Mode]\tA = A(%02X) - Memory[%02X](%02X) - Borrow(Inverted Carry)(%d) = %02X\n", opcode, Memory[PC+2], Memory[PC+1], mode, original_A, memAddr, Memory[memAddr], original_P0^1, A)
-				}
-
-			}
-
-			fmt.Println(dbg_show_message)
-
-		}
+		// Print Opcode Debug Message
+		opc_SBC_DebugMsg(bytes, mode, original_A, memAddr, original_P0)
 
 		// Increment PC
 		PC += bytes
@@ -161,4 +136,16 @@ func opc_SBC(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 
 	}
 
+}
+
+func opc_SBC_DebugMsg(bytes uint16, mode string, original_A byte, memAddr uint16, original_P0 byte) {
+	if Debug {
+		opc_string := debug_decode_opc(bytes)
+		if P[3] == 0 { // Decimal flag OFF (Binary or Hex Mode)
+			dbg_show_message = fmt.Sprintf("\n\tOpcode %s [Mode: %s]\tSBC  Subtract Memory from Accumulator with Borrow.\tA = A(%d) - Memory[0x%02X](%d) - Borrow(Inverted Carry)(%d) = %d\n", opc_string, mode, original_A, memAddr, Memory[memAddr], original_P0^1, A)
+		} else { // Decimal flag ON (Decimal Mode)
+			dbg_show_message = fmt.Sprintf("\n\tOpcode %s [Mode: %s]\tSBC  Subtract Memory from Accumulator with Borrow. [Decimal Mode]\tA = A(0x%02X) - Memory[0x%02X](0x%02X) - Borrow(Inverted Carry)(0x%X) = 0x%02X\n", opc_string, mode, original_A, memAddr, Memory[memAddr], original_P0^1, A)
+		}
+		fmt.Println(dbg_show_message)
+	}
 }
