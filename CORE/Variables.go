@@ -28,6 +28,8 @@ var (
 	// 1    Z     Zero          (0=Nonzero, 1=Zero)
 	// 0    C     Carry         (0=No Carry, 1=Carry)
 
+	// -------------------------------- Bus --------------------------------- //
+
 	// --------------------------- CPU Variables ---------------------------- //
 	opcode byte // CPU Operation Code
 
@@ -37,7 +39,7 @@ var (
 	opc_cycle_extra byte   // Opcode extra cycle
 
 	// -------------------------- Memory Variables -------------------------- //
-	memAddr  uint16 // Receive the memory address needed by the opcode
+	memAddr  uint16 // // 16 pins of processor that points to memory for read or write operations
 	memMode  string // Receive the addressing mode used in the debug
 	memValue int8   // Receive the memory value needed by branches. Calculated in the first opc cycle to check for extra cycles, used in the last to perform the operation
 

@@ -15,18 +15,16 @@ All opcodes and memory modes implemented and tested in Klaus Dormann test suite.
 
 ## TODO
 
-* ![100%](https://progress-bar.dev/0) Review internal cycles opcode messages
-* ![100%](https://progress-bar.dev/0) Improve branches logic
-* ![100%](https://progress-bar.dev/0) Create a disassembler mode
-* ![100%](https://progress-bar.dev/0) Create a CLI
 * ![100%](https://progress-bar.dev/0) Implement a BUS from CPU to Memory (address and data) - Fetch-decode-execute loop
 * ![100%](https://progress-bar.dev/0) Map Read and Write instructions
-* ![100%](https://progress-bar.dev/0) Finish the ifs for 6502 our atari mode (create memory maps)
+* ![100%](https://progress-bar.dev/0) Finish the ifs for 6502 or atari mode (create different memory maps or paths?)
+* ![100%](https://progress-bar.dev/0) Create a CLI
+* ![100%](https://progress-bar.dev/0) Create a disassembler mode
 
 
 ## Documentation:
 
-### 6502:
+### 6502
 
 http://www.6502.org/
 

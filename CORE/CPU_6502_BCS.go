@@ -15,10 +15,8 @@ func opc_BCS(value int8, bytes uint16, opc_cycles byte) { // value is SIGNED
 
 	if P[0] == 1 { // If carry is set
 
-		// Show current opcode cycle
-		if Debug {
-			fmt.Printf("\tCPU Cycle: %d\t\tOpcode Cycle %d of %d\t(%d cycles + 1 cycle for branch + %d extra cycles for branch in different page)\n", counter_F_Cycle, opc_cycle_count, opc_cycles+opc_cycle_extra+1, opc_cycles, opc_cycle_extra)
-		}
+		// Print internal opcode cycle
+		debugInternalOpcCycleBranch(opc_cycles)
 
 		// Just increment the Opcode cycle Counter
 		if opc_cycle_count < opc_cycles+1+opc_cycle_extra {
@@ -36,19 +34,14 @@ func opc_BCS(value int8, bytes uint16, opc_cycles byte) { // value is SIGNED
 			// Increment PC
 			PC += bytes
 
-			// Reset Opcode Cycle counter
-			opc_cycle_count = 1
-
-			// Reset Opcode Extra Cycle counter
-			opc_cycle_extra = 0
+			// Reset Internal Opcode Cycle counters
+			resetIntOpcCycleCounters()
 		}
 
 	} else { // If carry is clear
 
-		// Show current opcode cycle
-		if Debug {
-			fmt.Printf("\tCPU Cycle: %d\t\tOpcode Cycle %d of %d\n", counter_F_Cycle, opc_cycle_count, opc_cycles)
-		}
+		// Print internal opcode cycle
+		debugInternalOpcCycle(opc_cycles)
 
 		// Just increment the Opcode cycle Counter
 		if opc_cycle_count < opc_cycles {
@@ -62,8 +55,8 @@ func opc_BCS(value int8, bytes uint16, opc_cycles byte) { // value is SIGNED
 			// Increment PC
 			PC += bytes
 
-			// Reset Opcode Cycle counter
-			opc_cycle_count = 1
+			// Reset Internal Opcode Cycle counters
+			resetIntOpcCycleCounters()
 		}
 
 	}

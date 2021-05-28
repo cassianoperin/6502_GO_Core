@@ -21,10 +21,8 @@ import "fmt"
 
 func opc_U_RLA(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 
-	// Show current opcode cycle
-	if Debug {
-		fmt.Printf("\tCPU Cycle: %d\t\tOpcode Cycle %d of %d\n", counter_F_Cycle, opc_cycle_count, opc_cycles)
-	}
+	// Print internal opcode cycle
+	debugInternalOpcCycle(opc_cycles)
 
 	// Just increment the Opcode cycle Counter
 	if opc_cycle_count < opc_cycles {
@@ -33,10 +31,8 @@ func opc_U_RLA(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 		// After spending the cycles needed, execute the opcode
 	} else {
 
-		if Debug {
-			dbg_show_message = fmt.Sprintf("\n\tOpcode %02X%02X [2 bytes] [Mode: %s] [Unnoficial!!!]\tRLA  ROL + AND.\n", opcode, Memory[PC+1], mode)
-			fmt.Println(dbg_show_message)
-		}
+		// Print Opcode Debug Message
+		opc_U_RLA_DebugMsg1(bytes, mode)
 
 		// ----------------------------- ROL ----------------------------- //
 
@@ -77,8 +73,16 @@ func opc_U_RLA(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 		// Increment PC
 		PC += bytes
 
-		// Reset Opcode Cycle counter
-		opc_cycle_count = 1
+		// Reset Internal Opcode Cycle counters
+		resetIntOpcCycleCounters()
 	}
 
+}
+
+func opc_U_RLA_DebugMsg1(bytes uint16, mode string) {
+	if Debug {
+		opc_string := debug_decode_opc(bytes)
+		dbg_show_message = fmt.Sprintf("\n\tOpcode %s [Mode: %s] [Unnoficial!!!]\tRLA  ROL + AND.\n", opc_string, mode)
+		fmt.Println(dbg_show_message)
+	}
 }

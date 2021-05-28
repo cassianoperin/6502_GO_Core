@@ -72,23 +72,35 @@ func debug_decode_opc(bytes uint16) string {
 	return opc_string
 }
 
-// // BCD - Binary Coded Decimal
-// func BCD(number byte) byte {
+// Print internal opcode cycle in debug mode
+func debugInternalOpcCycle(opc_cycles byte) {
+	if Debug {
+		fmt.Printf("\tCPU Cycle: %d\t\tOpcode Cycle %d of %d\n", counter_F_Cycle, opc_cycle_count, opc_cycles)
+	}
+}
 
-// 	var tmp_hundreds, tmp_tens, tmp_ones, bcd byte
+// Print internal opcode cycle in debug mode - instructions with extra cycle
+func debugInternalOpcCycleExtras(opc_cycles byte) {
+	if Debug {
+		fmt.Printf("\tCPU Cycle: %d\t\tOpcode Cycle %d of %d\t(%d cycles + %d extra cycles)\n", counter_F_Cycle, opc_cycle_count, opc_cycles+opc_cycle_extra, opc_cycles, opc_cycle_extra)
+	}
+}
 
-// 	// Split the Decimal Value
-// 	tmp_hundreds = number / 100    // Hundreds
-// 	tmp_tens = (number / 10) % 10  // Tens
-// 	tmp_ones = (number % 100) % 10 // Ones
+// Print internal opcode cycle in debug mode - Branches
+func debugInternalOpcCycleBranch(opc_cycles byte) {
+	if Debug {
+		fmt.Printf("\tCPU Cycle: %d\t\tOpcode Cycle %d of %d\t(%d cycles + 1 cycle for branch + %d extra cycles for branch in different page)\n", counter_F_Cycle, opc_cycle_count, opc_cycles+opc_cycle_extra+1, opc_cycles, opc_cycle_extra)
+	}
+}
 
-// 	fmt.Printf("H: %d\tT: %d\tO: %d\n", tmp_hundreds, tmp_tens, tmp_ones)
+// Reset the internal opcode cycle counters
+func resetIntOpcCycleCounters() {
+	// Reset Opcode Cycle counter
+	opc_cycle_count = 1
 
-// 	// Combine in one decimal number
-// 	bcd = (tmp_hundreds * 100) + (tmp_tens * 10) + tmp_ones
-
-// 	return bcd
-// }
+	// Reset Opcode Extra Cycle counter
+	opc_cycle_extra = 0
+}
 
 // Memory Bus - Used by INC, STA, STY and STX to update memory and sinalize TIA about the actions
 func memUpdate(memAddr uint16, value byte) {
