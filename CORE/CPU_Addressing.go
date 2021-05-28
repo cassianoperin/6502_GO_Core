@@ -14,7 +14,7 @@ func addr_mode_Relative(offset uint16) int8 {
 	mode := "Relative"
 
 	if Debug {
-		fmt.Printf("\t%s addressing mode.\tMemory[0x%02X]\tValue obtained: %d (Decimal SIGNED value)\n", mode, memAddr, value)
+		fmt.Printf("\t%s addressing mode.\tADDRESS BUS: Memory[0x%02X]\tCurrent Value: %d (Decimal SIGNED value)\n", mode, memAddr, value)
 	}
 
 	return value
@@ -28,7 +28,7 @@ func addr_mode_Zeropage(offset uint16) (uint16, string) {
 	mode := "Zeropage"
 
 	if Debug {
-		fmt.Printf("\t%s addressing mode.\tMemory[0x%02X]\tValue obtained: 0x%02X (%d)\n", mode, memAddr, value, value)
+		fmt.Printf("\t%s addressing mode.\tADDRESS BUS: Memory[0x%02X]\tCurrent Value: 0x%02X (%d)\n", mode, memAddr, value, value)
 	}
 
 	return uint16(memAddr), mode
@@ -42,7 +42,7 @@ func addr_mode_ZeropageX(offset uint16) (uint16, string) {
 	mode := "Zeropage,X"
 
 	if Debug {
-		fmt.Printf("\t%s addressing mode.\tMemory[0x%02X]\tValue obtained: 0x%02X (%d)\n", mode, memAddr, value, value)
+		fmt.Printf("\t%s addressing mode.\tADDRESS BUS: Memory[0x%02X]\tCurrent Value: 0x%02X (%d)\n", mode, memAddr, value, value)
 	}
 
 	return uint16(memAddr), mode
@@ -56,7 +56,7 @@ func addr_mode_ZeropageY(offset uint16) (uint16, string) {
 	mode := "Zeropage,Y"
 
 	if Debug {
-		fmt.Printf("\t%s addressing mode.\tMemory[0x%02X]\tValue obtained: 0x%02X (%d)\n", mode, memAddr, value, value)
+		fmt.Printf("\t%s addressing mode.\tADDRESS BUS: Memory[0x%02X]\tCurrent Value: 0x%02X (%d)\n", mode, memAddr, value, value)
 	}
 
 	return uint16(memAddr), mode
@@ -70,7 +70,7 @@ func addr_mode_Immediate(offset uint16) (uint16, string) {
 	mode := "Immediate"
 
 	if Debug {
-		fmt.Printf("\t%s addressing mode.\tMemory[0x%02X]\tValue obtained: 0x%02X (%d)\n", mode, memAddr, value, value)
+		fmt.Printf("\t%s addressing mode.\tADDRESS BUS: Memory[0x%02X]\tCurrent Value: 0x%02X (%d)\n", mode, memAddr, value, value)
 	}
 
 	return memAddr, mode
@@ -85,7 +85,7 @@ func addr_mode_Absolute(offset uint16) (uint16, string) {
 	mode := "Absolute"
 
 	if Debug {
-		fmt.Printf("\t%s addressing mode.\tMemory[0x%02X]\t\tValue obtained: 0x%02X (%d)\n", mode, memAddr, value, value)
+		fmt.Printf("\t%s addressing mode.\tADDRESS BUS: Memory[0x%02X]\t\tCurrent Value: 0x%02X (%d)\n", mode, memAddr, value, value)
 	}
 
 	return memAddr, mode
@@ -99,7 +99,7 @@ func addr_mode_AbsoluteY(offset uint16) (uint16, string) {
 	mode := "Absolute,Y"
 
 	if Debug {
-		fmt.Printf("\t%s addressing mode.\t\tMemory[0x%02X]\t\tValue obtained: 0x%02X (%d)\n", mode, memAddr, value, value)
+		fmt.Printf("\t%s addressing mode.\t\tADDRESS BUS: Memory[0x%02X]\t\tCurrent Value: 0x%02X (%d)\n", mode, memAddr, value, value)
 	}
 
 	return memAddr, mode
@@ -113,7 +113,7 @@ func addr_mode_AbsoluteX(offset uint16) (uint16, string) {
 	mode := "Absolute,X"
 
 	if Debug {
-		fmt.Printf("\t%s addressing mode.\t\tMemory[0x%02X]\t\tValue obtained: 0x%02X (%d)\n", mode, memAddr, value, value)
+		fmt.Printf("\t%s addressing mode.\t\tADDRESS BUS: Memory[0x%02X]\t\tCurrent Value: 0x%02X (%d)\n", mode, memAddr, value, value)
 	}
 
 	return memAddr, mode
@@ -147,7 +147,7 @@ func addr_mode_Indirect(offset uint16) (uint16, string) {
 	mode := "Indirect"
 
 	if Debug {
-		fmt.Printf("\t%s addressing mode.\t\tAddress inside 0x%04X points to Memory[0x%04X]\n", mode, (uint16(Memory[offset+1])<<8 | uint16(Memory[offset])), memAddr)
+		fmt.Printf("\t%s addressing mode.\tADDRESS BUS: Memory[0x%04X]\t(Address inside 0x%04X points to 0x%04X)\n", mode, memAddr, (uint16(Memory[offset+1])<<8 | uint16(Memory[offset])), memAddr)
 	}
 
 	return memAddr, mode
@@ -181,9 +181,10 @@ func addr_mode_IndirectY(offset uint16) (uint16, string) {
 	mode := "(Indirect),Y"
 
 	if Debug {
-		fmt.Printf("\t%s addressing mode. Indirect Addr: 0x%02X\tLSB: (Memory[0x%02X]:0x%02X + Y:(0x%02X)) = 0x%04X & 00FF = 0x%02X and carry: %d\t\tMSB: (Memory[ (0x%02X+0x01=(0x%02X)) + carry(%d)]): 0x%02X\n\tResult: Memory[0x%04X]\t\tValue obtained: 0x%02X (%d)\n", mode, indirect_addr, indirect_addr, Memory[indirect_addr], Y, LSB_tmp, LSB, carry, indirect_addr, Memory[indirect_addr+1], carry, MSB, memAddr, value, value)
+		fmt.Printf("\t%s addressing mode.\tIndirect Addr: 0x%02X\tLSB: (Memory[0x%02X]:0x%02X + Y:(0x%02X)) = 0x%04X & 00FF = 0x%02X and carry: %d\t\tMSB: (Memory[ (0x%02X+0x01=(0x%02X)) + carry(%d)]): 0x%02X\n\tADDRESS BUS: Memory[0x%04X]\t\tCurrent Value: 0x%02X (%d)\n", mode, indirect_addr, indirect_addr, Memory[indirect_addr], Y, LSB_tmp, LSB, carry, indirect_addr, Memory[indirect_addr+1], carry, MSB, memAddr, value, value)
 	}
 
+	os.Exit(2)
 	return memAddr, mode
 }
 
@@ -207,8 +208,7 @@ func addr_mode_IndirectX(offset uint16) (uint16, string) {
 	mode := "(Indirect,X)"
 
 	if Debug {
-		fmt.Printf("\t%s addressing mode. Indirect Addr: 0x%02X\t\tLSB: indirect_addr:0x%02X + X:0x%02X = 0x%02X (Value: 0x%02X)\t\tMSB: Address of LSB(0x%02X) + 0x01: 0x%02X (Value: 0x%02X)\n\tResult: Memory[0x%04X]\t\tValue obtained: 0x%02X (%02X)\n", mode, indirect_addr, indirect_addr, X, LSB, Memory[LSB], LSB, MSB, Memory[MSB], memAddr, value, value)
-
+		fmt.Printf("\t%s addressing mode. Indirect Addr: 0x%02X\t\tLSB: indirect_addr:0x%02X + X:0x%02X = 0x%02X (Value: 0x%02X)\t\tMSB: Address of LSB(0x%02X) + 0x01: 0x%02X (Value: 0x%02X)\n\tADDRESS BUS: Memory[0x%04X]\t\tCurrent Value: 0x%02X (%02X)\n", mode, indirect_addr, indirect_addr, X, LSB, Memory[LSB], LSB, MSB, Memory[MSB], memAddr, value, value)
 	}
 
 	return memAddr, mode

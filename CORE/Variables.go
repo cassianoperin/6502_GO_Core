@@ -29,6 +29,8 @@ var (
 	// 0    C     Carry         (0=No Carry, 1=Carry)
 
 	// -------------------------------- Bus --------------------------------- //
+	addressBUS uint16 // // 16 pins of processor that points to memory for read or write operations
+	// memAddr uint16 // // 16 pins of processor that points to memory for read or write operations
 
 	// --------------------------- CPU Variables ---------------------------- //
 	opcode byte // CPU Operation Code
@@ -39,7 +41,6 @@ var (
 	opc_cycle_extra byte   // Opcode extra cycle
 
 	// -------------------------- Memory Variables -------------------------- //
-	memAddr  uint16 // // 16 pins of processor that points to memory for read or write operations
 	memMode  string // Receive the addressing mode used in the debug
 	memValue int8   // Receive the memory value needed by branches. Calculated in the first opc cycle to check for extra cycles, used in the last to perform the operation
 
@@ -69,5 +70,5 @@ var (
 	Pause bool = false
 
 	// Debug
-	Debug bool = false
+	Debug bool = true
 )

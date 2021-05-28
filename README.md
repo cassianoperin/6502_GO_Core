@@ -8,14 +8,17 @@ All opcodes and memory modes implemented and tested in Klaus Dormann test suite.
 
 * ![100%](https://progress-bar.dev/100) 56 Instructions (opcodes)
 * ![100%](https://progress-bar.dev/100) 13 Memory Addressing Modes
-* ![100%](https://progress-bar.dev/100) one 8-bit accumulator register (A)
-* ![100%](https://progress-bar.dev/100) two 8-bit index registers (X and Y)
-* ![100%](https://progress-bar.dev/100) seven 1-bit processor status flag bits (P)
+* ![100%](https://progress-bar.dev/100) One 8-bit accumulator register (A)
+* ![100%](https://progress-bar.dev/100) Two 8-bit index registers (X and Y)
+* ![100%](https://progress-bar.dev/100) Seven 1-bit processor status flag bits (P)
+* ![100%](https://progress-bar.dev/80) Address BUS
+* ![100%](https://progress-bar.dev/0) Data BUS
 * ![100%](https://progress-bar.dev/100) [Klaus Dormann 6502 Functional test suite](https://github.com/Klaus2m5/6502_65C02_functional_tests)
 
 ## TODO
 
-* ![100%](https://progress-bar.dev/0) Implement a BUS from CPU to Memory (address and data) - Fetch-decode-execute loop
+* ![100%](https://progress-bar.dev/0) Correct all opcodes that uses Relative Add mode to receive the Memory address and inside the opcode decode the 2'complement
+* ![100%](https://progress-bar.dev/0) Review - Fetch-decode-execute loop
 * ![100%](https://progress-bar.dev/0) Map Read and Write instructions
 * ![100%](https://progress-bar.dev/0) Finish the ifs for 6502 or atari mode (create different memory maps or paths?)
 * ![100%](https://progress-bar.dev/0) Create a CLI

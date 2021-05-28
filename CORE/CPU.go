@@ -22,6 +22,9 @@ func Initialize() {
 	// Initialize CPU
 	CPU_Enabled = true
 
+	// Internal Opcode Cycle count
+	opc_cycle_count = 1
+
 	// Initialize P (Bit 4 (Break) and Bit 5 (Unused))
 	P[5] = 1 // Always set
 
@@ -38,7 +41,6 @@ func Initialize() {
 		P[4] = 0
 
 	}
-
 }
 
 func InitializeTimers() {
@@ -169,27 +171,27 @@ func CPU_Interpreter() {
 
 	case 0xE6: // Instruction INC ( zeropage )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_Zeropage(PC + 1)
+			addressBUS, memMode = addr_mode_Zeropage(PC + 1)
 		}
-		opc_INC(memAddr, memMode, 2, 5)
+		opc_INC(addressBUS, memMode, 2, 5)
 
 	case 0xF6: // Instruction INC ( zeropage,X )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_ZeropageX(PC + 1)
+			addressBUS, memMode = addr_mode_ZeropageX(PC + 1)
 		}
-		opc_INC(memAddr, memMode, 2, 6)
+		opc_INC(addressBUS, memMode, 2, 6)
 
 	case 0xEE: // Instruction INC ( absolute )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_Absolute(PC + 1)
+			addressBUS, memMode = addr_mode_Absolute(PC + 1)
 		}
-		opc_INC(memAddr, memMode, 3, 6)
+		opc_INC(addressBUS, memMode, 3, 6)
 
 	case 0xFE: // Instruction INC ( absolute,X )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_AbsoluteX(PC + 1)
+			addressBUS, memMode = addr_mode_AbsoluteX(PC + 1)
 		}
-		opc_INC(memAddr, memMode, 3, 7)
+		opc_INC(addressBUS, memMode, 3, 7)
 
 	//-------------------------------------------- Branches - just relative ---------------------------------------------//
 
@@ -293,523 +295,523 @@ func CPU_Interpreter() {
 
 	case 0xA2: // Instruction LDX ( immediate )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_Immediate(PC + 1)
+			addressBUS, memMode = addr_mode_Immediate(PC + 1)
 		}
-		opc_LDX(memAddr, memMode, 2, 2)
+		opc_LDX(addressBUS, memMode, 2, 2)
 
 	case 0xA6: // Instruction LDX ( zeropage )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_Zeropage(PC + 1)
+			addressBUS, memMode = addr_mode_Zeropage(PC + 1)
 		}
-		opc_LDX(memAddr, memMode, 2, 3)
+		opc_LDX(addressBUS, memMode, 2, 3)
 
 	case 0xB6: // Instruction LDX ( zeropage,Y )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_ZeropageY(PC + 1)
+			addressBUS, memMode = addr_mode_ZeropageY(PC + 1)
 		}
-		opc_LDX(memAddr, memMode, 2, 4)
+		opc_LDX(addressBUS, memMode, 2, 4)
 
 	case 0xBE: // Instruction LDX ( absolute,Y )
 		if opc_cycle_count == 1 {
 			// Get the memory address
-			memAddr, memMode = addr_mode_AbsoluteY(PC + 1)
+			addressBUS, memMode = addr_mode_AbsoluteY(PC + 1)
 
 			// Add an extra cycle if page boundary is crossed
-			opc_cycle_extra = MemPageBoundary(memAddr, PC)
+			opc_cycle_extra = MemPageBoundary(addressBUS, PC)
 		}
-		opc_LDX(memAddr, memMode, 3, 4)
+		opc_LDX(addressBUS, memMode, 3, 4)
 
 	case 0xAE: // Instruction LDX ( absolute )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_Absolute(PC + 1)
+			addressBUS, memMode = addr_mode_Absolute(PC + 1)
 		}
-		opc_LDX(memAddr, memMode, 3, 4)
+		opc_LDX(addressBUS, memMode, 3, 4)
 
 	//-------------------------------------------------- STX --------------------------------------------------//
 
 	case 0x86: // Instruction STX ( zeropage )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_Zeropage(PC + 1)
+			addressBUS, memMode = addr_mode_Zeropage(PC + 1)
 		}
-		opc_STX(memAddr, memMode, 2, 3)
+		opc_STX(addressBUS, memMode, 2, 3)
 
 	case 0x96: // Instruction STX ( zeropage,Y )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_ZeropageY(PC + 1)
+			addressBUS, memMode = addr_mode_ZeropageY(PC + 1)
 		}
-		opc_STX(memAddr, memMode, 2, 4)
+		opc_STX(addressBUS, memMode, 2, 4)
 
 	case 0x8E: // Instruction STX ( absolute )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_Absolute(PC + 1)
+			addressBUS, memMode = addr_mode_Absolute(PC + 1)
 		}
-		opc_STX(memAddr, memMode, 3, 4)
+		opc_STX(addressBUS, memMode, 3, 4)
 
 	//-------------------------------------------------- JMP --------------------------------------------------//
 
 	case 0x4C: // Instruction JMP ( absolute )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_Absolute(PC + 1)
+			addressBUS, memMode = addr_mode_Absolute(PC + 1)
 		}
-		opc_JMP(memAddr, memMode, 3, 3)
+		opc_JMP(addressBUS, memMode, 3, 3)
 
 	case 0x6C: // Instruction JMP (indirect)
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_Indirect(PC + 1)
+			addressBUS, memMode = addr_mode_Indirect(PC + 1)
 		}
-		opc_JMP(memAddr, memMode, 3, 5)
+		opc_JMP(addressBUS, memMode, 3, 5)
 
 	case 0x20: // Instruction JSR ( absolute )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_Absolute(PC + 1)
+			addressBUS, memMode = addr_mode_Absolute(PC + 1)
 		}
-		opc_JSR(memAddr, memMode, 3, 6)
+		opc_JSR(addressBUS, memMode, 3, 6)
 
 	//-------------------------------------------------- BIT --------------------------------------------------//
 
 	case 0x2C: // Instruction BIT ( absolute )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_Absolute(PC + 1)
+			addressBUS, memMode = addr_mode_Absolute(PC + 1)
 		}
-		opc_BIT(memAddr, memMode, 3, 4)
+		opc_BIT(addressBUS, memMode, 3, 4)
 
 	case 0x24: // Instruction BIT ( zeropage )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_Zeropage(PC + 1)
+			addressBUS, memMode = addr_mode_Zeropage(PC + 1)
 		}
-		opc_BIT(memAddr, memMode, 2, 3)
+		opc_BIT(addressBUS, memMode, 2, 3)
 
 	//-------------------------------------------------- LDA --------------------------------------------------//
 
 	case 0xA9: // Instruction LDA ( immediate )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_Immediate(PC + 1)
+			addressBUS, memMode = addr_mode_Immediate(PC + 1)
 		}
-		opc_LDA(memAddr, memMode, 2, 2)
+		opc_LDA(addressBUS, memMode, 2, 2)
 
 	case 0xA5: // Instruction LDA ( zeropage )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_Zeropage(PC + 1)
+			addressBUS, memMode = addr_mode_Zeropage(PC + 1)
 		}
-		opc_LDA(memAddr, memMode, 2, 3)
+		opc_LDA(addressBUS, memMode, 2, 3)
 
 	case 0xB9: // Instruction LDA ( absolute,Y )
 		if opc_cycle_count == 1 {
 			// Get the memory address
-			memAddr, memMode = addr_mode_AbsoluteY(PC + 1)
+			addressBUS, memMode = addr_mode_AbsoluteY(PC + 1)
 
 			// // Add an extra cycle if page boundary is crossed
-			opc_cycle_extra = MemPageBoundary(memAddr, PC)
+			opc_cycle_extra = MemPageBoundary(addressBUS, PC)
 		}
-		opc_LDA(memAddr, memMode, 3, 4)
+		opc_LDA(addressBUS, memMode, 3, 4)
 
 	case 0xBD: // Instruction LDA ( absolute,X )
 		if opc_cycle_count == 1 {
 			// Get the memory address
-			memAddr, memMode = addr_mode_AbsoluteX(PC + 1)
+			addressBUS, memMode = addr_mode_AbsoluteX(PC + 1)
 
 			// // Add an extra cycle if page boundary is crossed
-			opc_cycle_extra = MemPageBoundary(memAddr, PC)
+			opc_cycle_extra = MemPageBoundary(addressBUS, PC)
 		}
-		opc_LDA(memAddr, memMode, 3, 4)
+		opc_LDA(addressBUS, memMode, 3, 4)
 
 	case 0xB1: // Instruction LDA ( (indirect),Y )
 		if opc_cycle_count == 1 {
 			// Get the memory address
-			memAddr, memMode = addr_mode_IndirectY(PC + 1)
+			addressBUS, memMode = addr_mode_IndirectY(PC + 1)
 
 			// // Add an extra cycle if page boundary is crossed
-			opc_cycle_extra = MemPageBoundary(memAddr, PC)
+			opc_cycle_extra = MemPageBoundary(addressBUS, PC)
 		}
-		opc_LDA(memAddr, memMode, 2, 5)
+		opc_LDA(addressBUS, memMode, 2, 5)
 
 	case 0xB5: // Instruction LDA ( zeropage,X )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_ZeropageX(PC + 1)
+			addressBUS, memMode = addr_mode_ZeropageX(PC + 1)
 		}
-		opc_LDA(memAddr, memMode, 2, 4)
+		opc_LDA(addressBUS, memMode, 2, 4)
 
 	case 0xAD: // Instruction LDA ( absolute )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_Absolute(PC + 1)
+			addressBUS, memMode = addr_mode_Absolute(PC + 1)
 		}
-		opc_LDA(memAddr, memMode, 3, 4)
+		opc_LDA(addressBUS, memMode, 3, 4)
 
 	case 0xA1: // Instruction LDA ( (indirect,X) )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_IndirectX(PC + 1)
+			addressBUS, memMode = addr_mode_IndirectX(PC + 1)
 		}
-		opc_LDA(memAddr, memMode, 2, 6)
+		opc_LDA(addressBUS, memMode, 2, 6)
 
 	//-------------------------------------------------- LDY --------------------------------------------------//
 
 	case 0xA0: // Instruction LDY ( immediate )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_Immediate(PC + 1)
+			addressBUS, memMode = addr_mode_Immediate(PC + 1)
 		}
-		opc_LDY(memAddr, memMode, 2, 2)
+		opc_LDY(addressBUS, memMode, 2, 2)
 
 	case 0xA4: // Instruction LDY ( zeropage )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_Zeropage(PC + 1)
+			addressBUS, memMode = addr_mode_Zeropage(PC + 1)
 		}
-		opc_LDY(memAddr, memMode, 2, 3)
+		opc_LDY(addressBUS, memMode, 2, 3)
 
 	case 0xB4: // Instruction LDY ( zeropage,X )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_ZeropageX(PC + 1)
+			addressBUS, memMode = addr_mode_ZeropageX(PC + 1)
 		}
-		opc_LDY(memAddr, memMode, 2, 4)
+		opc_LDY(addressBUS, memMode, 2, 4)
 
 	case 0xAC: // Instruction LDY ( absolute )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_Absolute(PC + 1)
+			addressBUS, memMode = addr_mode_Absolute(PC + 1)
 		}
-		opc_LDY(memAddr, memMode, 3, 4)
+		opc_LDY(addressBUS, memMode, 3, 4)
 
 	case 0xBC: // Instruction LDY ( absolute,X )
 		if opc_cycle_count == 1 {
 			// Get the memory address
-			memAddr, memMode = addr_mode_AbsoluteX(PC + 1)
+			addressBUS, memMode = addr_mode_AbsoluteX(PC + 1)
 
 			// Add an extra cycle if page boundary is crossed
-			opc_cycle_extra = MemPageBoundary(memAddr, PC)
+			opc_cycle_extra = MemPageBoundary(addressBUS, PC)
 		}
-		opc_LDY(memAddr, memMode, 3, 4)
+		opc_LDY(addressBUS, memMode, 3, 4)
 
 	//-------------------------------------------------- STY --------------------------------------------------//
 
 	case 0x84: // Instruction STY ( zeropage )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_Zeropage(PC + 1)
+			addressBUS, memMode = addr_mode_Zeropage(PC + 1)
 		}
-		opc_STY(memAddr, memMode, 2, 3)
+		opc_STY(addressBUS, memMode, 2, 3)
 
 	case 0x94: // Instruction STY ( zeropage,X )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_ZeropageX(PC + 1)
+			addressBUS, memMode = addr_mode_ZeropageX(PC + 1)
 		}
-		opc_STY(memAddr, memMode, 2, 4)
+		opc_STY(addressBUS, memMode, 2, 4)
 
 	case 0x8C: // Instruction STY ( absolute )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_Absolute(PC + 1)
+			addressBUS, memMode = addr_mode_Absolute(PC + 1)
 		}
-		opc_STY(memAddr, memMode, 3, 4)
+		opc_STY(addressBUS, memMode, 3, 4)
 
 	//-------------------------------------------------- CPY --------------------------------------------------//
 
 	case 0xC0: // Instruction CPY ( immediate )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_Immediate(PC + 1)
+			addressBUS, memMode = addr_mode_Immediate(PC + 1)
 		}
-		opc_CPY(memAddr, memMode, 2, 2)
+		opc_CPY(addressBUS, memMode, 2, 2)
 
 	case 0xC4: // Instruction STCPYY ( zeropage )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_Zeropage(PC + 1)
+			addressBUS, memMode = addr_mode_Zeropage(PC + 1)
 		}
-		opc_CPY(memAddr, memMode, 2, 3)
+		opc_CPY(addressBUS, memMode, 2, 3)
 
 	case 0xCC: // Instruction CPY ( absolute )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_Absolute(PC + 1)
+			addressBUS, memMode = addr_mode_Absolute(PC + 1)
 		}
-		opc_CPY(memAddr, memMode, 3, 4)
+		opc_CPY(addressBUS, memMode, 3, 4)
 
 	//-------------------------------------------------- CPX --------------------------------------------------//
 
 	case 0xE0: // Instruction CPX ( immediate )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_Immediate(PC + 1)
+			addressBUS, memMode = addr_mode_Immediate(PC + 1)
 		}
-		opc_CPX(memAddr, memMode, 2, 2)
+		opc_CPX(addressBUS, memMode, 2, 2)
 
 	case 0xE4: // Instruction CPX ( zeropage )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_Zeropage(PC + 1)
+			addressBUS, memMode = addr_mode_Zeropage(PC + 1)
 		}
-		opc_CPX(memAddr, memMode, 2, 3)
+		opc_CPX(addressBUS, memMode, 2, 3)
 
 	case 0xEC: // Instruction CPX ( absolute )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_Absolute(PC + 1)
+			addressBUS, memMode = addr_mode_Absolute(PC + 1)
 		}
-		opc_CPX(memAddr, memMode, 3, 4)
+		opc_CPX(addressBUS, memMode, 3, 4)
 
 	//-------------------------------------------------- SBC --------------------------------------------------//
 
 	case 0xE9: // Instruction SBC ( immediate )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_Immediate(PC + 1)
+			addressBUS, memMode = addr_mode_Immediate(PC + 1)
 		}
-		opc_SBC(memAddr, memMode, 2, 2)
+		opc_SBC(addressBUS, memMode, 2, 2)
 
 	case 0xE5: // Instruction SBC ( zeropage )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_Zeropage(PC + 1)
+			addressBUS, memMode = addr_mode_Zeropage(PC + 1)
 		}
-		opc_SBC(memAddr, memMode, 2, 3)
+		opc_SBC(addressBUS, memMode, 2, 3)
 
 	case 0xF5: // Instruction SBC ( zeropage,X )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_ZeropageX(PC + 1)
+			addressBUS, memMode = addr_mode_ZeropageX(PC + 1)
 		}
-		opc_SBC(memAddr, memMode, 2, 4)
+		opc_SBC(addressBUS, memMode, 2, 4)
 
 	case 0xED: // Instruction SBC ( absolute )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_Absolute(PC + 1)
+			addressBUS, memMode = addr_mode_Absolute(PC + 1)
 		}
-		opc_SBC(memAddr, memMode, 3, 4)
+		opc_SBC(addressBUS, memMode, 3, 4)
 
 	case 0xFD: // Instruction SBC ( absolute,X )
 		if opc_cycle_count == 1 {
 			// Get the memory address
-			memAddr, memMode = addr_mode_AbsoluteX(PC + 1)
+			addressBUS, memMode = addr_mode_AbsoluteX(PC + 1)
 
 			// Add an extra cycle if page boundary is crossed
-			opc_cycle_extra = MemPageBoundary(memAddr, PC)
+			opc_cycle_extra = MemPageBoundary(addressBUS, PC)
 		}
-		opc_SBC(memAddr, memMode, 3, 4)
+		opc_SBC(addressBUS, memMode, 3, 4)
 
 	case 0xF9: // Instruction SBC ( absolute,Y )
 		if opc_cycle_count == 1 {
 			// Get the memory address
-			memAddr, memMode = addr_mode_AbsoluteY(PC + 1)
+			addressBUS, memMode = addr_mode_AbsoluteY(PC + 1)
 
 			// Add an extra cycle if page boundary is crossed
-			opc_cycle_extra = MemPageBoundary(memAddr, PC)
+			opc_cycle_extra = MemPageBoundary(addressBUS, PC)
 		}
-		opc_SBC(memAddr, memMode, 3, 4)
+		opc_SBC(addressBUS, memMode, 3, 4)
 
 	case 0xE1: // Instruction SBC ( (indirect,X) )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_IndirectX(PC + 1)
+			addressBUS, memMode = addr_mode_IndirectX(PC + 1)
 		}
-		opc_SBC(memAddr, memMode, 2, 6)
+		opc_SBC(addressBUS, memMode, 2, 6)
 
 	case 0xF1: // Instruction SBC ( (indirect),Y )
 		if opc_cycle_count == 1 {
 			// Get the memory address
-			memAddr, memMode = addr_mode_IndirectY(PC + 1)
+			addressBUS, memMode = addr_mode_IndirectY(PC + 1)
 
 			// Add an extra cycle if page boundary is crossed
-			opc_cycle_extra = MemPageBoundary(memAddr, PC)
+			opc_cycle_extra = MemPageBoundary(addressBUS, PC)
 		}
-		opc_SBC(memAddr, memMode, 2, 5)
+		opc_SBC(addressBUS, memMode, 2, 5)
 
 	//-------------------------------------------------- DEC --------------------------------------------------//
 
 	case 0xC6: // Instruction DEC ( zeropage )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_Zeropage(PC + 1)
+			addressBUS, memMode = addr_mode_Zeropage(PC + 1)
 		}
-		opc_DEC(memAddr, memMode, 2, 5)
+		opc_DEC(addressBUS, memMode, 2, 5)
 
 	case 0xD6: // Instruction DEC ( zeropage,X )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_ZeropageX(PC + 1)
+			addressBUS, memMode = addr_mode_ZeropageX(PC + 1)
 		}
-		opc_DEC(memAddr, memMode, 2, 6)
+		opc_DEC(addressBUS, memMode, 2, 6)
 
 	case 0xCE: // Instruction DEC ( absolute )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_Absolute(PC + 1)
+			addressBUS, memMode = addr_mode_Absolute(PC + 1)
 		}
-		opc_DEC(memAddr, memMode, 3, 6)
+		opc_DEC(addressBUS, memMode, 3, 6)
 
 	case 0xDE: // Instruction DEC ( absolute,X )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_AbsoluteX(PC + 1)
+			addressBUS, memMode = addr_mode_AbsoluteX(PC + 1)
 		}
-		opc_DEC(memAddr, memMode, 3, 7)
+		opc_DEC(addressBUS, memMode, 3, 7)
 
 	//-------------------------------------------------- AND --------------------------------------------------//
 
 	case 0x29: // Instruction AND ( immediate )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_Immediate(PC + 1)
+			addressBUS, memMode = addr_mode_Immediate(PC + 1)
 		}
-		opc_AND(memAddr, memMode, 2, 2)
+		opc_AND(addressBUS, memMode, 2, 2)
 
 	case 0x25: // Instruction AND ( zeropage )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_Zeropage(PC + 1)
+			addressBUS, memMode = addr_mode_Zeropage(PC + 1)
 		}
-		opc_AND(memAddr, memMode, 2, 3)
+		opc_AND(addressBUS, memMode, 2, 3)
 
 	case 0x35: // Instruction AND ( zeropage,X )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_ZeropageX(PC + 1)
+			addressBUS, memMode = addr_mode_ZeropageX(PC + 1)
 		}
-		opc_AND(memAddr, memMode, 2, 4)
+		opc_AND(addressBUS, memMode, 2, 4)
 
 	case 0x2D: // Instruction AND ( absolute )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_Absolute(PC + 1)
+			addressBUS, memMode = addr_mode_Absolute(PC + 1)
 		}
-		opc_AND(memAddr, memMode, 3, 4)
+		opc_AND(addressBUS, memMode, 3, 4)
 
 	case 0x3D: // Instruction AND ( absolute,X )
 		if opc_cycle_count == 1 {
 			// Get the memory address
-			memAddr, memMode = addr_mode_AbsoluteX(PC + 1)
+			addressBUS, memMode = addr_mode_AbsoluteX(PC + 1)
 
 			// Add an extra cycle if page boundary is crossed
-			opc_cycle_extra = MemPageBoundary(memAddr, PC)
+			opc_cycle_extra = MemPageBoundary(addressBUS, PC)
 		}
-		opc_AND(memAddr, memMode, 3, 4)
+		opc_AND(addressBUS, memMode, 3, 4)
 
 	case 0x39: // Instruction AND ( absolute,Y )
 		if opc_cycle_count == 1 {
 			// Get the memory address
-			memAddr, memMode = addr_mode_AbsoluteY(PC + 1)
+			addressBUS, memMode = addr_mode_AbsoluteY(PC + 1)
 
 			// Add an extra cycle if page boundary is crossed
-			opc_cycle_extra = MemPageBoundary(memAddr, PC)
+			opc_cycle_extra = MemPageBoundary(addressBUS, PC)
 		}
-		opc_AND(memAddr, memMode, 3, 4)
+		opc_AND(addressBUS, memMode, 3, 4)
 
 	case 0x21: // Instruction AND ( (indirect,X) )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_IndirectX(PC + 1)
+			addressBUS, memMode = addr_mode_IndirectX(PC + 1)
 		}
-		opc_AND(memAddr, memMode, 2, 6)
+		opc_AND(addressBUS, memMode, 2, 6)
 
 	case 0x31: // Instruction AND ( (indirect),Y )
 		if opc_cycle_count == 1 {
 			// Get the memory address
-			memAddr, memMode = addr_mode_IndirectY(PC + 1)
+			addressBUS, memMode = addr_mode_IndirectY(PC + 1)
 
 			// Add an extra cycle if page boundary is crossed
-			opc_cycle_extra = MemPageBoundary(memAddr, PC)
+			opc_cycle_extra = MemPageBoundary(addressBUS, PC)
 		}
-		opc_AND(memAddr, memMode, 2, 5)
+		opc_AND(addressBUS, memMode, 2, 5)
 
 	//-------------------------------------------------- ORA --------------------------------------------------//
 
 	case 0x09: // Instruction ORA ( immediate )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_Immediate(PC + 1)
+			addressBUS, memMode = addr_mode_Immediate(PC + 1)
 		}
-		opc_ORA(memAddr, memMode, 2, 2)
+		opc_ORA(addressBUS, memMode, 2, 2)
 
 	case 0x05: // Instruction ORA ( zeropage )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_Zeropage(PC + 1)
+			addressBUS, memMode = addr_mode_Zeropage(PC + 1)
 		}
-		opc_ORA(memAddr, memMode, 2, 3)
+		opc_ORA(addressBUS, memMode, 2, 3)
 
 	case 0x15: // Instruction ORA ( zeropage,X )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_ZeropageX(PC + 1)
+			addressBUS, memMode = addr_mode_ZeropageX(PC + 1)
 		}
-		opc_ORA(memAddr, memMode, 2, 4)
+		opc_ORA(addressBUS, memMode, 2, 4)
 
 	case 0x0D: // Instruction ORA ( absolute )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_Absolute(PC + 1)
+			addressBUS, memMode = addr_mode_Absolute(PC + 1)
 		}
-		opc_ORA(memAddr, memMode, 3, 4)
+		opc_ORA(addressBUS, memMode, 3, 4)
 
 	case 0x1D: // Instruction ORA ( absolute,X )
 		if opc_cycle_count == 1 {
 			// Get the memory address
-			memAddr, memMode = addr_mode_AbsoluteX(PC + 1)
+			addressBUS, memMode = addr_mode_AbsoluteX(PC + 1)
 
 			// Add an extra cycle if page boundary is crossed
-			opc_cycle_extra = MemPageBoundary(memAddr, PC)
+			opc_cycle_extra = MemPageBoundary(addressBUS, PC)
 		}
-		opc_ORA(memAddr, memMode, 3, 4)
+		opc_ORA(addressBUS, memMode, 3, 4)
 
 	case 0x19: // Instruction ORA ( absolute,Y )
 		if opc_cycle_count == 1 {
 			// Get the memory address
-			memAddr, memMode = addr_mode_AbsoluteY(PC + 1)
+			addressBUS, memMode = addr_mode_AbsoluteY(PC + 1)
 
 			// Add an extra cycle if page boundary is crossed
-			opc_cycle_extra = MemPageBoundary(memAddr, PC)
+			opc_cycle_extra = MemPageBoundary(addressBUS, PC)
 		}
-		opc_ORA(memAddr, memMode, 3, 4)
+		opc_ORA(addressBUS, memMode, 3, 4)
 
 	case 0x01: // Instruction ORA ( (indirect,X) )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_IndirectX(PC + 1)
+			addressBUS, memMode = addr_mode_IndirectX(PC + 1)
 		}
-		opc_ORA(memAddr, memMode, 2, 6)
+		opc_ORA(addressBUS, memMode, 2, 6)
 
 	case 0x11: // Instruction ORA ( (indirect),Y )
 		if opc_cycle_count == 1 {
 			// Get the memory address
-			memAddr, memMode = addr_mode_IndirectY(PC + 1)
+			addressBUS, memMode = addr_mode_IndirectY(PC + 1)
 
 			// Add an extra cycle if page boundary is crossed
-			opc_cycle_extra = MemPageBoundary(memAddr, PC)
+			opc_cycle_extra = MemPageBoundary(addressBUS, PC)
 		}
-		opc_ORA(memAddr, memMode, 2, 5)
+		opc_ORA(addressBUS, memMode, 2, 5)
 
 	//-------------------------------------------------- EOR --------------------------------------------------//
 
 	case 0x49: // Instruction EOR ( immediate )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_Immediate(PC + 1)
+			addressBUS, memMode = addr_mode_Immediate(PC + 1)
 		}
-		opc_EOR(memAddr, memMode, 2, 2)
+		opc_EOR(addressBUS, memMode, 2, 2)
 
 	case 0x45: // Instruction EOR ( zeropage )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_Zeropage(PC + 1)
+			addressBUS, memMode = addr_mode_Zeropage(PC + 1)
 		}
-		opc_EOR(memAddr, memMode, 2, 3)
+		opc_EOR(addressBUS, memMode, 2, 3)
 
 	case 0x55: // Instruction EOR ( zeropage,X )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_ZeropageX(PC + 1)
+			addressBUS, memMode = addr_mode_ZeropageX(PC + 1)
 		}
-		opc_EOR(memAddr, memMode, 2, 4)
+		opc_EOR(addressBUS, memMode, 2, 4)
 
 	case 0x4D: // Instruction EOR ( absolute )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_Absolute(PC + 1)
+			addressBUS, memMode = addr_mode_Absolute(PC + 1)
 		}
-		opc_EOR(memAddr, memMode, 3, 4)
+		opc_EOR(addressBUS, memMode, 3, 4)
 
 	case 0x5D: // Instruction EOR ( absolute,X )
 		if opc_cycle_count == 1 {
 			// Get the memory address
-			memAddr, memMode = addr_mode_AbsoluteX(PC + 1)
+			addressBUS, memMode = addr_mode_AbsoluteX(PC + 1)
 
 			// Add an extra cycle if page boundary is crossed
-			opc_cycle_extra = MemPageBoundary(memAddr, PC)
+			opc_cycle_extra = MemPageBoundary(addressBUS, PC)
 		}
-		opc_EOR(memAddr, memMode, 3, 4)
+		opc_EOR(addressBUS, memMode, 3, 4)
 
 	case 0x59: // Instruction EOR ( absolute,Y )
 		if opc_cycle_count == 1 {
 			// Get the memory address
-			memAddr, memMode = addr_mode_AbsoluteY(PC + 1)
+			addressBUS, memMode = addr_mode_AbsoluteY(PC + 1)
 
 			// Add an extra cycle if page boundary is crossed
-			opc_cycle_extra = MemPageBoundary(memAddr, PC)
+			opc_cycle_extra = MemPageBoundary(addressBUS, PC)
 		}
-		opc_EOR(memAddr, memMode, 3, 4)
+		opc_EOR(addressBUS, memMode, 3, 4)
 
 	case 0x41: // Instruction EOR ( (indirect,X) )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_IndirectX(PC + 1)
+			addressBUS, memMode = addr_mode_IndirectX(PC + 1)
 		}
-		opc_EOR(memAddr, memMode, 2, 6)
+		opc_EOR(addressBUS, memMode, 2, 6)
 
 	case 0x51: // Instruction EOR ( (indirect),Y )
 		if opc_cycle_count == 1 {
 			// Get the memory address
-			memAddr, memMode = addr_mode_IndirectY(PC + 1)
+			addressBUS, memMode = addr_mode_IndirectY(PC + 1)
 
 			// Add an extra cycle if page boundary is crossed
-			opc_cycle_extra = MemPageBoundary(memAddr, PC)
+			opc_cycle_extra = MemPageBoundary(addressBUS, PC)
 		}
-		opc_EOR(memAddr, memMode, 2, 5)
+		opc_EOR(addressBUS, memMode, 2, 5)
 
 	//-------------------------------------------------- ASL --------------------------------------------------//
 
@@ -818,27 +820,27 @@ func CPU_Interpreter() {
 
 	case 0x06: // Instruction ASL ( zeropage )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_Zeropage(PC + 1)
+			addressBUS, memMode = addr_mode_Zeropage(PC + 1)
 		}
-		opc_ASL(memAddr, memMode, 2, 5)
+		opc_ASL(addressBUS, memMode, 2, 5)
 
 	case 0x16: // Instruction ASL ( zeropage,X )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_ZeropageX(PC + 1)
+			addressBUS, memMode = addr_mode_ZeropageX(PC + 1)
 		}
-		opc_ASL(memAddr, memMode, 2, 6)
+		opc_ASL(addressBUS, memMode, 2, 6)
 
 	case 0x0E: // Instruction ASL ( absolute )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_Absolute(PC + 1)
+			addressBUS, memMode = addr_mode_Absolute(PC + 1)
 		}
-		opc_ASL(memAddr, memMode, 3, 6)
+		opc_ASL(addressBUS, memMode, 3, 6)
 
 	case 0x1E: // Instruction ASL ( absolute,X )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_AbsoluteX(PC + 1)
+			addressBUS, memMode = addr_mode_AbsoluteX(PC + 1)
 		}
-		opc_ASL(memAddr, memMode, 3, 7)
+		opc_ASL(addressBUS, memMode, 3, 7)
 
 	//-------------------------------------------------- LSR --------------------------------------------------//
 
@@ -847,195 +849,195 @@ func CPU_Interpreter() {
 
 	case 0x46: // Instruction LSR ( zeropage )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_Zeropage(PC + 1)
+			addressBUS, memMode = addr_mode_Zeropage(PC + 1)
 		}
-		opc_LSR(memAddr, memMode, 2, 5)
+		opc_LSR(addressBUS, memMode, 2, 5)
 
 	case 0x56: // Instruction LSR ( zeropage,X )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_ZeropageX(PC + 1)
+			addressBUS, memMode = addr_mode_ZeropageX(PC + 1)
 		}
-		opc_LSR(memAddr, memMode, 2, 6)
+		opc_LSR(addressBUS, memMode, 2, 6)
 
 	case 0x4E: // Instruction LSR ( absolute )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_Absolute(PC + 1)
+			addressBUS, memMode = addr_mode_Absolute(PC + 1)
 		}
-		opc_LSR(memAddr, memMode, 3, 6)
+		opc_LSR(addressBUS, memMode, 3, 6)
 
 	case 0x5E: // Instruction LSR ( absolute,X )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_AbsoluteX(PC + 1)
+			addressBUS, memMode = addr_mode_AbsoluteX(PC + 1)
 		}
-		opc_LSR(memAddr, memMode, 3, 7)
+		opc_LSR(addressBUS, memMode, 3, 7)
 
 	//-------------------------------------------------- CMP --------------------------------------------------//
 
 	case 0xC5: // Instruction CMP ( zeropage )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_Zeropage(PC + 1)
+			addressBUS, memMode = addr_mode_Zeropage(PC + 1)
 		}
-		opc_CMP(memAddr, memMode, 2, 3)
+		opc_CMP(addressBUS, memMode, 2, 3)
 
 	case 0xC9: // Instruction CMP ( immediate )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_Immediate(PC + 1)
+			addressBUS, memMode = addr_mode_Immediate(PC + 1)
 		}
-		opc_CMP(memAddr, memMode, 2, 2)
+		opc_CMP(addressBUS, memMode, 2, 2)
 
 	case 0xD5: // Instruction CMP ( zeropage,X )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_ZeropageX(PC + 1)
+			addressBUS, memMode = addr_mode_ZeropageX(PC + 1)
 		}
-		opc_CMP(memAddr, memMode, 2, 4)
+		opc_CMP(addressBUS, memMode, 2, 4)
 
 	case 0xCD: // Instruction CMP ( absolute )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_Absolute(PC + 1)
+			addressBUS, memMode = addr_mode_Absolute(PC + 1)
 		}
-		opc_CMP(memAddr, memMode, 3, 4)
+		opc_CMP(addressBUS, memMode, 3, 4)
 
 	case 0xD9: // Instruction CMP ( absolute,Y )
 		if opc_cycle_count == 1 {
 			// Get the memory address
-			memAddr, memMode = addr_mode_AbsoluteY(PC + 1)
+			addressBUS, memMode = addr_mode_AbsoluteY(PC + 1)
 
 			// Add an extra cycle if page boundary is crossed
-			opc_cycle_extra = MemPageBoundary(memAddr, PC)
+			opc_cycle_extra = MemPageBoundary(addressBUS, PC)
 		}
-		opc_CMP(memAddr, memMode, 3, 4)
+		opc_CMP(addressBUS, memMode, 3, 4)
 
 	case 0xDD: // Instruction CMP ( absolute,X )
 		if opc_cycle_count == 1 {
 			// Get the memory address
-			memAddr, memMode = addr_mode_AbsoluteX(PC + 1)
+			addressBUS, memMode = addr_mode_AbsoluteX(PC + 1)
 
 			// Add an extra cycle if page boundary is crossed
-			opc_cycle_extra = MemPageBoundary(memAddr, PC)
+			opc_cycle_extra = MemPageBoundary(addressBUS, PC)
 		}
-		opc_CMP(memAddr, memMode, 3, 4)
+		opc_CMP(addressBUS, memMode, 3, 4)
 
 	case 0xD1: // Instruction CMP ( (indirect),Y )
 		if opc_cycle_count == 1 {
 			// Get the memory address
-			memAddr, memMode = addr_mode_IndirectY(PC + 1)
+			addressBUS, memMode = addr_mode_IndirectY(PC + 1)
 
 			// Add an extra cycle if page boundary is crossed
-			opc_cycle_extra = MemPageBoundary(memAddr, PC)
+			opc_cycle_extra = MemPageBoundary(addressBUS, PC)
 		}
-		opc_CMP(memAddr, memMode, 2, 5)
+		opc_CMP(addressBUS, memMode, 2, 5)
 
 	case 0xC1: // Instruction CMP ( (indirect,X) )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_IndirectX(PC + 1)
+			addressBUS, memMode = addr_mode_IndirectX(PC + 1)
 		}
-		opc_CMP(memAddr, memMode, 2, 6)
+		opc_CMP(addressBUS, memMode, 2, 6)
 
 	//-------------------------------------------------- STA --------------------------------------------------//
 
 	case 0x95: // Instruction STA ( zeropage,X )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_ZeropageX(PC + 1)
+			addressBUS, memMode = addr_mode_ZeropageX(PC + 1)
 		}
-		opc_STA(memAddr, memMode, 2, 4)
+		opc_STA(addressBUS, memMode, 2, 4)
 
 	case 0x85: // Instruction STA ( zeropage )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_Zeropage(PC + 1)
+			addressBUS, memMode = addr_mode_Zeropage(PC + 1)
 		}
-		opc_STA(memAddr, memMode, 2, 3)
+		opc_STA(addressBUS, memMode, 2, 3)
 
 	case 0x99: // Instruction STA ( absolute,Y )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_AbsoluteY(PC + 1)
+			addressBUS, memMode = addr_mode_AbsoluteY(PC + 1)
 		}
-		opc_STA(memAddr, memMode, 3, 5)
+		opc_STA(addressBUS, memMode, 3, 5)
 
 	case 0x8D: // Instruction STA ( absolute )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_Absolute(PC + 1)
+			addressBUS, memMode = addr_mode_Absolute(PC + 1)
 		}
-		opc_STA(memAddr, memMode, 3, 4)
+		opc_STA(addressBUS, memMode, 3, 4)
 
 	case 0x91: // Instruction STA ( (indirect),Y )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_IndirectY(PC + 1)
+			addressBUS, memMode = addr_mode_IndirectY(PC + 1)
 		}
-		opc_STA(memAddr, memMode, 2, 6)
+		opc_STA(addressBUS, memMode, 2, 6)
 
 	case 0x9D: // Instruction STA ( absolute,X )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_AbsoluteX(PC + 1)
+			addressBUS, memMode = addr_mode_AbsoluteX(PC + 1)
 		}
-		opc_STA(memAddr, memMode, 3, 5)
+		opc_STA(addressBUS, memMode, 3, 5)
 
 	case 0x81: // Instruction STA ( (indirect,X) )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_IndirectX(PC + 1)
+			addressBUS, memMode = addr_mode_IndirectX(PC + 1)
 		}
-		opc_STA(memAddr, memMode, 2, 6)
+		opc_STA(addressBUS, memMode, 2, 6)
 
 	//-------------------------------------------------- ADC --------------------------------------------------//
 
 	case 0x69: // Instruction ADC ( immediate )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_Immediate(PC + 1)
+			addressBUS, memMode = addr_mode_Immediate(PC + 1)
 		}
-		opc_ADC(memAddr, memMode, 2, 2)
+		opc_ADC(addressBUS, memMode, 2, 2)
 
 	case 0x65: // Instruction ADC ( zeropage )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_Zeropage(PC + 1)
+			addressBUS, memMode = addr_mode_Zeropage(PC + 1)
 		}
-		opc_ADC(memAddr, memMode, 2, 3)
+		opc_ADC(addressBUS, memMode, 2, 3)
 
 	case 0x75: // Instruction ADC ( zeropage,X )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_ZeropageX(PC + 1)
+			addressBUS, memMode = addr_mode_ZeropageX(PC + 1)
 		}
-		opc_ADC(memAddr, memMode, 2, 4)
+		opc_ADC(addressBUS, memMode, 2, 4)
 
 	case 0x6D: // Instruction ADC ( absolute )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_Absolute(PC + 1)
+			addressBUS, memMode = addr_mode_Absolute(PC + 1)
 		}
-		opc_ADC(memAddr, memMode, 3, 4)
+		opc_ADC(addressBUS, memMode, 3, 4)
 
 	case 0x7D: // Instruction ADC ( absolute,X )
 		if opc_cycle_count == 1 {
 			// Get the memory address
-			memAddr, memMode = addr_mode_AbsoluteX(PC + 1)
+			addressBUS, memMode = addr_mode_AbsoluteX(PC + 1)
 
 			// Add an extra cycle if page boundary is crossed
-			opc_cycle_extra = MemPageBoundary(memAddr, PC)
+			opc_cycle_extra = MemPageBoundary(addressBUS, PC)
 		}
-		opc_ADC(memAddr, memMode, 3, 4)
+		opc_ADC(addressBUS, memMode, 3, 4)
 
 	case 0x79: // Instruction ADC ( absolute,Y )
 		if opc_cycle_count == 1 {
 			// Get the memory address
-			memAddr, memMode = addr_mode_AbsoluteY(PC + 1)
+			addressBUS, memMode = addr_mode_AbsoluteY(PC + 1)
 
 			// Add an extra cycle if page boundary is crossed
-			opc_cycle_extra = MemPageBoundary(memAddr, PC)
+			opc_cycle_extra = MemPageBoundary(addressBUS, PC)
 		}
-		opc_ADC(memAddr, memMode, 3, 4)
+		opc_ADC(addressBUS, memMode, 3, 4)
 
 	case 0x61: // Instruction ADC ( (indirect,X) )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_IndirectX(PC + 1)
+			addressBUS, memMode = addr_mode_IndirectX(PC + 1)
 		}
-		opc_ADC(memAddr, memMode, 2, 6)
+		opc_ADC(addressBUS, memMode, 2, 6)
 
 	case 0x71: // Instruction ADC ( (indirect),Y )
 		if opc_cycle_count == 1 {
 			// Get the memory address
-			memAddr, memMode = addr_mode_IndirectY(PC + 1)
+			addressBUS, memMode = addr_mode_IndirectY(PC + 1)
 
 			// Add an extra cycle if page boundary is crossed
-			opc_cycle_extra = MemPageBoundary(memAddr, PC)
+			opc_cycle_extra = MemPageBoundary(addressBUS, PC)
 		}
-		opc_ADC(memAddr, memMode, 2, 5)
+		opc_ADC(addressBUS, memMode, 2, 5)
 
 	//-------------------------------------------------- ROL --------------------------------------------------//
 
@@ -1044,27 +1046,27 @@ func CPU_Interpreter() {
 
 	case 0x26: // Instruction ROL ( zeropage )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_Zeropage(PC + 1)
+			addressBUS, memMode = addr_mode_Zeropage(PC + 1)
 		}
-		opc_ROL(memAddr, memMode, 2, 5)
+		opc_ROL(addressBUS, memMode, 2, 5)
 
 	case 0x36: // Instruction ROL ( zeropage,X )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_ZeropageX(PC + 1)
+			addressBUS, memMode = addr_mode_ZeropageX(PC + 1)
 		}
-		opc_ROL(memAddr, memMode, 2, 6)
+		opc_ROL(addressBUS, memMode, 2, 6)
 
 	case 0x2E: // Instruction ROL ( absolute )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_Absolute(PC + 1)
+			addressBUS, memMode = addr_mode_Absolute(PC + 1)
 		}
-		opc_ROL(memAddr, memMode, 3, 6)
+		opc_ROL(addressBUS, memMode, 3, 6)
 
 	case 0x3E: // Instruction ROL ( absolute,X )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_AbsoluteX(PC + 1)
+			addressBUS, memMode = addr_mode_AbsoluteX(PC + 1)
 		}
-		opc_ROL(memAddr, memMode, 3, 7)
+		opc_ROL(addressBUS, memMode, 3, 7)
 
 	//-------------------------------------------------- ROR --------------------------------------------------//
 
@@ -1073,27 +1075,27 @@ func CPU_Interpreter() {
 
 	case 0x66: // Instruction ROR ( zeropage )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_Zeropage(PC + 1)
+			addressBUS, memMode = addr_mode_Zeropage(PC + 1)
 		}
-		opc_ROR(memAddr, memMode, 2, 5)
+		opc_ROR(addressBUS, memMode, 2, 5)
 
 	case 0x76: // Instruction ROR ( zeropage,X )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_ZeropageX(PC + 1)
+			addressBUS, memMode = addr_mode_ZeropageX(PC + 1)
 		}
-		opc_ROR(memAddr, memMode, 2, 6)
+		opc_ROR(addressBUS, memMode, 2, 6)
 
 	case 0x6E: // Instruction ROR ( absolute )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_Absolute(PC + 1)
+			addressBUS, memMode = addr_mode_Absolute(PC + 1)
 		}
-		opc_ROR(memAddr, memMode, 3, 6)
+		opc_ROR(addressBUS, memMode, 3, 6)
 
 	case 0x7E: // Instruction ROR ( absolute,X )
 		if opc_cycle_count == 1 {
-			memAddr, memMode = addr_mode_AbsoluteX(PC + 1)
+			addressBUS, memMode = addr_mode_AbsoluteX(PC + 1)
 		}
-		opc_ROR(memAddr, memMode, 3, 7)
+		opc_ROR(addressBUS, memMode, 3, 7)
 
 	//-------------------------------------------------- ISB? FF --------------------------------------------------//
 
@@ -1127,21 +1129,21 @@ func CPU_Interpreter() {
 
 	// case 0x27: // Instruction RLA ( zeropage )
 	// 	if opc_cycle_count == 1 {
-	// 		memAddr, memMode = addr_mode_Zeropage(PC + 1)
+	// 		addressBUS, memMode = addr_mode_Zeropage(PC + 1)
 	// 	}
-	// 	opc_U_RLA(memAddr, memMode, 2, 5)
+	// 	opc_U_RLA(addressBUS, memMode, 2, 5)
 
 	// case 0x64: // Instruction NOP ( zeropage )
 	// 	if opc_cycle_count == 1 {
-	// 		memAddr, memMode = addr_mode_Zeropage(PC + 1)
+	// 		addressBUS, memMode = addr_mode_Zeropage(PC + 1)
 	// 	}
-	// 	opc_U_NOP(memAddr, memMode, 2, 3)
+	// 	opc_U_NOP(addressBUS, memMode, 2, 3)
 
 	//-------------------------------------------- No Opcode Found --------------------------------------------//
 
 	default:
-		fmt.Printf("\tOPCODE %02X NOT IMPLEMENTED!\n\n", opcode)
-		os.Exit(0)
+		fmt.Printf("\n\tOpcode %02X not implemented! Exiting!\n\n", opcode)
+		os.Exit(2)
 	}
 
 	// Increment Cycle
