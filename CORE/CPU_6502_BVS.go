@@ -13,7 +13,9 @@ import (
 //      --------------------------------------------
 //      relative      BVC oper      70    2     2**
 
-func opc_BVS(value int8, bytes uint16, opc_cycles byte) { // value is SIGNED
+func opc_BVS(memAddr uint16, bytes uint16, opc_cycles byte) { // value is SIGNED
+
+	value := DecodeTwoComplement(Memory[memAddr]) // value is SIGNED
 
 	if P[6] == 1 { // If overflow is set
 

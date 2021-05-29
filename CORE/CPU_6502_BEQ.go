@@ -11,7 +11,9 @@ import "fmt"
 //      ----------------------------------------------
 //      relative	  BEQ oper	    F0  	2	  2**
 
-func opc_BEQ(value int8, bytes uint16, opc_cycles byte) { // value is SIGNED
+func opc_BEQ(memAddr uint16, bytes uint16, opc_cycles byte) {
+
+	value := DecodeTwoComplement(Memory[memAddr]) // value is SIGNED
 
 	if P[1] == 1 { // If zero flag is set
 

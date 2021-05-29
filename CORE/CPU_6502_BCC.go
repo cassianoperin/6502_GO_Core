@@ -13,7 +13,9 @@ import (
 //      --------------------------------------------
 //      relative      BCC oper      90    2     2**
 
-func opc_BCC(value int8, bytes uint16, opc_cycles byte) { // value is SIGNED
+func opc_BCC(memAddr uint16, bytes uint16, opc_cycles byte) {
+
+	value := DecodeTwoComplement(Memory[memAddr]) // value is SIGNED
 
 	if P[0] == 0 { // If carry is clear
 

@@ -17,7 +17,6 @@ All opcodes and memory modes implemented and tested in Klaus Dormann test suite.
 
 ## TODO
 
-* ![100%](https://progress-bar.dev/0) Correct all opcodes that uses Relative Add mode to receive the Memory address and inside the opcode decode the 2'complement
 * ![100%](https://progress-bar.dev/0) Review - Fetch-decode-execute loop
 * ![100%](https://progress-bar.dev/0) Map Read and Write instructions
 * ![100%](https://progress-bar.dev/0) Finish the ifs for 6502 or atari mode (create different memory maps or paths?)

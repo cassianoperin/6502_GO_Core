@@ -6,7 +6,7 @@ import (
 )
 
 // Relative
-func addr_mode_Relative(offset uint16) int8 {
+func addr_mode_Relative(offset uint16) uint16 {
 
 	// Branches needs the Two Complement of the offset value
 	value := DecodeTwoComplement(Memory[offset])
@@ -17,7 +17,7 @@ func addr_mode_Relative(offset uint16) int8 {
 		fmt.Printf("\t%s addressing mode.\tADDRESS BUS: Memory[0x%02X]\tCurrent Value: %d (Decimal SIGNED value)\n", mode, memAddr, value)
 	}
 
-	return value
+	return memAddr
 }
 
 // Zeropage
@@ -184,7 +184,6 @@ func addr_mode_IndirectY(offset uint16) (uint16, string) {
 		fmt.Printf("\t%s addressing mode.\tIndirect Addr: 0x%02X\tLSB: (Memory[0x%02X]:0x%02X + Y:(0x%02X)) = 0x%04X & 00FF = 0x%02X and carry: %d\t\tMSB: (Memory[ (0x%02X+0x01=(0x%02X)) + carry(%d)]): 0x%02X\n\tADDRESS BUS: Memory[0x%04X]\t\tCurrent Value: 0x%02X (%d)\n", mode, indirect_addr, indirect_addr, Memory[indirect_addr], Y, LSB_tmp, LSB, carry, indirect_addr, Memory[indirect_addr+1], carry, MSB, memAddr, value, value)
 	}
 
-	os.Exit(2)
 	return memAddr, mode
 }
 

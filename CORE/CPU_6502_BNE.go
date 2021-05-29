@@ -11,7 +11,9 @@ import "fmt"
 //      --------------------------------------------
 //      relative      BNE oper      D0    2     2**
 
-func opc_BNE(value int8, bytes uint16, opc_cycles byte) { // value is SIGNED
+func opc_BNE(memAddr uint16, bytes uint16, opc_cycles byte) {
+
+	value := DecodeTwoComplement(Memory[memAddr]) // value is SIGNED
 
 	if P[1] == 1 { // If P[1] = 1 (Zero Flag)
 

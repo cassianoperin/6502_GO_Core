@@ -197,99 +197,99 @@ func CPU_Interpreter() {
 
 	case 0xD0: // Instruction BNE ( relative )
 		if opc_cycle_count == 1 {
-			// Get the value inside memory address
-			memValue = addr_mode_Relative(PC + 1)
+			// Get the memory address
+			addressBUS = addr_mode_Relative(PC + 1)
 
 			// Check for an extra cycle (branch to another page)
 			if P[1] == 0 {
 				opc_cycle_extra = MemPageBoundary(PC, PC+uint16(memValue)+2)
 			}
 		}
-		opc_BNE(memValue, 2, 2)
+		opc_BNE(addressBUS, 2, 2)
 
 	case 0xF0: // Instruction BEQ ( relative )
 		if opc_cycle_count == 1 {
-			// Get the value inside memory address
-			memValue = addr_mode_Relative(PC + 1)
+			// Get the memory address
+			addressBUS = addr_mode_Relative(PC + 1)
 
 			// Check for an extra cycle (branch to another page)
 			if P[1] == 1 {
 				opc_cycle_extra = MemPageBoundary(PC, PC+uint16(memValue)+2)
 			}
 		}
-		opc_BEQ(memValue, 2, 2)
+		opc_BEQ(addressBUS, 2, 2)
 
 	case 0x10: // Instruction BPL ( relative )
 		if opc_cycle_count == 1 {
-			// Get the value inside memory address
-			memValue = addr_mode_Relative(PC + 1)
+			// Get the memory address
+			addressBUS = addr_mode_Relative(PC + 1)
 
 			// Check for an extra cycle (branch to another page)
 			if P[7] == 0 {
 				opc_cycle_extra = MemPageBoundary(PC, PC+uint16(memValue)+2)
 			}
 		}
-		opc_BPL(memValue, 2, 2)
+		opc_BPL(addressBUS, 2, 2)
 
 	case 0x30: // Instruction BMI ( relative )
 		if opc_cycle_count == 1 {
-			// Get the value inside memory address
-			memValue = addr_mode_Relative(PC + 1)
+			// Get the memory address
+			addressBUS = addr_mode_Relative(PC + 1)
 
 			// Check for an extra cycle (branch to another page)
 			if P[7] == 1 {
 				opc_cycle_extra = MemPageBoundary(PC, PC+uint16(memValue)+2)
 			}
 		}
-		opc_BMI(memValue, 2, 2)
+		opc_BMI(addressBUS, 2, 2)
 
 	case 0x70: // Instruction BVS ( relative )
 		if opc_cycle_count == 1 {
-			// Get the value inside memory address
-			memValue = addr_mode_Relative(PC + 1)
+			// Get the memory address
+			addressBUS = addr_mode_Relative(PC + 1)
 
 			// Check for an extra cycle (branch to another page)
 			if P[6] == 1 {
 				opc_cycle_extra = MemPageBoundary(PC, PC+uint16(memValue)+2)
 			}
 		}
-		opc_BVS(memValue, 2, 2)
+		opc_BVS(addressBUS, 2, 2)
 
 	case 0x50: // Instruction BVC ( relative )
 		if opc_cycle_count == 1 {
-			// Get the value inside memory address
-			memValue = addr_mode_Relative(PC + 1)
+			// Get the memory address
+			addressBUS = addr_mode_Relative(PC + 1)
 
 			// Check for an extra cycle (branch to another page)
 			if P[6] == 0 {
 				opc_cycle_extra = MemPageBoundary(PC, PC+uint16(memValue)+2)
 			}
 		}
-		opc_BVC(memValue, 2, 2)
+		opc_BVC(addressBUS, 2, 2)
 
 	case 0xB0: // Instruction BCS ( relative )
 		if opc_cycle_count == 1 {
-			// Get the value inside memory address
-			memValue = addr_mode_Relative(PC + 1)
+			// Get the memory address
+			addressBUS = addr_mode_Relative(PC + 1)
 
 			// Check for an extra cycle (branch to another page)
 			if P[0] == 1 {
 				opc_cycle_extra = MemPageBoundary(PC, PC+uint16(memValue)+2)
 			}
 		}
-		opc_BCS(memValue, 2, 2)
+		opc_BCS(addressBUS, 2, 2)
 
 	case 0x90: // Instruction BCC ( relative )
 		if opc_cycle_count == 1 {
-			// Get the value inside memory address
-			memValue = addr_mode_Relative(PC + 1)
+			// Get the memory address
+			addressBUS = addr_mode_Relative(PC + 1)
 
 			// Check for an extra cycle (branch to another page)
 			if P[0] == 0 {
 				opc_cycle_extra = MemPageBoundary(PC, PC+uint16(memValue)+2)
 			}
 		}
-		opc_BCC(memValue, 2, 2)
+		opc_BCC(addressBUS, 2, 2)
 
 	//-------------------------------------------------- LDX --------------------------------------------------//
 

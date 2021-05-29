@@ -11,7 +11,9 @@ import "fmt"
 //      --------------------------------------------
 //      relative      BCS oper      B0    2     2**
 
-func opc_BCS(value int8, bytes uint16, opc_cycles byte) { // value is SIGNED
+func opc_BCS(memAddr uint16, bytes uint16, opc_cycles byte) {
+
+	value := DecodeTwoComplement(Memory[memAddr]) // value is SIGNED
 
 	if P[0] == 1 { // If carry is set
 

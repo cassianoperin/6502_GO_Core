@@ -11,7 +11,9 @@ import "fmt"
 //      --------------------------------------------
 //      relative      BPL oper      10    2     2**
 
-func opc_BPL(value int8, bytes uint16, opc_cycles byte) {
+func opc_BPL(memAddr uint16, bytes uint16, opc_cycles byte) {
+
+	value := DecodeTwoComplement(Memory[memAddr]) // value is SIGNED
 
 	if P[7] == 0 { // If Positive
 

@@ -11,7 +11,9 @@ import "fmt"
 //      --------------------------------------------
 //      relative      BVC oper      50    2     2**
 
-func opc_BVC(value int8, bytes uint16, opc_cycles byte) { // value is SIGNED
+func opc_BVC(memAddr uint16, bytes uint16, opc_cycles byte) {
+
+	value := DecodeTwoComplement(Memory[memAddr]) // value is SIGNED
 
 	if P[6] == 0 { // If Overflow is clear
 

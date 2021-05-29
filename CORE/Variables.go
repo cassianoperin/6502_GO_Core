@@ -30,7 +30,6 @@ var (
 
 	// -------------------------------- Bus --------------------------------- //
 	addressBUS uint16 // // 16 pins of processor that points to memory for read or write operations
-	// memAddr uint16 // // 16 pins of processor that points to memory for read or write operations
 
 	// --------------------------- CPU Variables ---------------------------- //
 	opcode byte // CPU Operation Code
@@ -70,5 +69,5 @@ var (
 	Pause bool = false
 
 	// Debug
-	Debug bool = true
+	Debug bool = false
 )
