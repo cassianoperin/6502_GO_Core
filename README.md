@@ -6,17 +6,14 @@ All opcodes and memory modes implemented and tested in Klaus Dormann test suite.
 
 ## Emulation Status
 
+* ![100%](https://progress-bar.dev/100) [Klaus Dormann 6502 Functional test suite](https://github.com/Klaus2m5/6502_65C02_functional_tests)
 * ![100%](https://progress-bar.dev/100) 56 Instructions (opcodes)
 * ![100%](https://progress-bar.dev/100) 13 Memory Addressing Modes
 * ![100%](https://progress-bar.dev/100) One 8-bit accumulator register (A)
 * ![100%](https://progress-bar.dev/100) Two 8-bit index registers (X and Y)
 * ![100%](https://progress-bar.dev/100) Seven 1-bit processor status flag bits (P)
-* ![100%](https://progress-bar.dev/80) Address BUS
+* ![100%](https://progress-bar.dev/100) Address BUS
 * ![100%](https://progress-bar.dev/0) Data BUS
-* ![100%](https://progress-bar.dev/100) [Klaus Dormann 6502 Functional test suite](https://github.com/Klaus2m5/6502_65C02_functional_tests)
-
-## TODO
-
 * ![100%](https://progress-bar.dev/0) Review - Fetch-decode-execute loop
 * ![100%](https://progress-bar.dev/0) Map Read and Write instructions
 * ![100%](https://progress-bar.dev/0) Finish the ifs for 6502 or atari mode (create different memory maps or paths?)
@@ -31,6 +28,8 @@ All opcodes and memory modes implemented and tested in Klaus Dormann test suite.
 http://www.6502.org/
 
 https://web.archive.org/web/20150217073759/http://homepage.ntlworld.com/cyborgsystems
+
+http://datasheets.chipdb.org/Synertek/6502.pdf
 
 ## Architecture
 
