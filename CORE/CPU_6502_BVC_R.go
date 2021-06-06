@@ -2,20 +2,24 @@ package CORE
 
 import "fmt"
 
-// BPL  Branch on Result Plus
+// BVC  Branch on Overflow Clear
 //
-//      branch on N = 0                  N Z C I D V
+//      branch on V = 0                  N Z C I D V
 //                                       - - - - - -
 //
 //      addressing    assembler    opc  bytes  cyles
 //      --------------------------------------------
-//      relative      BPL oper      10    2     2**
+//      relative      BVC oper      50    2     2**
 
-func opc_BPL(memAddr uint16, bytes uint16, opc_cycles byte) {
+func opc_BVC(memAddr uint16, bytes uint16, opc_cycles byte) {
 
-	value := DecodeTwoComplement(Memory[memAddr]) // value is SIGNED
+	// Read data from Memory (adress in Memory Bus) into Data Bus
+	memData := dataBUS_Read(memAddr)
 
-	if P[7] == 0 { // If Positive
+	// Get the Two's complement value of value in Memory
+	value := DecodeTwoComplement(memData) // value is SIGNED
+
+	if P[6] == 0 { // If Overflow is clear
 
 		// Print internal opcode cycle
 		debugInternalOpcCycleBranch(opc_cycles)
@@ -27,9 +31,9 @@ func opc_BPL(memAddr uint16, bytes uint16, opc_cycles byte) {
 			// After spending the cycles needed, execute the opcode
 		} else {
 			// Print Opcode Debug Message
-			opc_BPL_DebugMsg(bytes, value)
+			opc_BVC_DebugMsg(bytes, value)
 
-			// PC + the number of bytes to jump on carry clear
+			// PC + the number of bytes to jump on Overflow clear
 			PC += uint16(value)
 
 			// Increment PC
@@ -39,7 +43,7 @@ func opc_BPL(memAddr uint16, bytes uint16, opc_cycles byte) {
 			resetIntOpcCycleCounters()
 		}
 
-	} else { // If not positive
+	} else { // If Overflow is set
 
 		// Print internal opcode cycle
 		debugInternalOpcCycle(opc_cycles)
@@ -51,7 +55,7 @@ func opc_BPL(memAddr uint16, bytes uint16, opc_cycles byte) {
 			// After spending the cycles needed, execute the opcode
 		} else {
 			// Print Opcode Debug Message
-			opc_BPL_DebugMsg(bytes, value)
+			opc_BVC_DebugMsg(bytes, value)
 
 			// Increment PC
 			PC += bytes
@@ -62,13 +66,13 @@ func opc_BPL(memAddr uint16, bytes uint16, opc_cycles byte) {
 	}
 }
 
-func opc_BPL_DebugMsg(bytes uint16, value int8) {
+func opc_BVC_DebugMsg(bytes uint16, value int8) {
 	if Debug {
 		opc_string := debug_decode_opc(bytes)
-		if P[7] == 0 { // If Positive
-			dbg_show_message = fmt.Sprintf("\n\tOpcode %0s [Mode: Relative]\tBPL  Branch on Result POSITIVE.\tNEGATIVE flag DISABLED, JUMP TO 0x%04X\n", opc_string, PC+2+uint16(value))
-		} else { // If not positive
-			dbg_show_message = fmt.Sprintf("\n\tOpcode %s\tBPL  Branch on Result POSITIVE.\t\tNEGATIVE flag enabled, PC+=2\n", opc_string)
+		if P[6] == 0 { // If Overflow is clear
+			dbg_show_message = fmt.Sprintf("\n\tOpcode %s [Mode: Relative]\tBVC  Branch on Overflow Clear.\tOverflow EQUAL 0, JUMP TO 0x%04X\n", opc_string, PC+2+uint16(value))
+		} else { // If Overflow is set
+			dbg_show_message = fmt.Sprintf("\n\tOpcode %s\tBVC  Branch on Overflow Clear.\tOverflow NOT EQUAL 0, PC+2\n", opc_string)
 		}
 		fmt.Println(dbg_show_message)
 	}

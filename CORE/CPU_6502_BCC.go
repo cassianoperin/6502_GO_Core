@@ -15,7 +15,11 @@ import (
 
 func opc_BCC(memAddr uint16, bytes uint16, opc_cycles byte) {
 
-	value := DecodeTwoComplement(Memory[memAddr]) // value is SIGNED
+	// Read data from Memory (adress in Memory Bus) into Data Bus
+	memData := dataBUS_Read(memAddr)
+
+	// Get the Two's complement value of value in Memory
+	value := DecodeTwoComplement(memData) // value is SIGNED
 
 	if P[0] == 0 { // If carry is clear
 

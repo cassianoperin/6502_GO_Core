@@ -25,17 +25,20 @@ func opc_CPY(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 		// After spending the cycles needed, execute the opcode
 	} else {
 
-		tmp := Y - Memory[memAddr]
+		// Read data from Memory (adress in Memory Bus) into Data Bus
+		var memData byte = dataBUS_Read(memAddr)
+
+		tmp := Y - memData
 
 		// Print Opcode Debug Message
-		opc_CPY_DebugMsg(bytes, tmp, mode, memAddr)
+		opc_CPY_DebugMsg(bytes, tmp, mode, memAddr, memData)
 
 		// Set if Y = M
 		flags_Z(tmp)
 		// Set if bit 7 of the result is set
 		flags_N(tmp)
 		// Set if Y >= M
-		flags_C_CPX_CPY_CMP(Y, Memory[memAddr])
+		flags_C_CPX_CPY_CMP(Y, memData)
 
 		// Increment PC
 		PC += bytes
@@ -46,13 +49,13 @@ func opc_CPY(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 
 }
 
-func opc_CPY_DebugMsg(bytes uint16, tmp byte, mode string, memAddr uint16) {
+func opc_CPY_DebugMsg(bytes uint16, tmp byte, mode string, memAddr uint16, memData byte) {
 	if Debug {
 		opc_string := debug_decode_opc(bytes)
 		if tmp == 0 {
-			dbg_show_message = fmt.Sprintf("\n\tOpcode %s [Mode: %s]\tCPY  Compare Memory and Index Y.\tY(%d) - Memory[0x%02X](%d) = (%d) EQUAL\n", opc_string, mode, Y, PC+1, Memory[memAddr], tmp)
+			dbg_show_message = fmt.Sprintf("\n\tOpcode %s [Mode: %s]\tCPY  Compare Memory and Index Y.\tY(%d) - Memory[0x%02X](%d) = (%d) EQUAL\n", opc_string, mode, Y, PC+1, memData, tmp)
 		} else {
-			dbg_show_message = fmt.Sprintf("\n\tOpcode %s [Mode: %s]\tCPY  Compare Memory and Index Y.\tY(%d) - Memory[0x%02X](%d) = (%d) NOT EQUAL\n", opc_string, mode, Y, PC+1, Memory[memAddr], tmp)
+			dbg_show_message = fmt.Sprintf("\n\tOpcode %s [Mode: %s]\tCPY  Compare Memory and Index Y.\tY(%d) - Memory[0x%02X](%d) = (%d) NOT EQUAL\n", opc_string, mode, Y, PC+1, memData, tmp)
 		}
 		fmt.Println(dbg_show_message)
 	}

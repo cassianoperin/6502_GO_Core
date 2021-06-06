@@ -12,13 +12,22 @@ All opcodes and memory modes implemented and tested in Klaus Dormann test suite.
 * ![100%](https://progress-bar.dev/100) One 8-bit accumulator register (A)
 * ![100%](https://progress-bar.dev/100) Two 8-bit index registers (X and Y)
 * ![100%](https://progress-bar.dev/100) Seven 1-bit processor status flag bits (P)
+* ![100%](https://progress-bar.dev/100) Opcode cycle count
 * ![100%](https://progress-bar.dev/100) Address BUS
-* ![100%](https://progress-bar.dev/0) Data BUS
+* ![100%](https://progress-bar.dev/100) Data BUS
+
+
+## Improvements
+
 * ![100%](https://progress-bar.dev/0) Review - Fetch-decode-execute loop
 * ![100%](https://progress-bar.dev/0) Map Read and Write instructions
 * ![100%](https://progress-bar.dev/0) Finish the ifs for 6502 or atari mode (create different memory maps or paths?)
+* ![100%](https://progress-bar.dev/0) Flags to functions?
 * ![100%](https://progress-bar.dev/0) Create a CLI
 * ![100%](https://progress-bar.dev/0) Create a disassembler mode
+* ![100%](https://progress-bar.dev/0) Other Klaus tests
+* ![100%](https://progress-bar.dev/0) IRQs
+* ![100%](https://progress-bar.dev/0) Opcode cycle precision
 
 
 ## Documentation:

@@ -13,7 +13,11 @@ import "fmt"
 
 func opc_BEQ(memAddr uint16, bytes uint16, opc_cycles byte) {
 
-	value := DecodeTwoComplement(Memory[memAddr]) // value is SIGNED
+	// Read data from Memory (adress in Memory Bus) into Data Bus
+	memData := dataBUS_Read(memAddr)
+
+	// Get the Two's complement value of value in Memory
+	value := DecodeTwoComplement(memData) // value is SIGNED
 
 	if P[1] == 1 { // If zero flag is set
 

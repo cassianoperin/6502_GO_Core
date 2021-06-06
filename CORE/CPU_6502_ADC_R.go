@@ -35,19 +35,20 @@ func opc_ADC(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 		var (
 			original_A  byte = A
 			original_P0 byte = P[0]
+			memData     byte = dataBUS_Read(memAddr) // Read data from Memory (adress in Memory Bus) into Data Bus
 		)
 
 		// --------------------------------- Binary / Hex Mode -------------------------------- //
 
 		if P[3] == 0 {
 
-			A = A + Memory[memAddr] + P[0]
+			A = A + memData + P[0]
 
 			// Update the oVerflow flag
-			flags_V(original_A, Memory[memAddr], original_P0)
+			flags_V(original_A, memData, original_P0)
 
 			// Update the carry flag value
-			flags_C_ADC_SBC(original_A, Memory[memAddr], original_P0)
+			flags_C_ADC_SBC(original_A, memData, original_P0)
 
 			flags_Z(A)
 			flags_N(A)
@@ -62,7 +63,7 @@ func opc_ADC(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 			bcd_A, _ := strconv.ParseInt(fmt.Sprintf("%X", A), 0, 32)
 
 			// Store the decimal value of the original Memory Address (hex)
-			bcd_Mem, _ = strconv.ParseInt(fmt.Sprintf("%X", Memory[memAddr]), 0, 32)
+			bcd_Mem, _ = strconv.ParseInt(fmt.Sprintf("%X", memData), 0, 32)
 
 			// Store the decimal result of A (must be trasformed in hex to be stored)
 			tmp_A := byte(bcd_A) + byte(bcd_Mem) + P[0]
@@ -76,7 +77,7 @@ func opc_ADC(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 			// ------------------------------ Flags ------------------------------ //
 
 			// Update the oVerflow flag
-			flags_V(original_A, Memory[memAddr], original_P0)
+			flags_V(original_A, memData, original_P0)
 
 			// Update the carry flag value
 			if bcd_Result > 0x99 {
@@ -94,7 +95,7 @@ func opc_ADC(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 		}
 
 		// Print Opcode Debug Message
-		opc_ADC_DebugMsg(bytes, mode, original_A, memAddr, original_P0)
+		opc_ADC_DebugMsg(bytes, mode, original_A, memAddr, original_P0, memData)
 
 		// Increment PC
 		PC += bytes
@@ -104,14 +105,14 @@ func opc_ADC(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 	}
 }
 
-func opc_ADC_DebugMsg(bytes uint16, mode string, original_A byte, memAddr uint16, original_P0 byte) {
+func opc_ADC_DebugMsg(bytes uint16, mode string, original_A byte, memAddr uint16, original_P0 byte, memData byte) {
 	if Debug {
 		opc_string := debug_decode_opc(bytes)
 		if P[3] == 0 { // Decimal flag OFF (Binary or Hex Mode)
-			dbg_show_message = fmt.Sprintf("\n\tOpcode %s [Mode: %s]\tADC  Add Memory to Accumulator with Carry [Binary/Hex Mode]\tA = A(%d) + Memory[0x%02X](%d) + Carry (%d)) = %d\n", opc_string, mode, original_A, memAddr, Memory[memAddr], original_P0, A)
+			dbg_show_message = fmt.Sprintf("\n\tOpcode %s [Mode: %s]\tADC  Add Memory to Accumulator with Carry [Binary/Hex Mode]\tA = A(%d) + Memory[0x%02X](%d) + Carry (%d)) = %d\n", opc_string, mode, original_A, memAddr, memData, original_P0, A)
 
 		} else { // Decimal flag ON (Decimal Mode)
-			dbg_show_message = fmt.Sprintf("\n\tOpcode %s [Mode: %s]\tADC  Add Memory to Accumulator with Carry [Decimal Mode]\tA = A(0x%02x) + Memory[0x%02X](0x%02x) + Carry (0x%02x)) = 0x%02X\n", opc_string, mode, original_A, memAddr, Memory[memAddr], original_P0, A)
+			dbg_show_message = fmt.Sprintf("\n\tOpcode %s [Mode: %s]\tADC  Add Memory to Accumulator with Carry [Decimal Mode]\tA = A(0x%02x) + Memory[0x%02X](0x%02x) + Carry (0x%02x)) = 0x%02X\n", opc_string, mode, original_A, memAddr, memData, original_P0, A)
 		}
 		fmt.Println(dbg_show_message)
 	}

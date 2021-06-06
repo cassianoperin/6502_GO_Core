@@ -102,16 +102,17 @@ func resetIntOpcCycleCounters() {
 	opc_cycle_extra = 0
 }
 
-// Data Bus - READ Operation
+// Data Bus - READ from Memory Operations
 func dataBUS_Read(memAddr uint16) byte {
 	data_value := Memory[memAddr]
 
 	return data_value
 }
 
-// Memory Bus - Used by INC, STA, STY and STX to update memory and sinalize TIA about the actions
-func memUpdate(memAddr uint16, value byte) {
+// Data Bus - WRITE to Memory Operations
+func dataBUS_Write(memAddr uint16, data_value byte) byte {
 
-	Memory[memAddr] = value
+	Memory[memAddr] = data_value
 
+	return data_value
 }

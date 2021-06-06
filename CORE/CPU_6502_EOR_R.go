@@ -30,10 +30,13 @@ func opc_EOR(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 		// After spending the cycles needed, execute the opcode
 	} else {
 
-		// Print Opcode Debug Message
-		opc_EOR_DebugMsg(bytes, mode, memAddr)
+		// Read data from Memory (adress in Memory Bus) into Data Bus
+		var memData byte = dataBUS_Read(memAddr)
 
-		A = A ^ Memory[memAddr]
+		// Print Opcode Debug Message
+		opc_EOR_DebugMsg(bytes, mode, memAddr, memData)
+
+		A = A ^ memData
 
 		flags_Z(A)
 		flags_N(A)
@@ -46,10 +49,10 @@ func opc_EOR(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 	}
 }
 
-func opc_EOR_DebugMsg(bytes uint16, mode string, memAddr uint16) {
+func opc_EOR_DebugMsg(bytes uint16, mode string, memAddr uint16, memData byte) {
 	if Debug {
 		opc_string := debug_decode_opc(bytes)
-		dbg_show_message = fmt.Sprintf("\n\tOpcode %s [Mode: %s]\tEOR  Exclusive-OR Memory with Accumulator.\tA = A(%d) XOR Memory[0x%02X](%d)\t(%d)\n", opc_string, mode, A, memAddr, Memory[memAddr], A^Memory[memAddr])
+		dbg_show_message = fmt.Sprintf("\n\tOpcode %s [Mode: %s]\tEOR  Exclusive-OR Memory with Accumulator.\tA = A(%d) XOR Memory[0x%02X](%d)\t(%d)\n", opc_string, mode, A, memAddr, memData, A^memData)
 		fmt.Println(dbg_show_message)
 	}
 }

@@ -1136,21 +1136,7 @@ func CPU_Interpreter() {
 	// 		os.Exit(0)
 	// 	}
 
-	//------------------------------------------- Unnoficial Opcodes ------------------------------------------//
-
-	// case 0x27: // Instruction RLA ( zeropage )
-	// 	if opc_cycle_count == 1 {
-	// 		addressBUS, memMode = addr_mode_Zeropage(PC + 1)
-	// 	}
-	// 	opc_U_RLA(addressBUS, memMode, 2, 5)
-
-	// case 0x64: // Instruction NOP ( zeropage )
-	// 	if opc_cycle_count == 1 {
-	// 		addressBUS, memMode = addr_mode_Zeropage(PC + 1)
-	// 	}
-	// 	opc_U_NOP(addressBUS, memMode, 2, 3)
-
-	//-------------------------------------------- No Opcode Found --------------------------------------------//
+	// ------------------------------------------- OPCODE NOT IMPLEMENTED ------------------------------------------ //
 
 	default:
 		fmt.Printf("\n\tOpcode %02X not implemented! Exiting!\n\n", opcode)
@@ -1160,7 +1146,7 @@ func CPU_Interpreter() {
 	// Increment Cycle
 	counter_F_Cycle++
 
-	// ---------------------- Tests ---------------------- //
+	// ---------------------------------------------- TEMPORARY TESTS ---------------------------------------------- //
 
 	// The B flag tester
 	if P[5] != 1 {

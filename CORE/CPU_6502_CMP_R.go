@@ -32,15 +32,18 @@ func opc_CMP(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 		// After spending the cycles needed, execute the opcode
 	} else {
 
-		tmp := A - Memory[memAddr]
+		// Read data from Memory (adress in Memory Bus) into Data Bus
+		var memData byte = dataBUS_Read(memAddr)
+
+		tmp := A - memData
 
 		// Print Opcode Debug Message
-		opc_CMP_DebugMsg(bytes, tmp, mode, memAddr)
+		opc_CMP_DebugMsg(bytes, tmp, mode, memAddr, memData)
 
 		flags_Z(tmp)
 		flags_N(tmp)
 		// Set if A >= M
-		flags_C_CPX_CPY_CMP(A, Memory[memAddr])
+		flags_C_CPX_CPY_CMP(A, memData)
 
 		// Increment PC
 		PC += bytes
@@ -51,13 +54,13 @@ func opc_CMP(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 
 }
 
-func opc_CMP_DebugMsg(bytes uint16, tmp byte, mode string, memAddr uint16) {
+func opc_CMP_DebugMsg(bytes uint16, tmp byte, mode string, memAddr uint16, memData byte) {
 	if Debug {
 		opc_string := debug_decode_opc(bytes)
 		if tmp == 0 {
-			dbg_show_message = fmt.Sprintf("\n\tOpcode %s [Mode: %s]\tCMP  Compare Memory with Accumulator.\tA(%d) - Memory[0x%02X](%d) = (%d) EQUAL\n", opc_string, mode, A, memAddr, Memory[memAddr], tmp)
+			dbg_show_message = fmt.Sprintf("\n\tOpcode %s [Mode: %s]\tCMP  Compare Memory with Accumulator.\tA(%d) - Memory[0x%02X](%d) = (%d) EQUAL\n", opc_string, mode, A, memAddr, memData, tmp)
 		} else {
-			dbg_show_message = fmt.Sprintf("\n\tOpcode %s [Mode: %s]\tCMP  Compare Memory with Accumulator.\tA(%d) - Memory[0x%02X](%d) = (%d) NOT EQUAL\n", opc_string, mode, A, memAddr, Memory[memAddr], tmp)
+			dbg_show_message = fmt.Sprintf("\n\tOpcode %s [Mode: %s]\tCMP  Compare Memory with Accumulator.\tA(%d) - Memory[0x%02X](%d) = (%d) NOT EQUAL\n", opc_string, mode, A, memAddr, memData, tmp)
 		}
 		fmt.Println(dbg_show_message)
 	}

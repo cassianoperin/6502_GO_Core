@@ -94,27 +94,30 @@ func opc_ROR(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 		// After spending the cycles needed, execute the opcode
 	} else {
 
+		// Read data from Memory (adress in Memory Bus) into Data Bus
+		memData := dataBUS_Read(memAddr)
+
 		// Keep original Accumulator value for debug
-		original_MemValue := Memory[memAddr]
+		original_MemValue := memData
 		original_carry := P[0]
 
 		// Keep the original bit 0 from Accumulator to be used as new Carry
-		new_Carry := Memory[memAddr] & 0x01
+		new_Carry := memData & 0x01
 
+		// Write data to Memory (adress in Memory Bus) and update the value in Data BUS
 		// Shift Right Memory Value
-		Memory[memAddr] = Memory[memAddr] >> 1
-
+		memData = dataBUS_Write(memAddr, memData>>1)
 		// Bit 7 is filled with the current value of the carry flag
-		Memory[memAddr] += (P[0] << 7)
+		memData = dataBUS_Write(memAddr, memData+(P[0]<<7))
 
 		// The old bit 0 becomes the new carry flag value
 		P[0] = new_Carry
 
 		// Print Opcode Debug Message
-		opc_ROR_DebugMsg(bytes, mode, memAddr, original_MemValue, original_carry)
+		opc_ROR_DebugMsg(bytes, mode, memAddr, original_MemValue, original_carry, memData)
 
-		flags_N(Memory[memAddr])
-		flags_Z(Memory[memAddr])
+		flags_N(memData)
+		flags_Z(memData)
 
 		if Debug {
 			fmt.Printf("\tFlag C: %d -> %d", original_carry, P[0])
@@ -128,10 +131,10 @@ func opc_ROR(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 	}
 }
 
-func opc_ROR_DebugMsg(bytes uint16, mode string, memAddr uint16, original_MemValue byte, original_carry byte) {
+func opc_ROR_DebugMsg(bytes uint16, mode string, memAddr uint16, original_MemValue byte, original_carry byte, memData byte) {
 	if Debug {
 		opc_string := debug_decode_opc(bytes)
-		dbg_show_message = fmt.Sprintf("\n\tOpcode %s [Mode: %s]\tROR  Rotate One Bit Right.\tMemory[0x%02d](%d) Roll Right 1 bit\t(%d) + Current Carry(%d) as new bit 7.\tA = %d\n", opc_string, mode, memAddr, original_MemValue, original_MemValue>>1, original_carry, Memory[memAddr])
+		dbg_show_message = fmt.Sprintf("\n\tOpcode %s [Mode: %s]\tROR  Rotate One Bit Right.\tMemory[0x%02d](%d) Roll Right 1 bit\t(%d) + Current Carry(%d) as new bit 7.\tA = %d\n", opc_string, mode, memAddr, original_MemValue, original_MemValue>>1, original_carry, memData)
 		fmt.Println(dbg_show_message)
 	}
 }

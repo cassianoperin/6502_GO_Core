@@ -85,17 +85,20 @@ func opc_ROL(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 		// Original Carry Value
 		carry_orig := P[0]
 
+		// Read data from Memory (adress in Memory Bus) into Data Bus
+		memData := dataBUS_Read(memAddr)
+
 		// Print Opcode Debug Message
-		opc_ROL_DebugMsg(bytes, mode, memAddr, carry_orig)
+		opc_ROL_DebugMsg(bytes, mode, memAddr, carry_orig, memData)
 
 		// Calculate the original bit7 and save it as the new Carry
-		P[0] = Memory[memAddr] & 0x80 >> 7
+		P[0] = memData & 0x80 >> 7
 
-		// Shift left the byte and put the original bit7 value in bit 1 to make the complete ROL
-		Memory[memAddr] = (Memory[memAddr] << 1) + carry_orig
+		// Write data to Memory (adress in Memory Bus) and update the value in Data BUS
+		memData = dataBUS_Write(memAddr, (memData<<1)+carry_orig)
 
-		flags_N(Memory[memAddr])
-		flags_Z(Memory[memAddr])
+		flags_N(memData)
+		flags_Z(memData)
 		if Debug {
 			fmt.Printf("\tFlag C: %d -> %d", carry_orig, P[0])
 		}
@@ -108,10 +111,10 @@ func opc_ROL(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 	}
 }
 
-func opc_ROL_DebugMsg(bytes uint16, mode string, memAddr uint16, carry_orig byte) {
+func opc_ROL_DebugMsg(bytes uint16, mode string, memAddr uint16, carry_orig byte, memData byte) {
 	if Debug {
 		opc_string := debug_decode_opc(bytes)
-		dbg_show_message = fmt.Sprintf("\n\tOpcode %s [Mode: %s]\tROL  Rotate One Bit Left.\tMemory[0x%02X](%d) Roll Left 1 bit + Carry(%d)\t(%d)\n", opc_string, mode, memAddr, Memory[memAddr], carry_orig, (Memory[memAddr]<<1)+carry_orig)
+		dbg_show_message = fmt.Sprintf("\n\tOpcode %s [Mode: %s]\tROL  Rotate One Bit Left.\tMemory[0x%02X](%d) Roll Left 1 bit + Carry(%d)\t(%d)\n", opc_string, mode, memAddr, memData, carry_orig, (memData<<1)+carry_orig)
 		fmt.Println(dbg_show_message)
 	}
 }

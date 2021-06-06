@@ -29,14 +29,17 @@ func opc_BIT(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 		// After spending the cycles needed, execute the opcode
 	} else {
 
+		// Read data from Memory (adress in Memory Bus) into Data Bus
+		var memData byte = dataBUS_Read(memAddr)
+
 		// Print Opcode Debug Message
-		opc_BIT_DebugMsg(bytes, mode, memAddr)
+		opc_BIT_DebugMsg(bytes, mode, memAddr, memData)
 
 		// Memory Address bit 7 (A) -> N (Negative)
 		if Debug {
 			fmt.Printf("\tFlag N: %d -> ", P[7])
 		}
-		P[7] = Memory[memAddr] >> 7 & 0x1
+		P[7] = memData >> 7 & 0x1
 		if Debug {
 			fmt.Printf("%d\n", P[7])
 		}
@@ -45,12 +48,12 @@ func opc_BIT(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 		if Debug {
 			fmt.Printf("\tFlag V: %d -> ", P[6])
 		}
-		P[6] = Memory[memAddr] >> 6 & 0x1
+		P[6] = memData >> 6 & 0x1
 		if Debug {
 			fmt.Printf("%d\n", P[6])
 		}
 
-		flags_Z(A & Memory[memAddr])
+		flags_Z(A & memData)
 
 		// Increment PC
 		PC += bytes
@@ -60,10 +63,10 @@ func opc_BIT(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 	}
 }
 
-func opc_BIT_DebugMsg(bytes uint16, mode string, memAddr uint16) {
+func opc_BIT_DebugMsg(bytes uint16, mode string, memAddr uint16, memData byte) {
 	if Debug {
 		opc_string := debug_decode_opc(bytes)
-		dbg_show_message = fmt.Sprintf("\n\tOpcode %s [Mode: %s]\tBIT  Test Bits in Memory with Accumulator.\tA (%08b) AND Memory[0x%04X] (%08b) = %08b \tM7 -> N, M6 -> V\n", opc_string, mode, A, memAddr, Memory[memAddr], A&Memory[memAddr])
+		dbg_show_message = fmt.Sprintf("\n\tOpcode %s [Mode: %s]\tBIT  Test Bits in Memory with Accumulator.\tA (%08b) AND Memory[0x%04X] (%08b) = %08b \tM7 -> N, M6 -> V\n", opc_string, mode, A, memAddr, memData, A&memData)
 		fmt.Println(dbg_show_message)
 	}
 }

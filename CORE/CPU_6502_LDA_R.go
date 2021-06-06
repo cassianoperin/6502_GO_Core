@@ -30,7 +30,10 @@ func opc_LDA(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 		// After spending the cycles needed, execute the opcode
 	} else {
 
-		A = Memory[memAddr]
+		// Read data from Memory (adress in Memory Bus) into Data Bus
+		var memData byte = dataBUS_Read(memAddr)
+
+		A = memData
 
 		// Print Opcode Debug Message
 		opc_LDA_DebugMsg(bytes, mode, memAddr)

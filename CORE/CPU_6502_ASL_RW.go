@@ -74,15 +74,19 @@ func opc_ASL(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 		// After spending the cycles needed, execute the opcode
 	} else {
 
+		// Read data from Memory (adress in Memory Bus) into Data Bus
+		memData := dataBUS_Read(memAddr)
+
+		P[0] = memData >> 7
+
+		// Write data to Memory (adress in Memory Bus) and update the value in Data BUS
+		memData = dataBUS_Write(memAddr, memData<<1)
+
+		flags_N(memData)
+		flags_Z(memData)
+
 		// Print Opcode Debug Message
-		opc_ASL_DebugMsg(bytes, mode, memAddr)
-
-		P[0] = Memory[memAddr] >> 7
-
-		Memory[memAddr] = Memory[memAddr] << 1
-
-		flags_N(Memory[memAddr])
-		flags_Z(Memory[memAddr])
+		opc_ASL_DebugMsg(bytes, mode, memAddr, memData)
 
 		// Increment PC
 		PC += bytes
@@ -92,10 +96,10 @@ func opc_ASL(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 	}
 }
 
-func opc_ASL_DebugMsg(bytes uint16, mode string, memAddr uint16) {
+func opc_ASL_DebugMsg(bytes uint16, mode string, memAddr uint16, memData byte) {
 	if Debug {
 		opc_string := debug_decode_opc(bytes)
-		dbg_show_message = fmt.Sprintf("\n\tOpcode %s [Mode: %s]\tASL  Shift Left One Bit.\tMemory[0x%02X]: (%d) Shift Left 1 bit\t(%d).\tCarry (Original Memory address bit 7): %d\n", opc_string, mode, memAddr, Memory[memAddr], Memory[memAddr]<<1, Memory[memAddr]>>7)
+		dbg_show_message = fmt.Sprintf("\n\tOpcode %s [Mode: %s]\tASL  Shift Left One Bit.\tMemory[0x%02X]: (%d) Shift Left 1 bit\t(%d).\tCarry (Original Memory address bit 7): %d\n", opc_string, mode, memAddr, memData>>1, memData, P[0])
 		fmt.Println(dbg_show_message)
 	}
 }

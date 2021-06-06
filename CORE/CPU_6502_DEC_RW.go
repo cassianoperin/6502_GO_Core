@@ -26,13 +26,17 @@ func opc_DEC(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 		// After spending the cycles needed, execute the opcode
 	} else {
 
+		// Read data from Memory (adress in Memory Bus) into Data Bus
+		memData := dataBUS_Read(memAddr)
+
 		// Print Opcode Debug Message
-		opc_DEC_DebugMsg(bytes, mode, memAddr)
+		opc_DEC_DebugMsg(bytes, mode, memAddr, memData)
 
-		Memory[memAddr] -= 1
+		// Write data to Memory (adress in Memory Bus) and update the value in Data BUS
+		memData = dataBUS_Write(memAddr, memData-1)
 
-		flags_Z(Memory[memAddr])
-		flags_N(Memory[memAddr])
+		flags_Z(memData)
+		flags_N(memData)
 
 		// Increment PC
 		PC += bytes
@@ -43,10 +47,10 @@ func opc_DEC(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 
 }
 
-func opc_DEC_DebugMsg(bytes uint16, mode string, memAddr uint16) {
+func opc_DEC_DebugMsg(bytes uint16, mode string, memAddr uint16, memData byte) {
 	if Debug {
 		opc_string := debug_decode_opc(bytes)
-		dbg_show_message = fmt.Sprintf("\n\tOpcode %s [Mode: %s]\tDEC  Decrement Memory by One.\tMemory[0x%02X](%d) - 1:\t%d\n", opc_string, mode, memAddr, Memory[memAddr], Memory[memAddr]-1)
+		dbg_show_message = fmt.Sprintf("\n\tOpcode %s [Mode: %s]\tDEC  Decrement Memory by One.\tMemory[0x%02X](%d) - 1:\t%d\n", opc_string, mode, memAddr, memData, memData-1)
 		fmt.Println(dbg_show_message)
 	}
 }

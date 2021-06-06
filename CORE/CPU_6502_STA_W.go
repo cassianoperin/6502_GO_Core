@@ -31,11 +31,11 @@ func opc_STA(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 		// After spending the cycles needed, execute the opcode
 	} else {
 
-		// Update Memory[memAddr] with value of A and notify TIA about the update
-		memUpdate(memAddr, A)
+		// Write data to Memory (adress in Memory Bus) and update the value in Data BUS
+		var memData byte = dataBUS_Write(memAddr, A)
 
 		// Print Opcode Debug Message
-		opc_STA_DebugMsg(bytes, mode, memAddr)
+		opc_STA_DebugMsg(bytes, mode, memAddr, memData)
 
 		// Increment PC
 		PC += bytes
@@ -45,10 +45,10 @@ func opc_STA(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 	}
 }
 
-func opc_STA_DebugMsg(bytes uint16, mode string, memAddr uint16) {
+func opc_STA_DebugMsg(bytes uint16, mode string, memAddr uint16, memData byte) {
 	if Debug {
 		opc_string := debug_decode_opc(bytes)
-		dbg_show_message = fmt.Sprintf("\n\tOpcode %s [Mode: %s]\tSTA  Store Accumulator in Memory.\tMemory[0x%02X] = A (0x%02X)\n", opc_string, mode, memAddr, Memory[memAddr])
+		dbg_show_message = fmt.Sprintf("\n\tOpcode %s [Mode: %s]\tSTA  Store Accumulator in Memory.\tMemory[0x%02X] = A (0x%02X)\n", opc_string, mode, memAddr, memData)
 		fmt.Println(dbg_show_message)
 	}
 }
