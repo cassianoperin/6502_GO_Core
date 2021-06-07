@@ -24,17 +24,7 @@ func opc_PLP(bytes uint16, opc_cycles byte) {
 		// After spending the cycles needed, execute the opcode
 	} else {
 
-		var SP_Address uint
-
-		// Atari 2600 interpreter mode
-		if CPU_MODE == 0 {
-			SP_Address = uint(SP + 1)
-
-			// 6502/6507 interpreter mode
-		} else {
-			// Stack is a 256-byte array whose location is hardcoded at page $01 ($0100-$01FF)
-			SP_Address = uint(SP+1) + 256
-		}
+		var SP_Address uint16 = uint16(SP+1) + 256 // 6502 handle Stack at the end of first memory page
 
 		// Turn the stack value into the processor status
 		for i := 0; i < len(P); i++ {
@@ -61,7 +51,7 @@ func opc_PLP(bytes uint16, opc_cycles byte) {
 	}
 }
 
-func opc_PLP_DebugMsg(bytes uint16, SP_Address uint) {
+func opc_PLP_DebugMsg(bytes uint16, SP_Address uint16) {
 	if Debug {
 		opc_string := debug_decode_opc(bytes)
 		dbg_show_message = fmt.Sprintf("\n\tOpcode %s [Mode: Implied]\tPLP  Processor Status from Stack.\tP = Memory[0x%02X] %d | SP++\n", opc_string, SP_Address, P)

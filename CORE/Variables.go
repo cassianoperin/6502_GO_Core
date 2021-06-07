@@ -3,7 +3,7 @@ package CORE
 import "time"
 
 var (
-	CPU_MODE byte = 1 // 0 for Atari, 1 for pure 6502/6507 CPU interpreter
+	CPU_MODE byte = 1 // 0 for 6507, 1 for 6502 CPU interpreter
 
 	// ------------------------ Hardware Components ------------------------- //
 	Memory [65536]byte // Memory
@@ -28,11 +28,9 @@ var (
 	// 1    Z     Zero          (0=Nonzero, 1=Zero)
 	// 0    C     Carry         (0=No Carry, 1=Carry)
 
-	// -------------------------------- Bus --------------------------------- //
-	addressBUS uint16 // // 16 pins of processor that points to memory for read or write operations
-
 	// --------------------------- CPU Variables ---------------------------- //
-	opcode byte // CPU Operation Code
+	opcode  byte   // CPU Operation Code
+	SP_Page uint16 // Stack Pointer Memory Page, add 0(Memory Page 0) or 256(Memory Page 1) to SP Address
 
 	// ------------------------------ Counters ------------------------------ //
 	counter_F_Cycle uint16 // Frame Cycles
@@ -40,8 +38,9 @@ var (
 	opc_cycle_extra byte   // Opcode extra cycle
 
 	// -------------------------- Memory Variables -------------------------- //
-	memMode  string // Receive the addressing mode used in the debug
-	memValue int8   // Receive the memory value needed by branches. Calculated in the first opc cycle to check for extra cycles, used in the last to perform the operation
+	memMode    string // Receive the addressing mode used in the debug
+	addressBUS uint16 // // 16 pins of processor that points to memory for read or write operations
+	memValue   int8   // Receive the memory value needed by branches. Calculated in the first opc cycle to check for extra cycles, used in the last to perform the operation
 
 	// ------------------------------- Timers ------------------------------- //
 	clock_timer *time.Ticker // CPU Clock // CPU: MOS Technology 6507 @ 1.19 MHz;

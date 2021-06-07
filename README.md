@@ -19,7 +19,12 @@ All opcodes and memory modes implemented and tested in Klaus Dormann test suite.
 
 ## Improvements
 
-* ![100%](https://progress-bar.dev/0) Finish the ifs for 6502 or atari mode (create different memory maps or paths?)
+* ![100%](https://progress-bar.dev/0) Finish the ifs for 6502 or atari mode (create different memory maps or paths?) - ADD A GLOBAL VARIABLE AND USE IT (+0 or + 256 on opcodes!!)
+* ![100%](https://progress-bar.dev/0) Stack operations should also use Memory Bus
+* ![100%](https://progress-bar.dev/0) Prepare the memory replication on BUS to mirror SP to zero page and other locations (Atari)
+* ![100%](https://progress-bar.dev/0) Add Instructions per second count
+* ![100%](https://progress-bar.dev/0) Finish all other direct Memory[ reads and writes
+* ![100%](https://progress-bar.dev/0) Add PC as a input argument or Variable and correct reset vector
 * ![100%](https://progress-bar.dev/0) Create a CLI
 * ![100%](https://progress-bar.dev/0) Create a disassembler mode
 * ![100%](https://progress-bar.dev/0) Other Klaus tests

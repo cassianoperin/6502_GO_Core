@@ -26,17 +26,7 @@ func opc_PHP(bytes uint16, opc_cycles byte) {
 		// After spending the cycles needed, execute the opcode
 	} else {
 
-		var SP_Address uint
-
-		// Atari 2600 interpreter mode
-		if CPU_MODE == 0 {
-			SP_Address = uint(SP)
-
-			// 6502/6507 interpreter mode
-		} else {
-			// Stack is a 256-byte array whose location is hardcoded at page $01 ($0100-$01FF)
-			SP_Address = uint(SP) + 256
-		}
+		var SP_Address uint16 = uint16(SP) + 256 // 6502 handle Stack at the end of first memory page
 
 		// Put processor Status (P) on stack
 		for i := 7; i >= 0; i-- {
@@ -66,7 +56,7 @@ func opc_PHP(bytes uint16, opc_cycles byte) {
 
 }
 
-func opc_PHP_DebugMsg(bytes uint16, SP_Address uint, tmp_P byte) {
+func opc_PHP_DebugMsg(bytes uint16, SP_Address uint16, tmp_P byte) {
 	if Debug {
 		opc_string := debug_decode_opc(bytes)
 		dbg_show_message = fmt.Sprintf("\n\tOpcode %s [Mode: Implied]\tPHP  Push Processor Status on Stack.\tMemory[0x%02X] = Processor Status %08b | SP--\n", opc_string, SP_Address, tmp_P)

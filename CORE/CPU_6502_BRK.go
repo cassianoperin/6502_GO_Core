@@ -34,17 +34,7 @@ func opc_BRK(bytes uint16, opc_cycles byte) {
 
 		// ---------- Store PC ---------- //
 
-		var SP_Address uint
-
-		// Atari 2600 interpreter mode
-		if CPU_MODE == 0 {
-			SP_Address = uint(SP)
-
-			// 6502/6507 interpreter mode
-		} else {
-			// Stack is a 256-byte array whose location is hardcoded at page $01 ($0100-$01FF)
-			SP_Address = uint(SP) + 256
-		}
+		var SP_Address uint16 = uint16(SP) + 256 // 6502 handle Stack at the end of first memory page
 
 		// Push PC+2 (PC(hi))
 		Memory[SP_Address] = byte((PC + 2) >> 8)
@@ -93,7 +83,7 @@ func opc_BRK(bytes uint16, opc_cycles byte) {
 	}
 }
 
-func opc_BRK_DebugMsg(bytes uint16, SP_Address uint) {
+func opc_BRK_DebugMsg(bytes uint16, SP_Address uint16) {
 	if Debug {
 		opc_string := debug_decode_opc(bytes)
 		dbg_show_message = fmt.Sprintf("\n\tOpcode %s [Mode: Implied]\tBRK  Force Break.\tPush PC and P to Stack: Mem[0x%02X] = %02X, Mem[0x%02X] = 0x%02X, Mem[0x%02X] = 0x%02X(%08b)\t\tNew PC = 0x%04X(BRK/Interrupt)\n", opc_string, SP_Address+3, Memory[SP_Address+3], SP_Address+2, Memory[SP_Address+2], SP_Address+1, Memory[SP_Address+1], Memory[SP_Address+1], uint16(Memory[0xFFFF])<<8|uint16(Memory[0xFFFE]))

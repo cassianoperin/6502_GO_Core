@@ -26,17 +26,7 @@ func opc_JSR(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 		// After spending the cycles needed, execute the opcode
 	} else {
 
-		var SP_Address uint
-
-		// Atari 2600 interpreter mode
-		if CPU_MODE == 0 {
-			SP_Address = uint(SP)
-
-			// 6502/6507 interpreter mode
-		} else {
-			// Stack is a 256-byte array whose location is hardcoded at page $01 ($0100-$01FF)
-			SP_Address = uint(SP) + 256
-		}
+		var SP_Address uint16 = uint16(SP) + 256 // 6502 handle Stack at the end of first memory page
 
 		Memory[SP_Address] = byte((PC + 2) >> 8)
 		SP--
@@ -57,7 +47,7 @@ func opc_JSR(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 	}
 }
 
-func opc_JSR_DebugMsg(bytes uint16, mode string, memAddr uint16, SP_Address uint) {
+func opc_JSR_DebugMsg(bytes uint16, mode string, memAddr uint16, SP_Address uint16) {
 	if Debug {
 		opc_string := debug_decode_opc(bytes)
 		dbg_show_message = fmt.Sprintf("\n\tOpcode %s [Mode: %s]\tJSR  Jump to New Location Saving Return Address.\tPC = Memory[0x%02X]\t|\t Stack[0x%02X] = %02X\t Stack[0x%02X] = 0x%02X\n", opc_string, mode, memAddr, SP_Address+2, Memory[SP_Address+2], SP_Address+1, Memory[SP_Address+1])

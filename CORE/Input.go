@@ -1,12 +1,10 @@
 package CORE
 
 import (
-	"Atari2600/VGS"
 	"fmt"
 	"time"
 
 	"github.com/faiface/pixel/pixelgl"
-	// "github.com/faiface/pixel/imdraw"
 )
 
 // ----------------------------------- Keyboard ----------------------------------- //
@@ -27,7 +25,7 @@ func Keyboard(target *pixelgl.Window) {
 	// Reset
 	if target.JustPressed(pixelgl.Key0) {
 
-		VGS.Reset()
+		Reset()
 
 	}
 

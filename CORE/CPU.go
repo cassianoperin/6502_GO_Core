@@ -28,18 +28,13 @@ func Initialize() {
 	// Initialize P (Bit 4 (Break) and Bit 5 (Unused))
 	P[5] = 1 // Always set
 
-	// Atari 2600 interpreter mode
+	// 6507 interpreter mode
 	if CPU_MODE == 0 {
-
-		// Always Enabled since 6507 doesn't have interrupts
+		// Break Flag - Always Enabled since 6507 doesn't have interrupts
 		P[4] = 1
-
-		// 6502/6507 interpreter mode
-	} else {
-
-		// Will be set with BRK instruction
+	} else { // 6502 interpreter mode
+		// Break Flag - Will be set with BRK instruction
 		P[4] = 0
-
 	}
 }
 
@@ -52,15 +47,11 @@ func InitializeTimers() {
 // Reset Vector // 0xFFFC | 0xFFFD (Little Endian)
 func Reset() {
 
-	// Atari 2600 interpreter mode
+	// 6507 interpreter mode
 	if CPU_MODE == 0 {
-
 		// Read the Opcode from PC+1 and PC bytes (Little Endian)
 		PC = uint16(Memory[0xFFFD])<<8 | uint16(Memory[0xFFFC])
-
-		// 6502/6507 interpreter mode
-	} else {
-
+	} else { // 6502 interpreter mode
 		// Set the PC on the start of programs
 		PC = 0x400
 	}
@@ -1115,7 +1106,7 @@ func CPU_Interpreter() {
 	// FF (Filled ROM)
 	// case 0xFF:
 
-	// 	if CPU_MODE == 0 { // Atari 2600 interpreter mode
+	// 	if CPU_MODE == 0 { // 6507 interpreter mode
 	// 		// 	if Debug {
 	// 		// 		fmt.Printf("\tOpcode %02X [1 byte]\tFilled ROM.\tPC incremented.\n", opcode)
 	// 		//
@@ -1130,7 +1121,7 @@ func CPU_Interpreter() {
 	// 		fmt.Printf("\tOpcode 0xFF NOT IMPLEMENTED YET!! Exiting.\n")
 	// 		os.Exit(0)
 
-	// 	} else { // 6502/6507 interpreter mode
+	// 	} else { 6502 interpreter mode
 	// 		// fmt.Println(Memory[0x20], Memory[0x21], Memory[0x22])
 	// 		fmt.Println("Opcode 0xFF in 6507 mode. Exiting.")
 	// 		os.Exit(0)

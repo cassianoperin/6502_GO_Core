@@ -115,7 +115,7 @@ func testFile(filename string) {
 }
 
 func main() {
-	fmt.Printf("Atari 2600 Emulator\n")
+	fmt.Printf("MOS 6502 CPU Emulator\n")
 
 	// Validate the Arguments
 	//checkArgs()
