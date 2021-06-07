@@ -50,18 +50,12 @@ func opc_ROR_A(bytes uint16, opc_cycles byte) {
 		// Bit 7 is filled with the current value of the carry flag
 		A += (P[0] << 7)
 
-		// The old bit 0 becomes the new carry flag value
-		P[0] = new_Carry
-
 		// Print Opcode Debug Message
 		opc_ROR_A_DebugMsg(bytes, original_A, original_carry)
 
+		flags_C(new_Carry) // The old bit 0 becomes the new carry flag value
 		flags_N(A)
 		flags_Z(A)
-
-		if Debug {
-			fmt.Printf("\tFlag C: %d -> %d", original_carry, P[0])
-		}
 
 		// Increment PC
 		PC += bytes
@@ -110,18 +104,12 @@ func opc_ROR(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 		// Bit 7 is filled with the current value of the carry flag
 		memData = dataBUS_Write(memAddr, memData+(P[0]<<7))
 
-		// The old bit 0 becomes the new carry flag value
-		P[0] = new_Carry
-
 		// Print Opcode Debug Message
 		opc_ROR_DebugMsg(bytes, mode, memAddr, original_MemValue, original_carry, memData)
 
+		flags_C(new_Carry) // The old bit 0 becomes the new carry flag value
 		flags_N(memData)
 		flags_Z(memData)
-
-		if Debug {
-			fmt.Printf("\tFlag C: %d -> %d", original_carry, P[0])
-		}
 
 		// Increment PC
 		PC += bytes

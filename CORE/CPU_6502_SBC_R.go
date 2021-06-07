@@ -37,7 +37,6 @@ func opc_SBC(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 		var (
 			original_A        byte = A
 			original_P0       byte = P[0]
-			original_P7       byte = P[7]
 			memData           byte = dataBUS_Read(memAddr) // Read data from Memory (adress in Memory Bus) into Data Bus
 			Mem_1s_complement byte = 255 - memData         // Memory value one's complement (bits inverted)
 		)
@@ -50,12 +49,8 @@ func opc_SBC(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 			// SBC is an ADC but with Memory value as one's complement (bits inverted)
 			A = A + Mem_1s_complement + P[0]
 
-			// Update the oVerflow flag
-			flags_V(original_A, Mem_1s_complement, original_P0)
-
-			// Update the carry flag value
-			flags_C_ADC_SBC(original_A, Mem_1s_complement, original_P0)
-
+			flags_V(original_A, Mem_1s_complement, original_P0)         // Update the oVerflow flag
+			flags_C_ADC_SBC(original_A, Mem_1s_complement, original_P0) // Update the carry flag value
 			flags_Z(A)
 			flags_N(A)
 
@@ -94,31 +89,10 @@ func opc_SBC(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 
 			// ------------------------------ Flags ------------------------------ //
 
-			// Update the oVerflow flag
-			flags_V(original_A, memData, original_P0)
-
-			// Update the carry flag value
-			if tmp_A_unsigned >= 0x00 {
-				P[0] = 1
-			} else {
-				P[0] = 0
-			}
-			if Debug {
-				fmt.Printf("\tFlag C: %d -> %d\n", original_P7, P[7])
-			}
-
+			flags_V(original_A, memData, original_P0) // Update the oVerflow flag
+			flags_C_SBC_DECIMAL(tmp_A_unsigned)       // Update the carry flag value
 			flags_Z(A)
-
-			// Negative flag
-			if tmp_A_unsigned < 0x00 {
-				P[7] = 1
-			} else {
-				P[7] = 0
-			}
-			if Debug {
-				fmt.Printf("\tFlag N: %d -> %d\n", original_P0, P[0])
-			}
-
+			flags_SBC_DECIMAL(tmp_A_unsigned)
 		}
 
 		// Print Opcode Debug Message

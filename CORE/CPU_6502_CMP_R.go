@@ -42,8 +42,7 @@ func opc_CMP(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 
 		flags_Z(tmp)
 		flags_N(tmp)
-		// Set if A >= M
-		flags_C_CPX_CPY_CMP(A, memData)
+		flags_C_CPX_CPY_CMP(A, memData) // Set if A >= M
 
 		// Increment PC
 		PC += bytes

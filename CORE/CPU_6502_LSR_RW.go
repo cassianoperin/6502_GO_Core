@@ -31,22 +31,15 @@ func opc_LSR_A(bytes uint16, opc_cycles byte) {
 		// After spending the cycles needed, execute the opcode
 	} else {
 
-		// Save the original Carry value
-		carry_orig := P[0]
-
-		// Least significant bit turns into the new Carry
-		P[0] = A & 0x01
-
 		// Print Opcode Debug Message
 		opc_LSR_A_DebugMsg(bytes)
+
+		flags_C(A & 0x01) // Least significant bit turns into the new Carry
 
 		A = A >> 1
 
 		flags_N(A)
 		flags_Z(A)
-		if Debug {
-			fmt.Printf("\tFlag C: %d -> %d", carry_orig, P[0])
-		}
 
 		// Increment PC
 		PC += bytes
@@ -79,26 +72,19 @@ func opc_LSR(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 		// After spending the cycles needed, execute the opcode
 	} else {
 
-		// Save the original Carry value
-		carry_orig := P[0]
-
 		// Read data from Memory (adress in Memory Bus) into Data Bus
 		memData := dataBUS_Read(memAddr)
 
-		// Least significant bit turns into the new Carry
-		P[0] = memData & 0x01
-
 		// Print Opcode Debug Message
 		opc_LSR_DebugMsg(bytes, mode, memAddr, memData)
+
+		flags_C(memData & 0x01) // Least significant bit turns into the new Carry
 
 		// Write data to Memory (adress in Memory Bus) and update the value in Data BUS
 		memData = dataBUS_Write(memAddr, memData>>1)
 
 		flags_N(memData)
 		flags_Z(memData)
-		if Debug {
-			fmt.Printf("\tFlag C: %d -> %d", carry_orig, P[0])
-		}
 
 		// Increment PC
 		PC += bytes

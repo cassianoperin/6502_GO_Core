@@ -19,10 +19,7 @@ All opcodes and memory modes implemented and tested in Klaus Dormann test suite.
 
 ## Improvements
 
-* ![100%](https://progress-bar.dev/0) Review - Fetch-decode-execute loop
-* ![100%](https://progress-bar.dev/0) Map Read and Write instructions
 * ![100%](https://progress-bar.dev/0) Finish the ifs for 6502 or atari mode (create different memory maps or paths?)
-* ![100%](https://progress-bar.dev/0) Flags to functions?
 * ![100%](https://progress-bar.dev/0) Create a CLI
 * ![100%](https://progress-bar.dev/0) Create a disassembler mode
 * ![100%](https://progress-bar.dev/0) Other Klaus tests

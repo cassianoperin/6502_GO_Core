@@ -44,12 +44,8 @@ func opc_ADC(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 
 			A = A + memData + P[0]
 
-			// Update the oVerflow flag
 			flags_V(original_A, memData, original_P0)
-
-			// Update the carry flag value
 			flags_C_ADC_SBC(original_A, memData, original_P0)
-
 			flags_Z(A)
 			flags_N(A)
 
@@ -74,21 +70,8 @@ func opc_ADC(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 			// Tranform the uint64 into a byte (if > 255 will be rotated)
 			A = byte(bcd_Result)
 
-			// ------------------------------ Flags ------------------------------ //
-
-			// Update the oVerflow flag
 			flags_V(original_A, memData, original_P0)
-
-			// Update the carry flag value
-			if bcd_Result > 0x99 {
-				P[0] = 1
-			} else {
-				P[0] = 0
-			}
-			if Debug {
-				fmt.Printf("\tFlag C: %d -> %d\n", original_P0, P[0])
-			}
-
+			flags_C_ADC_DECIMAL(bcd_Result)
 			flags_Z(A)
 			flags_N(A)
 

@@ -4,7 +4,7 @@ import "fmt"
 
 //-------------------------------------------------- Processor Flags --------------------------------------------------//
 
-// Zero Flag
+// ------------------------------ Zero Flag ------------------------------ //
 func flags_Z(value byte) {
 	if Debug {
 		fmt.Printf("\tFlag Z: %d ->", P[1])
@@ -20,11 +20,12 @@ func flags_Z(value byte) {
 	}
 }
 
-// Negative Flag
+// ---------------------------- Negative Flag ---------------------------- //
 func flags_N(value byte) {
 	if Debug {
 		fmt.Printf("\tFlag N: %d ->", P[7])
 	}
+
 	// Set Negtive flag to the the MSB of the value
 	P[7] = value >> 7
 
@@ -33,7 +34,24 @@ func flags_N(value byte) {
 	}
 }
 
-// Carry Flag
+func flags_SBC_DECIMAL(value int) {
+	if Debug {
+		fmt.Printf("\tFlag N: %d ->", P[7])
+	}
+
+	if value < 0x00 {
+		P[7] = 1
+	} else {
+		P[7] = 0
+	}
+
+	if Debug {
+		fmt.Printf(" %d | Value = %08b\n", P[7], value)
+	}
+}
+
+// ----------------------------- Carry Flag ------------------------------ //
+
 // Used by CPX, CPY, CMP
 func flags_C_CPX_CPY_CMP(value1, value2 byte) {
 	if Debug {
@@ -52,7 +70,19 @@ func flags_C_CPX_CPY_CMP(value1, value2 byte) {
 	}
 }
 
-// Carry Flag
+// Used by ASL
+func flags_C(value byte) {
+	if Debug {
+		fmt.Printf("\tFlag C: %d ->", P[0])
+	}
+
+	P[0] = value
+
+	if Debug {
+		fmt.Printf(" %d\n", P[0])
+	}
+}
+
 // Used by ADC and SBC
 func flags_C_ADC_SBC(value_A, value_Mem, value_P0 byte) {
 
@@ -76,20 +106,15 @@ func flags_C_ADC_SBC(value_A, value_Mem, value_P0 byte) {
 	}
 }
 
-// Carry Flag
-// Used by ADC in DECIMAL MODE
-func flags_C_ADC_Decimal(value_A, value_Mem, value_P0 byte) {
-
-	var A_16bit uint16 // 16 bit variable to detect carry
+// Used by ADC in Decimal mode
+func flags_C_ADC_DECIMAL(value int64) {
 
 	if Debug {
 		fmt.Printf("\tFlag C: %d ->", P[0])
 	}
 
-	A_16bit = uint16(value_A) + uint16(value_Mem) + uint16(value_P0)
-
-	// Set if overflow in bit 7 (the sum of values are smaller than original A)
-	if A_16bit > 255 {
+	// Update the carry flag value
+	if value > 0x99 {
 		P[0] = 1
 	} else {
 		P[0] = 0
@@ -100,24 +125,26 @@ func flags_C_ADC_Decimal(value_A, value_Mem, value_P0 byte) {
 	}
 }
 
-// // Carry Flag for Subtractions (SBC and CMP)
-// func flags_C_Subtraction(originalValue, newValue byte) {
-// 	if Debug {
-// 		fmt.Printf("\tFlag C: %d ->", P[0])
-// 	}
+// Used by SBC in Decimal mode
+func flags_C_SBC_DECIMAL(value int) {
 
-// 	// If the new value is bigger than the original clear the flag
-// 	// if originalValue < newValue {
-// 	if newValue > originalValue {
-// 		P[0] = 0
-// 	} else {
-// 		P[0] = 1
-// 	}
+	if Debug {
+		fmt.Printf("\tFlag C: %d ->", P[0])
+	}
 
-// 	if Debug {
-// 		fmt.Printf(" %d (SBC)\n", P[0])
-// 	}
-// }
+	// Update the carry flag value
+	if value >= 0x00 {
+		P[0] = 1
+	} else {
+		P[0] = 0
+	}
+
+	if Debug {
+		fmt.Printf(" %d\n", P[0])
+	}
+}
+
+// ---------------------------- oVerflow Flag ---------------------------- //
 
 // oVerflow Flag for ADC
 // oVerflow Flag for SBC (receiving one's complement of Memory value)
@@ -159,50 +186,41 @@ func flags_V(value_A, value_Mem, value_P0 byte) {
 	}
 }
 
-// oVerflow Flag for SBC
-// func Flags_V_SBC(value1, value2 byte) {
-// 	var (
-// 		carry_bit      = [8]byte{}
-// 		carry_OUT byte = 0
-// 	)
+// Used by ASL
+func flags_V_BIT(value byte) {
+	// Memory Address bit 6 -> V (oVerflow)
+	if Debug {
+		fmt.Printf("\tFlag V: %d -> ", P[6])
+	}
+	P[6] = value >> 6 & 0x01 // Keep only the 6th bit
 
-// 	// fmt.Printf("\n  \t %d\t(carry IN)",P[0])
-// 	// fmt.Printf("\n  %08b\tDecimal: %d",value1,value1)
-// 	// Since internall subtraction is just addition of the ones-complement
-// 	// N can simply be replaced by 255-N in the formulas of Flags_V_ADC
-// 	value2 = 255 - value2
-// 	// fmt.Printf("\n  %08b\tDecimal: %d",value2,value2)
+	if Debug {
+		fmt.Printf("%d\n", P[6])
+	}
+}
 
-// 	// Set the carry flag on bit 0 of carry_bit Array to bring the carry if exists
-// 	carry_bit[0] = P[0]
+// --------------------------- IRQ Disable Flag -------------------------- //
+func flags_I(value byte) {
+	if Debug {
+		fmt.Printf("\tFlag I: %d ->", P[2])
+	}
 
-// 	if Debug {
-// 		fmt.Printf("\tFlag V: %d ->", P[6])
-// 	}
+	P[2] = value
 
-// 	// Set the carry flag on bit 0 of carry_bit Array to bring the carry if exists
-// 	carry_bit[0] = P[0]
+	if Debug {
+		fmt.Printf(" %d\n", P[2])
+	}
+}
 
-// 	// Make the magic
-// 	for i := 0; i <= 7; i++ {
-// 		// sum the bit from value one + bit from value 2 + carry value
-// 		tmp := (value1 >> byte(i) & 0x01) + (value2 >> byte(i) & 0x01) + carry_bit[i]
-// 		if tmp >= 2 {
-// 			// set the carry out
-// 			if i == 7 {
-// 				carry_OUT = 1
-// 			} else {
-// 				carry_bit[i+1] = 1
-// 			}
-// 		}
-// 	}
+// --------------------------- Break Flag Flag --------------------------- //
+func flags_B(value byte) {
+	if Debug {
+		fmt.Printf("\tFlag B: %d ->", P[4])
+	}
 
-// 	// Formula to calculate: V = C6 xor C7
-// 	P[6] = carry_bit[7] ^ carry_OUT
-// 	// fmt.Printf("\nV: %d", P[6])
+	P[4] = value
 
-// 	if Debug {
-// 		fmt.Printf(" %d\n", P[6])
-// 	}
-
-// }
+	if Debug {
+		fmt.Printf(" %d\n", P[4])
+	}
+}

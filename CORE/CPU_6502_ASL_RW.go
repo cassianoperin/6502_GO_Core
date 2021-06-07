@@ -36,7 +36,7 @@ func opc_ASL_A(bytes uint16, opc_cycles byte) {
 		// Print Opcode Debug Message
 		opc_ASL_A_DebugMsg(bytes)
 
-		P[0] = A >> 7
+		flags_C(A >> 7)
 
 		A = A << 1
 
@@ -77,7 +77,7 @@ func opc_ASL(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 		// Read data from Memory (adress in Memory Bus) into Data Bus
 		memData := dataBUS_Read(memAddr)
 
-		P[0] = memData >> 7
+		flags_C(memData >> 7)
 
 		// Write data to Memory (adress in Memory Bus) and update the value in Data BUS
 		memData = dataBUS_Write(memAddr, memData<<1)

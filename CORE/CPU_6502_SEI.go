@@ -23,7 +23,7 @@ func opc_SEI(bytes uint16, opc_cycles byte) {
 		// After spending the cycles needed, execute the opcode
 	} else {
 
-		P[2] = 1
+		flags_I(1)
 
 		// Print Opcode Debug Message
 		opc_SEI_DebugMsg(bytes)

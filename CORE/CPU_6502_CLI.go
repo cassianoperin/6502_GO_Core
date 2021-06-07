@@ -23,7 +23,7 @@ func opc_CLI(bytes uint16, opc_cycles byte) {
 		// After spending the cycles needed, execute the opcode
 	} else {
 
-		P[2] = 0
+		flags_I(0)
 
 		// Print Opcode Debug Message
 		opc_CLI_DebugMsg(bytes)

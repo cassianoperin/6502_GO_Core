@@ -82,14 +82,8 @@ func opc_BRK(bytes uint16, opc_cycles byte) {
 		// Read the Opcode from PC+1 and PC bytes (Little Endian)
 		PC = uint16(Memory[0xFFFF])<<8 | uint16(Memory[0xFFFE])
 
-		// ------------ Flags ----------- //
-
-		// IRQ Disabled
-		P[2] = 1
-
-		// The B Flag, for PHP or BRK, P[4] and P[5] will be always 1
-		P[4] = 1
-		// P[5] = 1
+		flags_I(1) // IRQ Disabled
+		flags_B(1) // The B Flag, for PHP or BRK, P[4] and P[5] will be always 1
 
 		// Reset Internal Opcode Cycle counters
 		resetIntOpcCycleCounters()

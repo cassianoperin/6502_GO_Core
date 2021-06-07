@@ -35,23 +35,9 @@ func opc_BIT(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 		// Print Opcode Debug Message
 		opc_BIT_DebugMsg(bytes, mode, memAddr, memData)
 
-		// Memory Address bit 7 (A) -> N (Negative)
-		if Debug {
-			fmt.Printf("\tFlag N: %d -> ", P[7])
-		}
-		P[7] = memData >> 7 & 0x1
-		if Debug {
-			fmt.Printf("%d\n", P[7])
-		}
+		flags_N(memData)
 
-		// Memory Address bit 6 (A) -> V (oVerflow)
-		if Debug {
-			fmt.Printf("\tFlag V: %d -> ", P[6])
-		}
-		P[6] = memData >> 6 & 0x1
-		if Debug {
-			fmt.Printf("%d\n", P[6])
-		}
+		flags_V_BIT(memData)
 
 		flags_Z(A & memData)
 

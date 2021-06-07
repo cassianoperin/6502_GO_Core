@@ -33,12 +33,9 @@ func opc_CPX(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 		// Print Opcode Debug Message
 		opc_CPX_DebugMsg(bytes, tmp, mode, memAddr, memData)
 
-		// Set if X = M
-		flags_Z(tmp)
-		// Set if bit 7 of the result is set
-		flags_N(tmp)
-		// Set if X >= M
-		flags_C_CPX_CPY_CMP(X, memData)
+		flags_Z(tmp)                    // Set if X = M
+		flags_N(tmp)                    // Set if bit 7 of the result is set
+		flags_C_CPX_CPY_CMP(X, memData) // Set if X >= M
 
 		// Increment PC
 		PC += bytes
