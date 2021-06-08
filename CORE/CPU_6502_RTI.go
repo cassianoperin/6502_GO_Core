@@ -15,7 +15,7 @@ import (
 //      --------------------------------------------
 //      implied       RTI           40    1    6
 
-// Order
+// Order:
 // Restore P
 // Restore PC(lo)
 // Restore PC(hi)
@@ -34,19 +34,21 @@ func opc_RTI(bytes uint16, opc_cycles byte) {
 
 		// ---------- Restore P ---------- //
 
-		var SP_Address uint16 = uint16(SP+1) + 256 // 6502 handle Stack at the end of first memory page
+		// 6502 handle Stack at the end of first memory page
+		SP_Address := uint16(SP+1) + 256
+
+		// Read data from Memory (adress in Memory Bus) into Data Bus
+		memData := dataBUS_Read(SP_Address)
 
 		// Turn the stack value into the processor status
 		for i := 0; i < len(P); i++ {
 
 			// The B Flag, PLP and RTI pull a byte from the stack and set all the flags. They ignore bits 5 and 4.
 			if i == 4 || i == 5 {
-				// P[i] = 1
 				// Just ignore both
 			} else {
-				P[i] = (Memory[SP_Address] >> i) & 0x01
+				P[i] = (memData >> i) & 0x01
 			}
-
 		}
 
 		SP++
@@ -54,8 +56,10 @@ func opc_RTI(bytes uint16, opc_cycles byte) {
 		// ---------- Restore PC ---------- //
 
 		// Read the Opcode from PC+1 and PC bytes (Little Endian)
-		PC = uint16(Memory[SP_Address+2])<<8 | uint16(Memory[SP_Address+1])
+		memData_LSB := dataBUS_Read(SP_Address + 2) // Read data from Memory (adress in Memory Bus) into Data Bus
+		memData_MSB := dataBUS_Read(SP_Address + 1)
 
+		PC = uint16(memData_LSB)<<8 | uint16(memData_MSB)
 		SP += 2
 
 		// Print Opcode Debug Message

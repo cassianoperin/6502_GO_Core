@@ -26,7 +26,8 @@ func opc_PHP(bytes uint16, opc_cycles byte) {
 		// After spending the cycles needed, execute the opcode
 	} else {
 
-		var SP_Address uint16 = uint16(SP) + 256 // 6502 handle Stack at the end of first memory page
+		// 6502 handle Stack at the end of first memory page
+		SP_Address := uint16(SP) + 256
 
 		// Put processor Status (P) on stack
 		for i := 7; i >= 0; i-- {
@@ -40,10 +41,11 @@ func opc_PHP(bytes uint16, opc_cycles byte) {
 
 		}
 
-		Memory[SP_Address] = tmp_P
+		// Write data to Memory (adress in Memory Bus) and update the value in Data BUS
+		memData := dataBUS_Write(SP_Address, tmp_P)
 
 		// Print Opcode Debug Message
-		opc_PHP_DebugMsg(bytes, SP_Address, tmp_P)
+		opc_PHP_DebugMsg(bytes, SP_Address, memData)
 
 		SP--
 
@@ -56,10 +58,10 @@ func opc_PHP(bytes uint16, opc_cycles byte) {
 
 }
 
-func opc_PHP_DebugMsg(bytes uint16, SP_Address uint16, tmp_P byte) {
+func opc_PHP_DebugMsg(bytes uint16, SP_Address uint16, memData byte) {
 	if Debug {
 		opc_string := debug_decode_opc(bytes)
-		dbg_show_message = fmt.Sprintf("\n\tOpcode %s [Mode: Implied]\tPHP  Push Processor Status on Stack.\tMemory[0x%02X] = Processor Status %08b | SP--\n", opc_string, SP_Address, tmp_P)
+		dbg_show_message = fmt.Sprintf("\n\tOpcode %s [Mode: Implied]\tPHP  Push Processor Status on Stack.\tMemory[0x%02X] = Processor Status %08b | SP--\n", opc_string, SP_Address, memData)
 		fmt.Println(dbg_show_message)
 	}
 }

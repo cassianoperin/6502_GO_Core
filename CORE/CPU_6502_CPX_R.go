@@ -26,7 +26,7 @@ func opc_CPX(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 	} else { // After spending the cycles needed, execute the opcode
 
 		// Read data from Memory (adress in Memory Bus) into Data Bus
-		var memData byte = dataBUS_Read(memAddr)
+		memData := dataBUS_Read(memAddr)
 
 		tmp := X - memData
 

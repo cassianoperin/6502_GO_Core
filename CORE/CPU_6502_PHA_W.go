@@ -25,12 +25,14 @@ func opc_PHA(bytes uint16, opc_cycles byte) {
 		// After spending the cycles needed, execute the opcode
 	} else {
 
-		var SP_Address uint16 = uint16(SP) + 256 // 6502 handle Stack at the end of first memory page
+		// 6502 handle Stack at the end of first memory page
+		SP_Address := uint16(SP) + 256
 
-		Memory[SP_Address] = A
+		// Write data to Memory (adress in Memory Bus) and update the value in Data BUS
+		memData := dataBUS_Write(SP_Address, A)
 
 		// Print Opcode Debug Message
-		opc_PHA_DebugMsg(bytes, SP_Address)
+		opc_PHA_DebugMsg(bytes, SP_Address, memData)
 
 		SP--
 
@@ -42,10 +44,10 @@ func opc_PHA(bytes uint16, opc_cycles byte) {
 	}
 }
 
-func opc_PHA_DebugMsg(bytes uint16, SP_Address uint16) {
+func opc_PHA_DebugMsg(bytes uint16, SP_Address uint16, memData byte) {
 	if Debug {
 		opc_string := debug_decode_opc(bytes)
-		dbg_show_message = fmt.Sprintf("\n\tOpcode %s [Mode: Implied]\tPHA  Push Accumulator on Stack.\tMemory[0x%02X] = A (%d) | SP--\n", opc_string, SP_Address, Memory[SP_Address])
+		dbg_show_message = fmt.Sprintf("\n\tOpcode %s [Mode: Implied]\tPHA  Push Accumulator on Stack.\tMemory[0x%02X] = A (%d) | SP--\n", opc_string, SP_Address, memData)
 		fmt.Println(dbg_show_message)
 	}
 }

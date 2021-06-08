@@ -24,7 +24,11 @@ func opc_PLP(bytes uint16, opc_cycles byte) {
 		// After spending the cycles needed, execute the opcode
 	} else {
 
-		var SP_Address uint16 = uint16(SP+1) + 256 // 6502 handle Stack at the end of first memory page
+		// 6502 handle Stack at the end of first memory page
+		SP_Address := uint16(SP+1) + 256
+
+		// Read data from Memory (adress in Memory Bus) into Data Bus
+		memData := dataBUS_Read(SP_Address)
 
 		// Turn the stack value into the processor status
 		for i := 0; i < len(P); i++ {
@@ -34,7 +38,7 @@ func opc_PLP(bytes uint16, opc_cycles byte) {
 				// P[i] = 1
 				// Just ignore both
 			} else {
-				P[i] = (Memory[SP_Address] >> i) & 0x01
+				P[i] = (memData >> i) & 0x01
 			}
 		}
 

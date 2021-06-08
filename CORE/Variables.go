@@ -29,8 +29,7 @@ var (
 	// 0    C     Carry         (0=No Carry, 1=Carry)
 
 	// --------------------------- CPU Variables ---------------------------- //
-	opcode  byte   // CPU Operation Code
-	SP_Page uint16 // Stack Pointer Memory Page, add 0(Memory Page 0) or 256(Memory Page 1) to SP Address
+	opcode byte // CPU Operation Code
 
 	// ------------------------------ Counters ------------------------------ //
 	counter_F_Cycle uint16 // Frame Cycles

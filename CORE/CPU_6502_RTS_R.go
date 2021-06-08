@@ -25,13 +25,14 @@ func opc_RTS(bytes uint16, opc_cycles byte) {
 		// After spending the cycles needed, execute the opcode
 	} else {
 
-		var SP_Address uint16 = uint16(SP) + 256 // 6502 handle Stack at the end of first memory page
+		// 6502 handle Stack at the end of first memory page
+		SP_Address := uint16(SP) + 256
 
-		PC = uint16(Memory[SP_Address+2])<<8 | uint16(Memory[SP_Address+1])
+		// Read data from Memory (adress in Memory Bus) into Data Bus
+		memData_LSB := dataBUS_Read(SP_Address + 2)
+		memData_MSB := dataBUS_Read(SP_Address + 1)
 
-		// UNDOCUMENTED // Clear the addresses retrieved from the stack
-		Memory[SP_Address+1] = 0
-		Memory[SP_Address+2] = 0
+		PC = uint16(memData_LSB)<<8 | uint16(memData_MSB)
 
 		// Update the Stack Pointer (Increase the two values retrieved)
 		SP += 2

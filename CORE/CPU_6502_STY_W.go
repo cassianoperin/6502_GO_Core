@@ -26,7 +26,7 @@ func opc_STY(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 	} else {
 
 		// Write data to Memory (adress in Memory Bus) and update the value in Data BUS
-		var memData byte = dataBUS_Write(memAddr, Y)
+		memData := dataBUS_Write(memAddr, Y)
 
 		// Print Opcode Debug Message
 		opc_STY_DebugMsg(bytes, mode, memAddr, memData)

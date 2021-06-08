@@ -33,7 +33,7 @@ func opc_AND(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 	} else {
 
 		// Read data from Memory (adress in Memory Bus) into Data Bus
-		var memData byte = dataBUS_Read(memAddr)
+		memData := dataBUS_Read(memAddr)
 
 		// Print Opcode Debug Message
 		opc_AND_DebugMsg(bytes, mode, memAddr, memData)

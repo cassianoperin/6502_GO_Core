@@ -25,9 +25,13 @@ func opc_PLA(bytes uint16, opc_cycles byte) {
 		// After spending the cycles needed, execute the opcode
 	} else {
 
-		var SP_Address uint16 = uint16(SP+1) + 256 // 6502 handle Stack at the end of first memory page
+		// 6502 handle Stack at the end of first memory page
+		SP_Address := uint16(SP+1) + 256
 
-		A = Memory[SP_Address]
+		// Read data from Memory (adress in Memory Bus) into Data Bus
+		memData := dataBUS_Read(SP_Address)
+
+		A = memData
 
 		// Print Opcode Debug Message
 		opc_PLA_DebugMsg(bytes, SP_Address)

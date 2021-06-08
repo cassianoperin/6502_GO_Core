@@ -34,17 +34,18 @@ func opc_BRK(bytes uint16, opc_cycles byte) {
 
 		// ---------- Store PC ---------- //
 
-		var SP_Address uint16 = uint16(SP) + 256 // 6502 handle Stack at the end of first memory page
+		// 6502 handle Stack at the end of first memory page
+		SP_Address := uint16(SP) + 256
 
 		// Push PC+2 (PC(hi))
-		Memory[SP_Address] = byte((PC + 2) >> 8)
+		_ = dataBUS_Write(SP_Address, byte((PC+2)>>8)) // Write data to Memory (adress in Memory Bus) and update the value in Data BUS
 		SP--
 		SP_Address--
 
 		// Push PC+1 (PC(lo))
-		Memory[SP_Address] = byte((PC + 2) & 0xFF)
-		SP_Address--
+		_ = dataBUS_Write(SP_Address, byte((PC+2)&0xFF)) // Write data to Memory (adress in Memory Bus) and update the value in Data BUS
 		SP--
+		SP_Address--
 
 		// ---------- Store P ----------- //
 
@@ -63,14 +64,18 @@ func opc_BRK(bytes uint16, opc_cycles byte) {
 		}
 
 		// Push Processor Status (P) to Stack
-		Memory[SP_Address] = tmp_P
+		_ = dataBUS_Write(SP_Address, tmp_P) // Write data to Memory (adress in Memory Bus) and update the value in Data BUS
 		SP_Address--
 		SP--
 
 		// ---------- Fetch PC ---------- //
 
+		// Read data from Memory (adress in Memory Bus) into Data Bus
+		memData_LSB := dataBUS_Read(0xFFFF)
+		memData_MSB := dataBUS_Read(0xFFFE)
+
 		// Read the Opcode from PC+1 and PC bytes (Little Endian)
-		PC = uint16(Memory[0xFFFF])<<8 | uint16(Memory[0xFFFE])
+		PC = uint16(memData_LSB)<<8 | uint16(memData_MSB)
 
 		flags_I(1) // IRQ Disabled
 		flags_B(1) // The B Flag, for PHP or BRK, P[4] and P[5] will be always 1

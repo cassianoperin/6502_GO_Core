@@ -26,13 +26,16 @@ func opc_JSR(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 		// After spending the cycles needed, execute the opcode
 	} else {
 
-		var SP_Address uint16 = uint16(SP) + 256 // 6502 handle Stack at the end of first memory page
+		// 6502 handle Stack at the end of first memory page
+		SP_Address := uint16(SP) + 256
 
-		Memory[SP_Address] = byte((PC + 2) >> 8)
+		// Store the first byte into the Stack
+		_ = dataBUS_Write(SP_Address, byte((PC+2)>>8)) // Write data to Memory (adress in Memory Bus) and update the value in Data BUS
 		SP--
 		SP_Address--
+
 		// Store the second byte into the Stack
-		Memory[SP_Address] = byte((PC + 2) & 0xFF)
+		_ = dataBUS_Write(SP_Address, byte((PC+2)&0xFF)) // Write data to Memory (adress in Memory Bus) and update the value in Data BUS
 		SP_Address--
 		SP--
 
