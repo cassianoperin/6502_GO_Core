@@ -32,9 +32,13 @@ var (
 	opcode byte // CPU Operation Code
 
 	// ------------------------------ Counters ------------------------------ //
-	counter_F_Cycle uint16 // Frame Cycles
-	opc_cycle_count byte   // Opcode cycle counter
-	opc_cycle_extra byte   // Opcode extra cycle
+	// Internal Opcode counters
+	opc_cycle_count byte // Opcode cycle counter
+	opc_cycle_extra byte // Opcode extra cycle
+	// General counters
+	cycle uint64 // Cycles counter
+	CPS   uint64 // Cycles per second
+	IPS   uint64 // Instructions per second
 
 	// -------------------------- Memory Variables -------------------------- //
 	memMode    string // Receive the addressing mode used in the debug
@@ -42,9 +46,9 @@ var (
 	memValue   int8   // Receive the memory value needed by branches. Calculated in the first opc cycle to check for extra cycles, used in the last to perform the operation
 
 	// ------------------------------- Timers ------------------------------- //
-	clock_timer *time.Ticker // CPU Clock // CPU: MOS Technology 6507 @ 1.19 MHz;
-	// second_timer        = time.Tick(time.Second) // 1 second to track FPS and draws
-	screenRefresh_timer *time.Ticker // Screen Refresh
+	clock_timer         *time.Ticker             // CPU Clock // CPU: MOS Technology 6507 @ 1.19 MHz;
+	second_timer        = time.Tick(time.Second) // 1 second to track FPS and draws
+	screenRefresh_timer *time.Ticker             // Screen Refresh
 
 	// --------------------------- Debug Interface -------------------------- //
 	dbg_show_message string // Debug opcode detail messages

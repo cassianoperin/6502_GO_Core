@@ -14,12 +14,17 @@ func Keyboard(target *pixelgl.Window) {
 	// Debug
 	if target.JustPressed(pixelgl.Key9) {
 
-		if Debug {
-			Debug = false
-		} else {
-			Debug = true
+		Debug = !Debug
+		target.UpdateInputWait(time.Second)
 
-		}
+		// if Debug {
+		// 	Debug = false
+		// 	Pause = true
+		// } else {
+		// 	Debug = true
+		// 	Pause = true
+
+		// }
 	}
 
 	// Reset

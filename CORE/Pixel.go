@@ -5,6 +5,9 @@ import (
 	// "os"
 	// "time"
 
+	"fmt"
+	"os"
+
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/pixelgl"
 	// "golang.org/x/image/colornames"
@@ -19,8 +22,8 @@ func Run() {
 	height = screenHeight / sizeY
 
 	cfg := pixelgl.WindowConfig{
-		Title:       "Pixel Rocks!",
-		Bounds:      pixel.R(0, 0, 320, 240),
+		Title:       "6502 Emulator",
+		Bounds:      pixel.R(0, 0, 640, 480),
 		VSync:       false,
 		Resizable:   false,
 		Undecorated: false,
@@ -45,30 +48,40 @@ func Run() {
 		}
 
 		// Internal Loop to avoid slowness of !win.Closed() loop
-		// for i := 0; i < 50000; i++ {
+		for i := 0; i < 50000; i++ {
 
-		// // Esc to quit program
-		// if win.JustPressed(pixelgl.KeyEscape) {
-		// 	os.Exit(0)
-		// }
-
-		select {
-		case <-clock_timer.C:
-			if !Pause {
-				// Runs the interpreter
-				if CPU_Enabled {
-					CPU_Interpreter()
-				}
+			// Esc to quit program
+			if win.JustPressed(pixelgl.KeyEscape) {
+				os.Exit(0)
 			}
-			// win.Update()
 
-		default:
-			// No timer to handle
+			select {
+			case <-second_timer: // Second
+				win.SetTitle(fmt.Sprintf("%s CPS: %d| IPS: %d | Cycles: %d", cfg.Title, CPS, IPS, cycle))
+				CPS = 0
+				IPS = 0
+
+			default:
+				// No timer to handle
+			}
+
+			select {
+			case <-clock_timer.C:
+				if !Pause {
+					// Runs the interpreter
+					if CPU_Enabled {
+						CPU_Interpreter()
+					}
+				}
+				// win.Update()
+
+			default:
+				// No timer to handle
+			}
+
+			Keyboard(win)
+
 		}
-
-		Keyboard(win)
-
-		// }
 
 		select {
 		case <-screenRefresh_timer.C: // Second
