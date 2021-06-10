@@ -12,7 +12,8 @@ func Initialize() {
 	// Clean Memory Array
 	Memory = [65536]byte{}
 	// Clean CPU Variables
-	PC = 0
+	// PC = 0
+	PC = 0x400
 	opcode = 0
 	X = 0
 	Y = 0

@@ -2,6 +2,7 @@ package main
 
 import (
 	"6502/CORE"
+	"flag"
 	"fmt"
 	"log"
 	"os"
@@ -100,11 +101,53 @@ func readROM(filename string) {
 	// os.Exit(2)
 }
 
+// func checkArgs() {
+// 	if len(os.Args) != 2 {
+// 		fmt.Printf("Usage: %s ROM_FILE\n\n", os.Args[0])
+// 		os.Exit(0)
+// 	}
+// }
+
 func checkArgs() {
-	if len(os.Args) != 2 {
-		fmt.Printf("Usage: %s ROM_FILE\n\n", os.Args[0])
+
+	if len(os.Args) < 2 {
+		fmt.Printf("Usage: %s [options] ROM_FILE\n\n%s -help for a list of available options\n\n", os.Args[0], os.Args[0])
 		os.Exit(0)
 	}
+
+	cliHelp := flag.Bool("help", false, "Show this menu")
+	cliConsole := flag.Bool("console", false, "Open program in interactive console")
+	cliDebug := flag.Bool("debug", false, "Enable Debug Mode")
+	cliPause := flag.Bool("pause", false, "Start emulation Paused")
+
+	// wordPtr := flag.String("word", "foo", "a string")
+	// numbPtr := flag.Int("numb", 42, "an int")
+	// var svar string
+	// flag.StringVar(&svar, "ROM_FILE", "bar", "ROM_FILE")
+	// fmt.Println("word:", *wordPtr)
+	// fmt.Println("numb:", *numbPtr)
+	// fmt.Println("svar:", svar)
+	// fmt.Println("tail:", flag.Arg(0))
+	flag.Parse()
+
+	if *cliHelp {
+		fmt.Printf("Usage: %s [options] ROM_FILE\n  -console\n    	Open program in interactive console\n  -debug\n    	Enable Debug Mode\n  -pause\n    	Start emulation Paused\n  -help\n    	Show this menu\n\n", os.Args[0])
+		os.Exit(0)
+	}
+
+	if *cliConsole {
+		fmt.Printf("CHAMAR CONSOLEEE!")
+		os.Exit(0)
+	}
+
+	if *cliDebug {
+		CORE.Debug = true
+	}
+
+	if *cliPause {
+		CORE.Pause = true
+	}
+
 }
 
 func testFile(filename string) {
@@ -115,13 +158,19 @@ func testFile(filename string) {
 }
 
 func main() {
-	fmt.Printf("MOS 6502 CPU Emulator\n")
-
 	// Validate the Arguments
-	//checkArgs()
+	checkArgs()
 
-	// Check if file exist
-	//testFile(os.Args[1])
+	// testFile(os.Args[1])
+	if len(flag.Args()) != 0 { // Ensure that there is an last argument (rom name)
+		// Check if file exist
+		testFile(flag.Arg(0))
+	} else {
+		fmt.Printf("Usage: %s [options] ROM_FILE\n  -console\n    	Open program in interactive console\n  -debug\n    	Enable Debug Mode\n  -pause\n    	Start emulation Paused\n  -help\n    	Show this menu\n\n", os.Args[0])
+		os.Exit(0)
+	}
+
+	fmt.Printf("\nMOS 6502 CPU Emulator\n\n")
 
 	// Set initial variables values
 	CORE.Initialize()

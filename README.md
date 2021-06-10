@@ -19,12 +19,10 @@ All opcodes and memory modes implemented and tested in Klaus Dormann test suite.
 
 ## Improvements
 
-* ![100%](https://progress-bar.dev/0) Prepare the memory replication on BUS to mirror SP to zero page and other locations (Atari)
-* ![100%](https://progress-bar.dev/0) Check if current debug functions with lots of parameters aren't causing performance issues
 * ![100%](https://progress-bar.dev/0) Add PC as a input argument or Variable and correct reset vector
-* ![100%](https://progress-bar.dev/0) Create a CLI
 * ![100%](https://progress-bar.dev/0) Create a disassembler mode
 * ![100%](https://progress-bar.dev/0) Other Klaus tests
+* ![100%](https://progress-bar.dev/0) Put debug message on start OR end of opcodes
 * ![100%](https://progress-bar.dev/0) IRQs
 * ![100%](https://progress-bar.dev/0) Opcode cycle precision
 

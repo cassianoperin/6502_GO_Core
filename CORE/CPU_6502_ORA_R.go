@@ -36,10 +36,6 @@ func opc_ORA(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 		// Print Opcode Debug Message
 		opc_ORA_DebugMsg(bytes, mode, memAddr, memData)
 
-		if Debug {
-			fmt.Println(dbg_show_message)
-		}
-
 		A = A | memData
 
 		flags_Z(A)
