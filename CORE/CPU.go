@@ -48,14 +48,14 @@ func InitializeTimers() {
 // Reset Vector // 0xFFFC | 0xFFFD (Little Endian)
 func Reset() {
 
-	// 6507 interpreter mode
-	if CPU_MODE == 0 {
-		// Read the Opcode from PC+1 and PC bytes (Little Endian)
-		PC = uint16(Memory[0xFFFD])<<8 | uint16(Memory[0xFFFC])
-	} else { // 6502 interpreter mode
-		// Set the PC on the start of programs
-		PC = 0x400
-	}
+	// // 6507 interpreter mode
+	// if CPU_MODE == 0 {
+	// 	// Read the Opcode from PC+1 and PC bytes (Little Endian)
+	PC = uint16(Memory[0xFFFD])<<8 | uint16(Memory[0xFFFC])
+	// } else { // 6502 interpreter mode
+	// 	// Set the PC on the start of programs
+	// 	PC = 0x400
+	// }
 
 	// Reset the SP
 	SP = 0xFF

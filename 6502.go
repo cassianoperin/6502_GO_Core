@@ -6,9 +6,13 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strconv"
+	"strings"
 
 	"github.com/faiface/pixel/pixelgl"
 )
+
+var PC_arg uint16 = 0
 
 // Function used by readROM to avoid 'bytesread' return
 func ReadContent(file *os.File, bytes_number int) []byte {
@@ -119,29 +123,43 @@ func checkArgs() {
 	cliConsole := flag.Bool("console", false, "Open program in interactive console")
 	cliDebug := flag.Bool("debug", false, "Enable Debug Mode")
 	cliPause := flag.Bool("pause", false, "Start emulation Paused")
-
-	// wordPtr := flag.String("word", "foo", "a string")
-	// numbPtr := flag.Int("numb", 42, "an int")
-	// var svar string
-	// flag.StringVar(&svar, "ROM_FILE", "bar", "ROM_FILE")
-	// fmt.Println("word:", *wordPtr)
-	// fmt.Println("numb:", *numbPtr)
-	// fmt.Println("svar:", svar)
-	// fmt.Println("tail:", flag.Arg(0))
+	cliPC := flag.String("register_PC", "", "Set the Program Counter Address (hexadecimal)")
 	flag.Parse()
 
 	if *cliHelp {
-		fmt.Printf("Usage: %s [options] ROM_FILE\n  -console\n    	Open program in interactive console\n  -debug\n    	Enable Debug Mode\n  -pause\n    	Start emulation Paused\n  -help\n    	Show this menu\n\n", os.Args[0])
+		fmt.Printf("Usage: %s [options] ROM_FILE\n  -console\n    	Open program in interactive console\n  -debug\n    	Enable Debug Mode\n  -help\n    	Show this menu\n  -pause\n    	Start emulation Paused\n  -register_PC\n    	Set the Program Counter Address (Hexadecimal)\n\n", os.Args[0])
 		os.Exit(0)
 	}
 
 	if *cliConsole {
-		fmt.Printf("CHAMAR CONSOLEEE!")
+
+		if *cliDebug || *cliPause {
+			fmt.Printf("Console mode doesn't support Pause and Debug options.\n")
+			os.Exit(0)
+		}
+		fmt.Printf("CHAMAR CONSOLEEE!\n")
 		os.Exit(0)
 	}
 
 	if *cliDebug {
 		CORE.Debug = true
+	}
+
+	if *cliPC != "" {
+
+		var hexaString string = *cliPC
+		numberStr := strings.Replace(hexaString, "0x", "", -1)
+		numberStr = strings.Replace(numberStr, "0X", "", -1)
+
+		output, err := strconv.ParseInt(numberStr, 16, 64)
+
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		PC_arg = uint16(output)
+
 	}
 
 	if *cliPause {
@@ -166,7 +184,7 @@ func main() {
 		// Check if file exist
 		testFile(flag.Arg(0))
 	} else {
-		fmt.Printf("Usage: %s [options] ROM_FILE\n  -console\n    	Open program in interactive console\n  -debug\n    	Enable Debug Mode\n  -pause\n    	Start emulation Paused\n  -help\n    	Show this menu\n\n", os.Args[0])
+		fmt.Printf("Usage: %s [options] ROM_FILE\n  -console\n    	Open program in interactive console\n  -debug\n    	Enable Debug Mode\n  -help\n    	Show this menu\n  -pause\n    	Start emulation Paused\n  -register_PC\n    	Set the Program Counter Address (Hexadecimal)\n\n", os.Args[0])
 		os.Exit(0)
 	}
 
@@ -184,6 +202,11 @@ func main() {
 
 	// Reset system
 	CORE.Reset()
+
+	// Overwrite PC if requested in arguments
+	if PC_arg != 0 {
+		CORE.PC = PC_arg
+	}
 
 	// Start Window System and draw Graphics
 	pixelgl.Run(CORE.Run)
