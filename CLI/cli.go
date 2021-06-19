@@ -1,6 +1,7 @@
 package CLI
 
 import (
+	"6502/CONSOLEMODE"
 	"6502/CORE"
 	"flag"
 	"fmt"
@@ -8,8 +9,6 @@ import (
 	"strconv"
 	"strings"
 )
-
-var PC_arg uint16 = 0
 
 func CheckArgs() {
 
@@ -25,25 +24,27 @@ func CheckArgs() {
 	cliPC := flag.String("register_PC", "", "Set the Program Counter Address (hexadecimal)")
 	flag.Parse()
 
+	// Fisrt ensure that there is an last argument (rom name)
+	if len(flag.Args()) != 0 {
+		// Check if file exist
+		testFile(flag.Arg(0))
+	} else {
+		fmt.Printf("Usage: %s [options] ROM_FILE\n  -console\n    	Open program in interactive console\n  -debug\n    	Enable Debug Mode\n  -help\n    	Show this menu\n  -pause\n    	Start emulation Paused\n  -register_PC\n    	Set the Program Counter Address (Hexadecimal)\n\n", os.Args[0])
+		os.Exit(0)
+	}
+
+	// After, check the flags
 	if *cliHelp {
 		fmt.Printf("Usage: %s [options] ROM_FILE\n  -console\n    	Open program in interactive console\n  -debug\n    	Enable Debug Mode\n  -help\n    	Show this menu\n  -pause\n    	Start emulation Paused\n  -register_PC\n    	Set the Program Counter Address (Hexadecimal)\n\n", os.Args[0])
 		os.Exit(0)
 	}
 
-	if *cliConsole {
-
-		if *cliDebug || *cliPause {
-			fmt.Printf("Console mode doesn't support Pause and Debug options.\n")
-			os.Exit(0)
-		}
-		fmt.Printf("CHAMAR CONSOLEEE!\n")
-		os.Exit(0)
-	}
-
+	// Debug
 	if *cliDebug {
 		CORE.Debug = true
 	}
 
+	// PC
 	if *cliPC != "" {
 
 		var hexaString string = *cliPC
@@ -57,21 +58,37 @@ func CheckArgs() {
 			return
 		}
 
-		PC_arg = uint16(output)
-
+		CORE.PC_as_argument = uint16(output)
 	}
 
+	// Pause
 	if *cliPause {
 		CORE.Pause = true
 	}
 
-	// Ensure that there is an last argument (rom name)
-	if len(flag.Args()) != 0 {
-		// Check if file exist
-		testFile(flag.Arg(0))
-	} else {
-		fmt.Printf("Usage: %s [options] ROM_FILE\n  -console\n    	Open program in interactive console\n  -debug\n    	Enable Debug Mode\n  -help\n    	Show this menu\n  -pause\n    	Start emulation Paused\n  -register_PC\n    	Set the Program Counter Address (Hexadecimal)\n\n", os.Args[0])
-		os.Exit(0)
+	// Console Mode
+	if *cliConsole {
+
+		if *cliDebug || *cliPause {
+			fmt.Printf("Console mode doesn't support Pause and Debug options.\n")
+			os.Exit(0)
+		}
+
+		// Set initial variables values
+		CORE.Initialize()
+
+		// Initialize Timers
+		CORE.InitializeTimers()
+
+		// Read ROM to the memory
+		CORE.ReadROM(flag.Arg(0))
+		// readROM("/Users/cassiano/go/src/6502/TestPrograms/6502_functional_test.bin")
+		// readROM("/Users/cassiano/go/src/6502/TestPrograms/6502_decimal_test.bin")
+
+		// Reset system
+		CORE.Reset()
+
+		CONSOLEMODE.StartConsole()
 	}
 
 }
