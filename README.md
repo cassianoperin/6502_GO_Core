@@ -72,29 +72,13 @@ http://www.cs.jhu.edu/~phi/csf/slides/lecture-6502-interrupt.pdf
 
 https://wiki.nesdev.com/w/index.php/Programming_with_unofficial_opcodes
 
-
-# REVIEW
-
 ## BUSES
 
 http://www.plingboot.com/2015/10/homebrew-6502-part-2/
 
 https://slideplayer.com/slide/3944506/
 
-* SET ADDRESS and GET SOME DATA ON DATA LINES
-
-* On reset, the processor will read address $FFFC and $FFFD (called the reset vector) and load the program counter (PC) with their content. 
-
-* Create the 40 pins, starting with 16 address, 8 from data and the reset one
-
-* R/W PIN
-A READ operation (the R/W line is at logic one) causes eight bits of information (usually called data) to be transferred over the data bus, from the memory location specified by the address on the address bus to an 8-bit register in the microprocessor.
-
-A WRITE operation (the RjW line is at logic zero) causes eight bits of information to be transferred from an 8-bit register in the microprocessor to a  memory location specified by the address on the address bus. The words "load" and "store" are sometimes used synonymously with the words "read" and "write," respectively. Because data are moved in one direction by a read or load opera-tion and in the other direction by a write or store operation, the data bus is said to be hidirectional. Furthermore, since data are trans-ferred as 8-bit binary numbers, that is, one byte at a time, the 6502 is called an 8-bit microprocessor.
-
-* processor set MAR and OR receive the data of memory throug data bus OR send a value thtough data bus to that address
-
-https://www.bbc.co.uk/bitesize/guides/zr8kt39/revision/4
+## Console
 
 https://tutorialedge.net/golang/reading-console-input-golang/
 

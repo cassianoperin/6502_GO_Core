@@ -1,13 +1,12 @@
 package main
 
 import (
+	"6502/CLI"
 	"6502/CORE"
 	"flag"
 	"fmt"
 	"log"
 	"os"
-	"strconv"
-	"strings"
 
 	"github.com/faiface/pixel/pixelgl"
 )
@@ -105,90 +104,12 @@ func readROM(filename string) {
 	// os.Exit(2)
 }
 
-// func checkArgs() {
-// 	if len(os.Args) != 2 {
-// 		fmt.Printf("Usage: %s ROM_FILE\n\n", os.Args[0])
-// 		os.Exit(0)
-// 	}
-// }
-
-func checkArgs() {
-
-	if len(os.Args) < 2 {
-		fmt.Printf("Usage: %s [options] ROM_FILE\n\n%s -help for a list of available options\n\n", os.Args[0], os.Args[0])
-		os.Exit(0)
-	}
-
-	cliHelp := flag.Bool("help", false, "Show this menu")
-	cliConsole := flag.Bool("console", false, "Open program in interactive console")
-	cliDebug := flag.Bool("debug", false, "Enable Debug Mode")
-	cliPause := flag.Bool("pause", false, "Start emulation Paused")
-	cliPC := flag.String("register_PC", "", "Set the Program Counter Address (hexadecimal)")
-	flag.Parse()
-
-	if *cliHelp {
-		fmt.Printf("Usage: %s [options] ROM_FILE\n  -console\n    	Open program in interactive console\n  -debug\n    	Enable Debug Mode\n  -help\n    	Show this menu\n  -pause\n    	Start emulation Paused\n  -register_PC\n    	Set the Program Counter Address (Hexadecimal)\n\n", os.Args[0])
-		os.Exit(0)
-	}
-
-	if *cliConsole {
-
-		if *cliDebug || *cliPause {
-			fmt.Printf("Console mode doesn't support Pause and Debug options.\n")
-			os.Exit(0)
-		}
-		fmt.Printf("CHAMAR CONSOLEEE!\n")
-		os.Exit(0)
-	}
-
-	if *cliDebug {
-		CORE.Debug = true
-	}
-
-	if *cliPC != "" {
-
-		var hexaString string = *cliPC
-		numberStr := strings.Replace(hexaString, "0x", "", -1)
-		numberStr = strings.Replace(numberStr, "0X", "", -1)
-
-		output, err := strconv.ParseInt(numberStr, 16, 64)
-
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
-
-		PC_arg = uint16(output)
-
-	}
-
-	if *cliPause {
-		CORE.Pause = true
-	}
-
-}
-
-func testFile(filename string) {
-	if _, err := os.Stat(filename); os.IsNotExist(err) {
-		fmt.Printf("File '%s' not found.\n\n", os.Args[1])
-		os.Exit(0)
-	}
-}
-
 func main() {
-	// Validate the Arguments
-	checkArgs()
-
-	// testFile(os.Args[1])
-	if len(flag.Args()) != 0 { // Ensure that there is an last argument (rom name)
-		// Check if file exist
-		testFile(flag.Arg(0))
-	} else {
-		fmt.Printf("Usage: %s [options] ROM_FILE\n  -console\n    	Open program in interactive console\n  -debug\n    	Enable Debug Mode\n  -help\n    	Show this menu\n  -pause\n    	Start emulation Paused\n  -register_PC\n    	Set the Program Counter Address (Hexadecimal)\n\n", os.Args[0])
-		os.Exit(0)
-	}
 
 	fmt.Printf("\nMOS 6502 CPU Emulator\n\n")
+
+	// Validate the Arguments
+	CLI.CheckArgs()
 
 	// Set initial variables values
 	CORE.Initialize()
@@ -197,7 +118,8 @@ func main() {
 
 	// Read ROM to the memory
 	// readROM(os.Args[1])
-	readROM("/Users/cassiano/go/src/6502/TestPrograms/6502_functional_test.bin")
+	readROM(flag.Arg(0))
+	// readROM("/Users/cassiano/go/src/6502/TestPrograms/6502_functional_test.bin")
 	// readROM("/Users/cassiano/go/src/6502/TestPrograms/6502_decimal_test.bin")
 
 	// Reset system
