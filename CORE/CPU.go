@@ -60,7 +60,7 @@ func Reset() {
 
 func ShowDebugHeader() {
 	fmt.Printf("\t\t\t\t\t\t\t\t\t\t   N V - B D I Z C")
-	fmt.Printf("\nCycle: %d\tOpcode: %02X\tPC: 0x%04X(%d)\tA: 0x%02X\tX: 0x%02X\tY: 0x%02X\tP: %d %d %d %d %d %d %d %d\tSP: %02X\t\tStack:  Mem[1FF]: %02X   Mem[1FE]: %02X   Mem[1FD]: %02X   Mem[1FC]: %02X\n", cycle, opcode, PC, PC, A, X, Y, P[7], P[6], P[5], P[4], P[3], P[2], P[1], P[0], SP, Memory[0x1FF], Memory[0x1FE], Memory[0x1FD], Memory[0x1FC])
+	fmt.Printf("\nCycle: %d\tOpcode: %02X\tPC: 0x%04X(%d)\tA: 0x%02X\tX: 0x%02X\tY: 0x%02X\tP: %d %d %d %d %d %d %d %d\tSP: %02X\t\tStack:  Mem[1FF]: %02X   Mem[1FE]: %02X   Mem[1FD]: %02X   Mem[1FC]: %02X\n", Cycle, opcode, PC, PC, A, X, Y, P[7], P[6], P[5], P[4], P[3], P[2], P[1], P[0], SP, Memory[0x1FF], Memory[0x1FE], Memory[0x1FD], Memory[0x1FC])
 }
 
 // CPU Interpreter
@@ -1133,7 +1133,7 @@ func CPU_Interpreter() {
 	}
 
 	// Increment Cycle
-	cycle++
+	Cycle++
 	CPS++
 
 	// ---------------------------------------------- TEMPORARY TESTS ---------------------------------------------- //

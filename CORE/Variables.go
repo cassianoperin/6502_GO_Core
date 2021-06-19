@@ -36,7 +36,7 @@ var (
 	opc_cycle_count byte // Opcode cycle counter
 	opc_cycle_extra byte // Opcode extra cycle
 	// General counters
-	cycle uint64 // Cycles counter
+	Cycle uint64 // Cycles counter
 	CPS   uint64 // Cycles per second
 	IPS   uint64 // Instructions per second
 

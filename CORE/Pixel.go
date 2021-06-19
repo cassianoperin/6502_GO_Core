@@ -57,7 +57,7 @@ func Run() {
 
 			select {
 			case <-second_timer: // Second
-				win.SetTitle(fmt.Sprintf("%s CPS: %d| IPS: %d | Cycles: %d", cfg.Title, CPS, IPS, cycle))
+				win.SetTitle(fmt.Sprintf("%s CPS: %d| IPS: %d | Cycles: %d", cfg.Title, CPS, IPS, Cycle))
 				CPS = 0
 				IPS = 0
 

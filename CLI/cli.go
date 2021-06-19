@@ -1,7 +1,7 @@
 package CLI
 
 import (
-	"6502/CONSOLEMODE"
+	"6502/CONSOLE"
 	"6502/CORE"
 	"flag"
 	"fmt"
@@ -88,7 +88,7 @@ func CheckArgs() {
 		// Reset system
 		CORE.Reset()
 
-		CONSOLEMODE.StartConsole()
+		CONSOLE.StartConsole()
 	}
 
 }
