@@ -19,7 +19,9 @@ All opcodes and memory modes implemented and tested in Klaus Dormann test suite.
 
 ## Improvements
 
-* ![100%](https://progress-bar.dev/0) CONSOLE: Create a console mode
+* ![100%](https://progress-bar.dev/0) CONSOLE: Add breakpoints in HEX mode
+* ![100%](https://progress-bar.dev/0) CONSOLE: Implement the breaks if breakpoint reached
+* ![100%](https://progress-bar.dev/0) CONSOLE: Show memory
 * ![100%](https://progress-bar.dev/0) CONSOLE: Create a disassembler inside the console mode
 * ![100%](https://progress-bar.dev/0) Other Klaus tests
 * ![100%](https://progress-bar.dev/0) Put debug message on start OR end of opcodes
