@@ -35,6 +35,7 @@ var (
 	// Internal Opcode counters
 	opc_cycle_count byte // Opcode cycle counter
 	opc_cycle_extra byte // Opcode extra cycle
+	NewInstruction  bool // Easily detect when CPU finished running the cycles of an opcode
 	// General counters
 	Cycle uint64 // Cycles counter
 	CPS   uint64 // Cycles per second
@@ -47,7 +48,7 @@ var (
 
 	// ------------------------------- Timers ------------------------------- //
 	clock_timer         *time.Ticker             // CPU Clock // CPU: MOS Technology 6507 @ 1.19 MHz;
-	second_timer        = time.Tick(time.Second) // 1 second to track FPS and draws
+	Second_timer        = time.Tick(time.Second) // 1 second to track FPS and draws
 	screenRefresh_timer *time.Ticker             // Screen Refresh
 
 	// ------------------------ Command Line Interface ---------------------- //

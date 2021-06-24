@@ -19,10 +19,14 @@ All opcodes and memory modes implemented and tested in Klaus Dormann test suite.
 
 ## Improvements
 
-* ![100%](https://progress-bar.dev/0) CONSOLE: Add breakpoints in HEX mode
+* ![100%](https://progress-bar.dev/0) CONSOLE: Add radix to choose between hex or decimal
+* ![100%](https://progress-bar.dev/0) CONSOLE: Add GOTO function
+* ![100%](https://progress-bar.dev/0) CONSOLE: Add memory representation of current memory mode
 * ![100%](https://progress-bar.dev/0) CONSOLE: Implement the breaks if breakpoint reached
+* ![100%](https://progress-bar.dev/0) CONSOLE: Implement breakpoints for other variables like cycle and registers
 * ![100%](https://progress-bar.dev/0) CONSOLE: Show memory
-* ![100%](https://progress-bar.dev/0) CONSOLE: Create a disassembler inside the console mode
+* ![100%](https://progress-bar.dev/25) CONSOLE: Create a disassembler inside the console mode
+* ![100%](https://progress-bar.dev/0) CONSOLE: PROBLEM IN LOOPS!!! add a flag when finished an opcode and change the "opcode changed detected"
 * ![100%](https://progress-bar.dev/0) Other Klaus tests
 * ![100%](https://progress-bar.dev/0) Put debug message on start OR end of opcodes
 * ![100%](https://progress-bar.dev/0) IRQs
@@ -70,9 +74,6 @@ https://wiki.nesdev.com/w/index.php/Stack
 
 http://www.cs.jhu.edu/~phi/csf/slides/lecture-6502-interrupt.pdf
 
-## Unofficial opcodes:
-
-https://wiki.nesdev.com/w/index.php/Programming_with_unofficial_opcodes
 
 ## BUSES
 

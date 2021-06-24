@@ -165,6 +165,24 @@ func debug_decode_opc(bytes uint16) string {
 	return opc_string
 }
 
+// Decode opcode for debug messages
+func Debug_decode_console(bytes byte) (string, string) {
+
+	var (
+		opcode_string  string
+		operand_string string
+	)
+
+	opcode_string = fmt.Sprintf("%02X", Memory[PC])
+
+	// Decode opcode and operators
+	for i := 1; i < int(bytes); i++ {
+		operand_string += fmt.Sprintf("%02X", Memory[PC+uint16(i)])
+	}
+
+	return opcode_string, operand_string
+}
+
 // Print internal opcode cycle in debug mode
 func debugInternalOpcCycle(opc_cycles byte) {
 	if Debug {
@@ -193,6 +211,8 @@ func resetIntOpcCycleCounters() {
 
 	// Reset Opcode Extra Cycle counter
 	opc_cycle_extra = 0
+
+	NewInstruction = true
 
 	// Update IPS
 	IPS++
