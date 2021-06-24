@@ -21,12 +21,12 @@ All opcodes and memory modes implemented and tested in Klaus Dormann test suite.
 
 * ![100%](https://progress-bar.dev/0) CONSOLE: Add radix to choose between hex or decimal
 * ![100%](https://progress-bar.dev/0) CONSOLE: Add GOTO function
+* ![100%](https://progress-bar.dev/0) CONSOLE: debug skip for x cycles to increase debug speed OR cycle to enable debug on RUN?
 * ![100%](https://progress-bar.dev/0) CONSOLE: Add memory representation of current memory mode
 * ![100%](https://progress-bar.dev/0) CONSOLE: Implement the breaks if breakpoint reached
 * ![100%](https://progress-bar.dev/0) CONSOLE: Implement breakpoints for other variables like cycle and registers
 * ![100%](https://progress-bar.dev/0) CONSOLE: Show memory
 * ![100%](https://progress-bar.dev/25) CONSOLE: Create a disassembler inside the console mode
-* ![100%](https://progress-bar.dev/0) CONSOLE: PROBLEM IN LOOPS!!! add a flag when finished an opcode and change the "opcode changed detected"
 * ![100%](https://progress-bar.dev/0) Other Klaus tests
 * ![100%](https://progress-bar.dev/0) Put debug message on start OR end of opcodes
 * ![100%](https://progress-bar.dev/0) IRQs

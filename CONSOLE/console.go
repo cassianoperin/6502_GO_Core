@@ -20,7 +20,6 @@ type instructuction struct {
 func StartConsole() {
 
 	var (
-		current_PC  uint16 // Detect PC changes
 		breakpoints []uint16
 		opcode_map  []instructuction
 	)
@@ -89,8 +88,6 @@ func StartConsole() {
 
 	for {
 
-		current_PC = CORE.PC
-
 		fmt.Print("-> ")
 		text, _ := reader.ReadString('\n')
 		// convert CRLF to LF
@@ -109,13 +106,8 @@ func StartConsole() {
 
 		} else if strings.Compare("step", text) == 0 { // STEP
 
-			// Print the opcode debug
-			print_debug_console(opcode_map)
-
-			for CORE.PC == current_PC {
-				CORE.CPU_Interpreter()
-			}
-			printHeader()
+			// Execute one instruction
+			step(opcode_map)
 
 		} else if strings.HasPrefix(text, "step ") { // STEP WITH ARGS
 
@@ -129,18 +121,9 @@ func StartConsole() {
 				// Number os steps
 				for i := 0; i < value; i++ {
 
-					// Print the opcode debug
-					print_debug_console(opcode_map)
+					// Execute one instruction
+					step(opcode_map)
 
-					for CORE.PC == current_PC {
-						CORE.CPU_Interpreter()
-					}
-
-					// Update the current_PC value once the opcode has changed
-					current_PC = CORE.PC
-
-					printHeader()
-					fmt.Println()
 				}
 
 			}
@@ -206,62 +189,17 @@ func StartConsole() {
 
 				select {
 				case <-CORE.Second_timer: // Show the header and debug each second
-					// Print the opcode debug
-					print_debug_console(opcode_map)
 
-					// Execute a new cycle
-					for CORE.PC == current_PC {
-						CORE.CPU_Interpreter()
-					}
-
-					// Onde finished the opcode (opcode changed), update the new current_PC
-					current_PC = CORE.PC
-
-					printHeader()
-					fmt.Println()
+					// Execute one instruction
+					step(opcode_map)
 
 				default: // Just run the CPU
 
-					if CORE.Cycle < 96000000 {
-
-						// Execute a new cycle
-						for CORE.PC == current_PC {
-							CORE.CPU_Interpreter()
-						}
-
-						// Onde finished the opcode (opcode changed), update the new current_PC
-						current_PC = CORE.PC
-					} else {
-						// Print the opcode debug
-						print_debug_console(opcode_map)
-
-						// Execute a new cycle
-						for CORE.PC == current_PC {
-							CORE.CPU_Interpreter()
-						}
-
-						// Onde finished the opcode (opcode changed), update the new current_PC
-						current_PC = CORE.PC
-
-						printHeader()
-						fmt.Println()
-					}
+					// Execute one instruction without print
+					step_without_debug(opcode_map)
 
 				}
 
-				// // Print the opcode debug
-				// print_debug_console(opcode_map)
-
-				// // Execute a new cycle
-				// for CORE.PC == current_PC {
-				// 	CORE.CPU_Interpreter()
-				// }
-
-				// // Onde finished the opcode (opcode changed), update the new current_PC
-				// current_PC = CORE.PC
-
-				// printHeader()
-				// fmt.Println()
 			}
 
 		} else { // Command not found
@@ -272,6 +210,7 @@ func StartConsole() {
 
 }
 
+// Print the debub information in console
 func print_debug_console(opcode_map []instructuction) {
 
 	// Search for the current opcode inside opcode map
@@ -285,16 +224,47 @@ func print_debug_console(opcode_map []instructuction) {
 	}
 }
 
+// Execute the necessary cycles for next instruction
+func step(opcode_map []instructuction) {
+	// Print the opcode debug
+	print_debug_console(opcode_map)
+
+	for !CORE.NewInstruction {
+		CORE.CPU_Interpreter()
+	}
+
+	// Reset new instruction flag
+	CORE.NewInstruction = false
+
+	// Print the Header
+	printHeader()
+}
+
+// Execute the necessary cycles for next instruction without print on console
+func step_without_debug(opcode_map []instructuction) {
+
+	for !CORE.NewInstruction {
+		CORE.CPU_Interpreter()
+	}
+
+	// Reset new instruction flag
+	CORE.NewInstruction = false
+
+}
+
+// Print Help Menu
 func printHelp() {
 	fmt.Printf("\nquit\t\t\t\tQuit console\nhelp\t\t\t\tPrint help menu\nstep\t\t\t\tExecute current opcode\nadd_breakpoint <value>\t\tAdd a breakpoint\ndel_breakpoint <value>\t\tDelete a breakpoint\nshow_breakpoints\t\tShow breakpoints\nstep <value>\t\t\tExecute <value> opcodes\nrun\t\t\t\tRun the emulator\n\n")
 }
 
+// Print current Processor Information
 func printHeader() {
 	fmt.Printf("--------------------------------------------------------------------------\n")
 	fmt.Printf("\tPC\tA\tX\tY\tSP\tNV-BDIZC\tCycle\n")
-	fmt.Printf("\t%04X\t%02X\t%02X\t%02X\t%02X\t%d%d%d%d%d%d%d%d\t%d\n", CORE.PC, CORE.A, CORE.X, CORE.Y, CORE.SP, CORE.P[7], CORE.P[6], CORE.P[5], CORE.P[4], CORE.P[3], CORE.P[2], CORE.P[1], CORE.P[0], CORE.Cycle)
+	fmt.Printf("\t%04X\t%02X\t%02X\t%02X\t%02X\t%d%d%d%d%d%d%d%d\t%d\n\n", CORE.PC, CORE.A, CORE.X, CORE.Y, CORE.SP, CORE.P[7], CORE.P[6], CORE.P[5], CORE.P[4], CORE.P[3], CORE.P[2], CORE.P[1], CORE.P[0], CORE.Cycle)
 }
 
+// Remove a value from a slice
 func RemoveIndex(s []uint16, index int) []uint16 {
 	return append(s[:index], s[index+1:]...)
 }

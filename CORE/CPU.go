@@ -66,9 +66,6 @@ func ShowDebugHeader() {
 // CPU Interpreter
 func CPU_Interpreter() {
 
-	// Reset new instruction detected flag
-	NewInstruction = false
-
 	// Read the Next Instruction to be executed
 	opcode = Memory[PC]
 
@@ -1139,14 +1136,6 @@ func CPU_Interpreter() {
 	Cycle++
 	CPS++
 
-	// ---------------------------------------------- TEMPORARY TESTS ---------------------------------------------- //
-
-	// The B flag tester
-	if P[5] != 1 {
-		fmt.Println("Someone tryed to change P[5] to zero. Exiting!")
-		os.Exit(2)
-	}
-
 	// ------------------------------------------------ KLAUS TESTS ------------------------------------------------ //
 
 	// // Status from ADC
@@ -1159,14 +1148,14 @@ func CPU_Interpreter() {
 	// 	fmt.Printf("ADC / SBC = DECIMAL: %02X   %02X\n", Memory[0x0d], Memory[0x0e])
 	// }
 
-	Pause_addr := 0x3469
+	// Pause_addr := 0x3469
 
-	// END
-	if PC == uint16(Pause_addr) {
-		// Pause = true
-		Debug = true
-		fmt.Println("ACABOOOOOOOOOOU o TESTEEEEE!!!!!!!")
-		fmt.Println(Cycle)
-		// os.Exit(2)
-	}
+	// // END
+	// if PC == uint16(Pause_addr) {
+	// 	// Pause = true
+	// 	Debug = true
+	// 	fmt.Println("ACABOOOOOOOOOOU o TESTEEEEE!!!!!!!")
+	// 	fmt.Println(Cycle)
+	// 	// os.Exit(2)
+	// }
 }
