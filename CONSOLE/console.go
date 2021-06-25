@@ -17,10 +17,15 @@ type instructuction struct {
 	memory_mode string
 }
 
+type breakpoint struct {
+	location string
+	value    uint16
+}
+
 func StartConsole() {
 
 	var (
-		breakpoints []uint16
+		breakpoints []breakpoint
 		opcode_map  []instructuction
 	)
 
@@ -129,25 +134,53 @@ func StartConsole() {
 			}
 		} else if strings.HasPrefix(text, "add_breakpoint") { // ADD BREAKPOINT
 
-			if len(strings.Split(text, " ")) == 1 || len(strings.Split(text, " ")) > 2 {
-				fmt.Println("\nUsage: add_breakpoint <address>")
+			var tmp_string, tmp_string2 []string
+
+			tmp_string = strings.Split(text, " ") // First split command and values
+
+			// Test the command syntax
+			if len(tmp_string) == 1 || len(tmp_string) > 2 {
+
+				// Print add_breakpoint usage
+				printAddBrkErr()
+
 			} else {
 
-				tmp_string := strings.Split(text, " ")
+				// If command syntax is ok, test the parameter syntax
+				tmp_string2 = strings.Split(tmp_string[1], "=") // After, split the argument in LOCATION=VALUE
+				if len(tmp_string2) == 1 || len(tmp_string2) > 2 || tmp_string2[1] == "" || tmp_string2[0] == "" {
 
-				value, err := strconv.Atoi(tmp_string[1])
-				if err != nil {
-					// handle error
-					fmt.Printf("Invalid value %s\n", tmp_string[1])
+					// Print add_breakpoint usage
+					printAddBrkErr()
+
 				} else {
-					if value <= 65535 && value >= 0 {
-						breakpoints = append(breakpoints, uint16(value))
-						fmt.Printf("Breakpoint %d created.\n", len(breakpoints)-1)
+
+					location := strings.ToUpper(tmp_string2[0])
+
+					// Validate the value of locations
+					if location == "PC" || location == "A" || location == "X" || location == "Y" || location == "MEM" {
+
+						value, err := strconv.Atoi(tmp_string2[1])
+
+						if err != nil {
+							fmt.Println("Invalid address.")
+						} else {
+							if value <= 65535 && value >= 0 {
+								breakpoints = append(breakpoints, breakpoint{strings.ToUpper(tmp_string2[0]), uint16(value)})
+								fmt.Printf("Breakpoint %d created.\n", len(breakpoints)-1)
+							} else {
+								fmt.Println("Invalid address.")
+							}
+						}
+
 					} else {
-						fmt.Println("Invalid address.")
+
+						// Print add_breakpoint usage
+						printAddBrkErr()
 					}
 
 				}
+
 			}
 
 		} else if strings.HasPrefix(text, "del_breakpoint") { // DELETE BREAKPOINT
@@ -176,7 +209,7 @@ func StartConsole() {
 		} else if strings.Compare("show_breakpoints", text) == 0 { // SHOW BREAKPOINTS
 
 			for i := 0; i < len(breakpoints); i++ {
-				fmt.Printf("Breakpoint %d: %d\n", i, breakpoints[i])
+				fmt.Printf("Breakpoint %d: %s=%d\n", i, breakpoints[i].location, breakpoints[i].value)
 			}
 
 			if len(breakpoints) == 0 {
@@ -254,7 +287,11 @@ func step_without_debug(opcode_map []instructuction) {
 
 // Print Help Menu
 func printHelp() {
-	fmt.Printf("\nquit\t\t\t\tQuit console\nhelp\t\t\t\tPrint help menu\nstep\t\t\t\tExecute current opcode\nadd_breakpoint <value>\t\tAdd a breakpoint\ndel_breakpoint <value>\t\tDelete a breakpoint\nshow_breakpoints\t\tShow breakpoints\nstep <value>\t\t\tExecute <value> opcodes\nrun\t\t\t\tRun the emulator\n\n")
+	fmt.Printf("\nquit\t\t\t\t\t\tQuit console\nhelp\t\t\t\t\t\tPrint help menu\nstep\t\t\t\t\t\tExecute current opcode\nadd_breakpoint <PC|A|X|Y|MEM|CYCLE>=<Value>\tAdd a breakpoint\ndel_breakpoint <index>\t\t\t\tDelete a breakpoint\nshow_breakpoints\t\t\t\tShow breakpoints\nstep <value>\t\t\t\t\tExecute <value> opcodes\nrun\t\t\t\t\t\tRun the emulator\n\n")
+}
+
+func printAddBrkErr() {
+	fmt.Println("\nUsage: add_breakpoint < PC | A | X | Y | MEM | CYCLE > = <Value>")
 }
 
 // Print current Processor Information
@@ -265,6 +302,6 @@ func printHeader() {
 }
 
 // Remove a value from a slice
-func RemoveIndex(s []uint16, index int) []uint16 {
+func RemoveIndex(s []breakpoint, index int) []breakpoint {
 	return append(s[:index], s[index+1:]...)
 }
