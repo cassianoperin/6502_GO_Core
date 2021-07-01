@@ -89,6 +89,9 @@ func CheckArgs() {
 		CORE.Reset()
 
 		CONSOLE.StartConsole()
+
+		// Exit program after close console
+		os.Exit(0)
 	}
 
 }

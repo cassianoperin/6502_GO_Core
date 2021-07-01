@@ -52,7 +52,8 @@ var (
 	screenRefresh_timer *time.Ticker             // Screen Refresh
 
 	// ------------------------ Command Line Interface ---------------------- //
-	PC_as_argument uint16 // Program Counter passed as CLI Argument (temp value)
+	PC_as_argument uint16        // Program Counter passed as CLI Argument (temp value)
+	Loop_detection uint16 = 1000 // Number of PC repetitions to consider a loop in console's run() function
 
 	// --------------------------- Debug Interface -------------------------- //
 	dbg_show_message string // Debug opcode detail messages
