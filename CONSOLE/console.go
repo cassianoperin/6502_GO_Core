@@ -76,6 +76,110 @@ var (
 		{0xDD, 3, 4, "CMP", "absolute,X"},
 		{0xD1, 2, 5, "CMP", "(indirect),Y"},
 		{0xC1, 2, 6, "CMP", "(indirect,X)"},
+		{0xE0, 2, 2, "CPX", "immediate"},
+		{0xE4, 2, 3, "CPX", "zeropage"},
+		{0xEC, 3, 4, "CPX", "absolute"},
+		{0xC0, 2, 2, "CPY", "immediate"},
+		{0xC4, 2, 3, "CPY", "zeropage"},
+		{0xCC, 3, 4, "CPY", "absolute"},
+		{0x49, 2, 2, "EOR", "immediate"},
+		{0x45, 2, 3, "EOR", "zeropage"},
+		{0x55, 2, 4, "EOR", "zeropage,X"},
+		{0x4D, 3, 4, "EOR", "absolute"},
+		{0x5D, 3, 4, "EOR", "absolute,X"},
+		{0x59, 3, 4, "EOR", "absolute,Y"},
+		{0x41, 2, 6, "EOR", "(indirect,X)"},
+		{0x51, 2, 5, "EOR", "(indirect),Y"},
+		{0xA9, 2, 2, "LDA", "immediate"},
+		{0xA5, 2, 3, "LDA", "zeropage"},
+		{0xB9, 3, 4, "LDA", "absolute,Y"},
+		{0xBD, 3, 4, "LDA", "absolute,X"},
+		{0xB1, 2, 5, "LDA", "(indirect),Y"},
+		{0xB5, 2, 4, "LDA", "zeropage,X"},
+		{0xAD, 3, 4, "LDA", "absolute"},
+		{0xA1, 2, 6, "LDA", "(indirect,X)"},
+		{0xA2, 2, 2, "LDX", "immediate"},
+		{0xA6, 2, 3, "LDX", "zeropage"},
+		{0xB6, 2, 4, "LDX", "zeropage,Y"},
+		{0xBE, 3, 4, "LDX", "absolute,Y"},
+		{0xAE, 3, 4, "LDX", "absolute"},
+		{0xA0, 2, 2, "LDY", "immediate"},
+		{0xA4, 2, 3, "LDY", "zeropage"},
+		{0xB4, 2, 4, "LDY", "zeropage,X"},
+		{0xAC, 3, 4, "LDY", "absolute"},
+		{0xBC, 3, 4, "LDY", "absolute,X"},
+		{0x09, 2, 2, "ORA", "immediate"},
+		{0x05, 2, 3, "ORA", "zeropage"},
+		{0x15, 2, 4, "ORA", "zeropage,X"},
+		{0x0D, 3, 4, "ORA", "absolute"},
+		{0x1D, 3, 4, "ORA", "absolute,X"},
+		{0x19, 3, 4, "ORA", "absolute,Y"},
+		{0x01, 2, 6, "ORA", "(indirect,X)"},
+		{0x11, 2, 5, "ORA", "(indirect),Y"},
+		{0xE9, 2, 2, "SBC", "immediate"},
+		{0xE5, 2, 3, "SBC", "zeropage"},
+		{0xF5, 2, 4, "SBC", "zeropage,X"},
+		{0xED, 3, 4, "SBC", "absolute"},
+		{0xFD, 3, 4, "SBC", "absolute,X"},
+		{0xF9, 3, 4, "SBC", "absolute,Y"},
+		{0xE1, 2, 6, "SBC", "(indirect,X)"},
+		{0xF1, 2, 5, "SBC", "(indirect),Y"},
+		{0x95, 2, 4, "STA", "zeropage,X"},
+		{0x85, 2, 3, "STA", "zeropage"},
+		{0x99, 3, 5, "STA", "absolute,Y"},
+		{0x8D, 3, 4, "STA", "absolute"},
+		{0x91, 2, 6, "STA", "(indirect),Y"},
+		{0x9D, 3, 5, "STA", "absolute,X"},
+		{0x81, 2, 6, "STA", "(indirect,X)"},
+		{0x86, 2, 3, "STX", "zeropage"},
+		{0x96, 2, 4, "STX", "zeropage,Y"},
+		{0x8E, 3, 4, "STX", "absolute"},
+		{0x84, 2, 3, "STY", "zeropage"},
+		{0x94, 2, 4, "STY", "zeropage,X"},
+		{0x8C, 3, 4, "STY", "absolute"},
+		{0x06, 2, 5, "ASL", "zeropage"},
+		{0x16, 2, 6, "ASL", "zeropage,X"},
+		{0x0E, 3, 6, "ASL", "absolute"},
+		{0x1E, 3, 7, "ASL", "absolute,X"},
+		{0xC6, 2, 5, "DEC", "zeropage"},
+		{0xD6, 2, 6, "DEC", "zeropage,X"},
+		{0xCE, 3, 6, "DEC", "absolute"},
+		{0xDE, 3, 7, "DEC", "absolute,X"},
+		{0xE6, 2, 5, "INC", "zeropage"},
+		{0xF6, 2, 6, "INC", "zeropage,X"},
+		{0xEE, 3, 6, "INC", "absolute"},
+		{0xFE, 3, 7, "INC", "absolute,X"},
+		{0x46, 2, 5, "LSR", "zeropage"},
+		{0x56, 2, 6, "LSR", "zeropage,X"},
+		{0x4E, 3, 6, "LSR", "absolute"},
+		{0x5E, 3, 7, "LSR", "absolute,X"},
+		{0x26, 2, 5, "ROL", "zeropage"},
+		{0x36, 2, 6, "ROL", "zeropage,X"},
+		{0x2E, 3, 6, "ROL", "absolute"},
+		{0x3E, 3, 7, "ROL", "absolute,X"},
+		{0x6A, 1, 2, "ROR", "accumulator"},
+		{0x66, 2, 5, "ROR", "zeropage"},
+		{0x76, 2, 6, "ROR", "zeropage,X"},
+		{0x6E, 3, 6, "ROR", "absolute"},
+		{0x7E, 3, 7, "ROR", "absolute,X"},
+		{0x48, 1, 3, "PHA", "implied"},
+		{0x08, 1, 3, "PHP", "implied"},
+		{0x68, 1, 4, "PLA", "implied"},
+		{0x28, 1, 4, "PLP", "implied"},
+		{0x4C, 3, 3, "JMP", "absolute"},
+		{0x6C, 3, 5, "JMP", "indirect"},
+		{0x20, 3, 6, "JSR", "absolute"},
+		{0x40, 1, 6, "RTI", "implied"},
+		{0x60, 1, 6, "RTS", "implied"},
+		{0x00, 1, 7, "BRK", "implied"},
+		{0xD0, 2, 2, "BNE", "relative"},
+		{0xF0, 2, 2, "BEQ", "relative"},
+		{0x10, 2, 2, "BPL", "relative"},
+		{0x30, 2, 2, "BMI", "relative"},
+		{0x70, 2, 2, "BVS", "relative"},
+		{0x50, 2, 2, "BVC", "relative"},
+		{0xB0, 2, 2, "BCS", "relative"},
+		{0x90, 2, 2, "BCC", "relative"},
 	}
 )
 
@@ -158,7 +262,7 @@ func step_without_debug(opcode_map []instructuction) {
 
 // Print Help Menu
 func printHelp() {
-	fmt.Printf("\n\tquit\t\t\t\t\t\tQuit console\n\thelp\t\t\t\t\t\tPrint help menu\n\tstep\t\t\t\t\t\tExecute current opcode\n\tstep_limit <value>\t\t\t\tDefine the maximum steps allowed\n\tadd_breakpoint <PC|A|X|Y|CYCLE>=<Value>\tAdd a breakpoint\n\tdel_breakpoint <index>\t\t\t\tDelete a breakpoint\n\tshow_breakpoints\t\t\t\tShow breakpoints\n\tstep <value>\t\t\t\t\tExecute <value> opcodes\n\trun\t\t\t\t\t\tRun the emulator\n\trun_limit <value>\t\t\t\tDefine the maximum steps allowed in RUN\n\n")
+	fmt.Printf("\n\tquit\t\t\t\t\t\tQuit console\n\thelp\t\t\t\t\t\tPrint help menu\n\tstep\t\t\t\t\t\tExecute current opcode\n\tstep_limit <value>\t\t\t\tDefine the maximum steps allowed\n\tadd_breakpoint <PC|A|X|Y|CYCLE>=<Value>\t\tAdd a breakpoint\n\tdel_breakpoint <index>\t\t\t\tDelete a breakpoint\n\tshow_breakpoints\t\t\t\tShow breakpoints\n\tstep <value>\t\t\t\t\tExecute <value> opcodes\n\trun\t\t\t\t\t\tRun the emulator\n\trun_limit <value>\t\t\t\tDefine the maximum steps allowed in RUN\n\n")
 }
 
 func printAddBrkErr() {
@@ -298,39 +402,86 @@ func CommandInterpreter(text string) {
 				// Validate the value of locations
 				if location == "PC" || location == "A" || location == "X" || location == "Y" || location == "CYCLE" {
 
-					value, err := strconv.Atoi(tmp_string2[1])
+					// Test if the value start if 0x or 0X
+					if strings.HasPrefix(tmp_string2[1], "0x") || strings.HasPrefix(tmp_string2[1], "0X") {
+						fmt.Println("seria HEX")
 
-					if err != nil {
-						fmt.Println("Invalid value.")
+						var hexaString string = tmp_string2[1]
+						numberStr := strings.Replace(hexaString, "0x", "", -1)
+						numberStr = strings.Replace(numberStr, "0X", "", -1)
+
+						value, err := strconv.ParseInt(numberStr, 16, 64)
+
+						if err != nil {
+							fmt.Println("Invalid value.")
+						} else {
+							// Value limits
+							if location == "PC" {
+								if value <= 65535 && value >= 0 {
+									breakpoints = append(breakpoints, breakpoint{strings.ToUpper(tmp_string2[0]), uint16(value)})
+									fmt.Printf("Breakpoint %d created.\n\n", len(breakpoints)-1)
+								} else {
+									fmt.Println("Invalid value.")
+								}
+							}
+
+							if location == "A" || location == "X" || location == "Y" {
+								if value <= 255 && value >= 0 {
+									breakpoints = append(breakpoints, breakpoint{strings.ToUpper(tmp_string2[0]), uint16(value)})
+									fmt.Printf("Breakpoint %d created.\n\n", len(breakpoints)-1)
+								} else {
+									fmt.Println("Invalid value.")
+								}
+							}
+
+							if location == "CYCLE" {
+								if value >= 0 {
+									breakpoints = append(breakpoints, breakpoint{strings.ToUpper(tmp_string2[0]), uint16(value)})
+									fmt.Printf("Breakpoint %d created.\n\n", len(breakpoints)-1)
+								} else {
+									fmt.Println("Invalid value.")
+								}
+							}
+
+						}
+
 					} else {
-						// Value limits
-						if location == "PC" {
-							if value <= 65535 && value >= 0 {
-								breakpoints = append(breakpoints, breakpoint{strings.ToUpper(tmp_string2[0]), uint16(value)})
-								fmt.Printf("Breakpoint %d created.\n\n", len(breakpoints)-1)
-							} else {
-								fmt.Println("Invalid value.")
-							}
-						}
+						fmt.Println("seria DEC")
 
-						if location == "A" || location == "X" || location == "Y" {
-							if value <= 255 && value >= 0 {
-								breakpoints = append(breakpoints, breakpoint{strings.ToUpper(tmp_string2[0]), uint16(value)})
-								fmt.Printf("Breakpoint %d created.\n\n", len(breakpoints)-1)
-							} else {
-								fmt.Println("Invalid value.")
-							}
-						}
+						value, err := strconv.Atoi(tmp_string2[1])
 
-						if location == "CYCLE" {
-							if value >= 0 {
-								breakpoints = append(breakpoints, breakpoint{strings.ToUpper(tmp_string2[0]), uint16(value)})
-								fmt.Printf("Breakpoint %d created.\n\n", len(breakpoints)-1)
-							} else {
-								fmt.Println("Invalid value.")
+						if err != nil {
+							fmt.Println("Invalid value.")
+						} else {
+							// Value limits
+							if location == "PC" {
+								if value <= 65535 && value >= 0 {
+									breakpoints = append(breakpoints, breakpoint{strings.ToUpper(tmp_string2[0]), uint16(value)})
+									fmt.Printf("Breakpoint %d created.\n\n", len(breakpoints)-1)
+								} else {
+									fmt.Println("Invalid value.")
+								}
 							}
-						}
 
+							if location == "A" || location == "X" || location == "Y" {
+								if value <= 255 && value >= 0 {
+									breakpoints = append(breakpoints, breakpoint{strings.ToUpper(tmp_string2[0]), uint16(value)})
+									fmt.Printf("Breakpoint %d created.\n\n", len(breakpoints)-1)
+								} else {
+									fmt.Println("Invalid value.")
+								}
+							}
+
+							if location == "CYCLE" {
+								if value >= 0 {
+									breakpoints = append(breakpoints, breakpoint{strings.ToUpper(tmp_string2[0]), uint16(value)})
+									fmt.Printf("Breakpoint %d created.\n\n", len(breakpoints)-1)
+								} else {
+									fmt.Println("Invalid value.")
+								}
+							}
+
+						}
 					}
 				} else {
 
@@ -373,7 +524,7 @@ func CommandInterpreter(text string) {
 		if len(tmp_string) == 1 {
 
 			for i := 0; i < len(breakpoints); i++ {
-				fmt.Printf("Breakpoint %d: %s=%d\n", i, breakpoints[i].location, breakpoints[i].value)
+				fmt.Printf("Breakpoint %d: %s=0x%02X\t(Decimal: %d)\n", i, breakpoints[i].location, breakpoints[i].value, breakpoints[i].value)
 				if i == len(breakpoints)-1 {
 					fmt.Println()
 				}
@@ -504,35 +655,35 @@ func check_breakpoints(break_flag bool) bool {
 			// ------ PC ------ //
 			if breakpoints[i].location == "PC" {
 				if CORE.PC == breakpoints[i].value {
-					fmt.Printf("Breakpoint %d reached: %s=%d (0x%04X)\n", i, breakpoints[i].location, breakpoints[i].value, breakpoints[i].value)
+					fmt.Printf("Breakpoint %d reached: %s=0x%04X\t(Decimal: %d)\n", i, breakpoints[i].location, breakpoints[i].value, breakpoints[i].value)
 					break_flag = true
 				}
 
 				// ------ A ------- //
 			} else if breakpoints[i].location == "A" {
 				if CORE.A == byte(breakpoints[i].value) {
-					fmt.Printf("Breakpoint %d reached: %s=%d (0x%02X)\n", i, breakpoints[i].location, breakpoints[i].value, breakpoints[i].value)
+					fmt.Printf("Breakpoint %d reached: %s=0x%02X\t(Decimal: %d)\n", i, breakpoints[i].location, breakpoints[i].value, breakpoints[i].value)
 					break_flag = true
 				}
 
 				// ------ X ------- //
 			} else if breakpoints[i].location == "X" {
 				if CORE.X == byte(breakpoints[i].value) {
-					fmt.Printf("Breakpoint %d reached: %s=%d (0x%02X)\n", i, breakpoints[i].location, breakpoints[i].value, breakpoints[i].value)
+					fmt.Printf("Breakpoint %d reached: %s=0x%02X\t(Decimal: %d)\n", i, breakpoints[i].location, breakpoints[i].value, breakpoints[i].value)
 					break_flag = true
 				}
 
 				// ------ Y ------- //
 			} else if breakpoints[i].location == "Y" {
 				if CORE.Y == byte(breakpoints[i].value) {
-					fmt.Printf("Breakpoint %d reached: %s=%d (0x%02X)\n", i, breakpoints[i].location, breakpoints[i].value, breakpoints[i].value)
+					fmt.Printf("Breakpoint %d reached: %s=0x%02X\t(Decimal: %d)\n", i, breakpoints[i].location, breakpoints[i].value, breakpoints[i].value)
 					break_flag = true
 				}
 
 				// ------ Cycle ------- //
 			} else if breakpoints[i].location == "CYCLE" {
-				if CORE.Cycle == uint64(breakpoints[i].value) {
-					fmt.Printf("Breakpoint %d reached: %s=%d (0x%02X)\n", i, breakpoints[i].location, breakpoints[i].value, breakpoints[i].value)
+				if CORE.Cycle >= uint64(breakpoints[i].value) {
+					fmt.Printf("Breakpoint %d reached: %s=%d\t(0x%02X)\n", i, breakpoints[i].location, breakpoints[i].value, breakpoints[i].value)
 					break_flag = true
 				}
 			}

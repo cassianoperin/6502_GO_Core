@@ -926,7 +926,7 @@ func CPU_Interpreter() {
 
 	// --------------------------------- ROR --------------------------------- //
 
-	case 0x6A: // Instruction ROR (  accumulator )
+	case 0x6A: // Instruction ROR ( accumulator )
 		opc_ROR_A(1, 2)
 
 	case 0x66: // Instruction ROR ( zeropage )
@@ -977,7 +977,7 @@ func CPU_Interpreter() {
 		}
 		opc_JMP(addressBUS, memMode, 3, 3)
 
-	case 0x6C: // Instruction JMP (indirect)
+	case 0x6C: // Instruction JMP ( indirect )
 		if opc_cycle_count == 1 {
 			addressBUS, memMode = addr_mode_Indirect(PC + 1)
 		}
