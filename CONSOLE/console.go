@@ -198,7 +198,7 @@ func StartConsole() {
 	// Print Header
 	printHeader()
 
-	term.SetPrompt("# ")
+	// term.SetPrompt("# ")
 	line, err := term.ReadLine()
 	for {
 		if err == io.EOF {
@@ -262,7 +262,12 @@ func step_without_debug(opcode_map []instructuction) {
 
 // Print Help Menu
 func printHelp() {
-	fmt.Printf("\n\tquit\t\t\t\t\t\tQuit console\n\thelp\t\t\t\t\t\tPrint help menu\n\tstep\t\t\t\t\t\tExecute current opcode\n\tstep_limit <value>\t\t\t\tDefine the maximum steps allowed\n\tadd_breakpoint <PC|A|X|Y|CYCLE>=<Value>\t\tAdd a breakpoint\n\tdel_breakpoint <index>\t\t\t\tDelete a breakpoint\n\tshow_breakpoints\t\t\t\tShow breakpoints\n\tstep <value>\t\t\t\t\tExecute <value> opcodes\n\trun\t\t\t\t\t\tRun the emulator\n\trun_limit <value>\t\t\t\tDefine the maximum steps allowed in RUN\n\n")
+	// fmt.Printf("\n\tquit\t\t\t\t\t\tQuit console\n\thelp\t\t\t\t\t\tPrint help menu\n\t--\n\tstep\t\t\t\t\t\tExecute current opcode\n\tstep <value>\t\t\t\t\tExecute <value> opcodes\n\tstep_limit <value>\t\t\t\tDefine the maximum steps allowed\n\t--\n\tadd_breakpoint <PC|A|X|Y|CYCLE>=<Value>\t\tAdd a breakpoint\n\tdel_breakpoint <index>\t\t\t\tDelete a breakpoint\n\tshow_breakpoints\t\t\t\tShow breakpoints\n\t--\n\tmem || mem <address> || mem <address> <address>\tDump address values\n\t--\n\trun\t\t\t\t\t\tRun the emulator\n\trun_limit <value>\t\t\t\tDefine the maximum steps allowed in RUN\n\n")
+	fmt.Printf("\n\tquit\t\t\t\t\t\tQuit console\n\thelp\t\t\t\t\t\tPrint help menu\n\t-")
+	fmt.Printf("\n\tstep\t\t\t\t\t\tExecute current opcode\n\tstep <value>\t\t\t\t\tExecute <value> opcodes\n\tstep_limit <value>\t\t\t\tDefine the maximum steps allowed\n\t-")
+	fmt.Printf("\n\tadd_breakpoint <PC|A|X|Y|CYCLE>=<Value>\t\tAdd a breakpoint\n\tdel_breakpoint <index>\t\t\t\tDelete a breakpoint\n\tshow_breakpoints\t\t\t\tShow breakpoints\n\t-")
+	fmt.Printf("\n\tmem\t\t\t\t\t\tDump full memory\n\tmem <address>\t\t\t\t\tDump memory address\n\tmem <start address> <end address>\t\tDump memory address range\n\t-")
+	fmt.Printf("\n\trun\t\t\t\t\t\tRun the emulator\n\trun_limit <value>\t\t\t\tDefine the maximum steps allowed in RUN\n\n")
 }
 
 func printAddBrkErr() {
@@ -404,7 +409,7 @@ func CommandInterpreter(text string) {
 
 					// Test if the value start if 0x or 0X
 					if strings.HasPrefix(tmp_string2[1], "0x") || strings.HasPrefix(tmp_string2[1], "0X") {
-						fmt.Println("seria HEX")
+						// fmt.Println("seria HEX")
 
 						var hexaString string = tmp_string2[1]
 						numberStr := strings.Replace(hexaString, "0x", "", -1)
@@ -446,7 +451,7 @@ func CommandInterpreter(text string) {
 						}
 
 					} else {
-						fmt.Println("seria DEC")
+						// fmt.Println("seria DEC")
 
 						value, err := strconv.Atoi(tmp_string2[1])
 
@@ -638,6 +643,172 @@ func CommandInterpreter(text string) {
 			}
 
 		} else { // Command not found
+			fmt.Printf("Command not found\n\n")
+		}
+
+	} else if strings.HasPrefix(text, "mem") { // MEMORY
+
+		tmp_string := strings.Split(text, " ")
+
+		// Check command "mem"
+		if strings.Compare("mem", tmp_string[0]) == 0 {
+
+			if len(tmp_string) == 1 { // Without arguments (show all memory)
+				fmt.Printf("\t00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F\n")
+				fmt.Printf("\t-----------------------------------------------")
+				for i := 0; i < len(CORE.Memory); i++ {
+
+					// Break lines
+					if i%16 == 0 {
+						fmt.Printf("\n%04X\t", i)
+					}
+
+					// Print memory
+					fmt.Printf("%02X ", CORE.Memory[i])
+
+				}
+				fmt.Println()
+
+			} else if len(tmp_string) == 2 { // Without ONE argument (show this memory value)
+
+				var mem1 int
+
+				// Test if the value start if 0x or 0X
+				if strings.HasPrefix(tmp_string[1], "0x") || strings.HasPrefix(tmp_string[1], "0X") {
+
+					// HEXADECIMAL Input
+
+					var hexaString string = tmp_string[1]
+					numberStr := strings.Replace(hexaString, "0x", "", -1)
+					numberStr = strings.Replace(numberStr, "0X", "", -1)
+
+					tmp_value, err := strconv.ParseInt(numberStr, 16, 64)
+
+					if err != nil {
+						fmt.Println("Invalid value.")
+					} else {
+						// Convert to decimal and set mem1 value
+						mem1 = int(tmp_value)
+					}
+
+				} else {
+
+					// DECIMAL Input
+
+					tmp_value, err := strconv.Atoi(tmp_string[1])
+					if err != nil {
+						// handle error
+						fmt.Printf("Invalid value %s\n\n", tmp_string[1])
+					} else {
+						// Set mem1 value
+						mem1 = int(tmp_value)
+					}
+				}
+
+				// Print Memory Value
+				if mem1 < 0 || mem1 >= len(CORE.Memory) {
+					fmt.Printf("Invalid Address %d\n\n", mem1)
+				} else {
+					fmt.Printf("%02X\n\n", CORE.Memory[mem1])
+
+				}
+
+			} else if len(tmp_string) == 3 {
+
+				var mem1, mem2 int
+				var error_flag bool
+
+				// Test if the FIRST ARGUMENT start if 0x or 0X
+				if strings.HasPrefix(tmp_string[1], "0x") || strings.HasPrefix(tmp_string[1], "0X") {
+
+					// FIRST ARGUMENT HEXADECIMAL Input
+
+					var hexaString string = tmp_string[1]
+					numberStr := strings.Replace(hexaString, "0x", "", -1)
+					numberStr = strings.Replace(numberStr, "0X", "", -1)
+
+					tmp_value, err := strconv.ParseInt(numberStr, 16, 64)
+
+					if err != nil {
+						fmt.Println("Invalid value.")
+						error_flag = true
+					} else {
+						// Convert to decimal and set mem1 value
+						mem1 = int(tmp_value)
+					}
+
+				} else {
+
+					// FIRST ARGUMENT DECIMAL Input
+
+					tmp_value, err := strconv.Atoi(tmp_string[1])
+					if err != nil {
+						// handle error
+						fmt.Printf("Invalid value %s\n\n", tmp_string[1])
+						error_flag = true
+					} else {
+						// Set mem1 value
+						mem1 = int(tmp_value)
+					}
+				}
+
+				// Test if the SECOND ARGUMENT start if 0x or 0X
+				if strings.HasPrefix(tmp_string[2], "0x") || strings.HasPrefix(tmp_string[1], "0X") {
+
+					// SECOND ARGUMENT HEXADECIMAL Input
+
+					var hexaString string = tmp_string[2]
+					numberStr := strings.Replace(hexaString, "0x", "", -1)
+					numberStr = strings.Replace(numberStr, "0X", "", -1)
+
+					tmp_value, err := strconv.ParseInt(numberStr, 16, 64)
+
+					if err != nil {
+						fmt.Println("Invalid value.")
+						error_flag = true
+					} else {
+						// Convert to decimal and set mem1 value
+						mem2 = int(tmp_value)
+					}
+
+				} else {
+
+					// SECOND ARGUMENT DECIMAL Input
+
+					tmp_value, err := strconv.Atoi(tmp_string[2])
+					if err != nil {
+						// handle error
+						fmt.Printf("Invalid value %s\n\n", tmp_string[2])
+						error_flag = true
+					} else {
+						// Set mem1 value
+						mem2 = int(tmp_value)
+					}
+				}
+
+				if !error_flag {
+					// Print Memory Value
+					if mem1 < 0 || mem1 >= len(CORE.Memory) {
+						fmt.Printf("Invalid Address %d\n\n", mem1)
+						error_flag = true
+					} else if mem2 < 0 || mem2 >= len(CORE.Memory) {
+						fmt.Printf("Invalid Address %d\n\n", mem2)
+						error_flag = true
+					} else if mem1 > mem2 {
+						fmt.Printf("Start address should be less or equal end address\n\n")
+						error_flag = true
+					} else {
+						for i := mem1; i <= mem2; i++ {
+							fmt.Printf("%02X ", CORE.Memory[i])
+						}
+						fmt.Printf("\n\n")
+					}
+				}
+
+			} else {
+				fmt.Printf("Usage:\n   mem\n   mem <address>\n   mem <start address> <end address>\n\n")
+			}
+		} else {
 			fmt.Printf("Command not found\n\n")
 		}
 
