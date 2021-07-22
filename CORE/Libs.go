@@ -71,15 +71,26 @@ func ReadROM(filename string) {
 	// 	}
 	// }
 
-	if romsize == 65536 {
+	if romsize <= 65536 {
 		// Load ROM to memory
 		for i := 0; i < len(data); i++ {
 			// F000 - F7FF (2KB Cartridge ROM)
-			Memory[i] = data[i]
+			// Memory[i] = data[i]
 			// F800 - FFFF (2KB Mirror Cartridge ROM)
 			Memory[i] = data[i]
 		}
+	} else {
+		fmt.Printf("\nProgram bigger than 6502 addressable RAM (64KB). Exiting.\n\n")
+		os.Exit(0)
 	}
+
+	// // Load ROM to memory
+	// for i := 0; i < len(data); i++ {
+	// 	// F000 - F7FF (2KB Cartridge ROM)
+	// 	// Memory[i] = data[i]
+	// 	// F800 - FFFF (2KB Mirror Cartridge ROM)
+	// 	Memory[i+0x200] = data[i]
+	// }
 
 	// // Print Memory -  Fist 2kb
 	// for i := 0xF7F0; i <= 0xF7FF; i++ {

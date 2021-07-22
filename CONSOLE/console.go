@@ -196,9 +196,9 @@ func StartConsole() {
 	fmt.Printf("\n------------------------ Console mode ------------------------\n\nType \"Ctrl-Q\" to quit, \"help\" for more options\n\n")
 
 	// Print Header
-	printHeader()
+	Console_PrintHeader()
 
-	// term.SetPrompt("# ")
+	term.SetPrompt("# ")
 	line, err := term.ReadLine()
 	for {
 		if err == io.EOF {
@@ -217,82 +217,7 @@ func StartConsole() {
 			line, err = term.ReadLine()
 		}
 	}
-	term.Write([]byte(line))
-}
-
-// Print the debub information in console
-func print_debug_console(opcode_map []instructuction) {
-	for i := 0; i < len(opcode_map); i++ {
-
-		if CORE.Memory[CORE.PC] == opcode_map[i].code {
-			opc_string, opc_operand := CORE.Debug_decode_console(opcode_map[i].bytes)
-			fmt.Printf("\n--> $%04X\t%s %s\t%s %s (%s)\n\n", CORE.PC, opc_string, opc_operand, opcode_map[i].description, opc_operand, opcode_map[i].memory_mode)
-		}
-
-	}
-}
-
-// Execute the necessary cycles for next instruction
-func step(opcode_map []instructuction) {
-	// Print the opcode debug
-	print_debug_console(opcode_map)
-
-	for !CORE.NewInstruction {
-		CORE.CPU_Interpreter()
-	}
-
-	// Reset new instruction flag
-	CORE.NewInstruction = false
-
-	// Print the Header
-	printHeader()
-}
-
-// Execute the necessary cycles for next instruction without print on console
-func step_without_debug(opcode_map []instructuction) {
-
-	for !CORE.NewInstruction {
-		CORE.CPU_Interpreter()
-	}
-
-	// Reset new instruction flag
-	CORE.NewInstruction = false
-
-}
-
-// Print Help Menu
-func printHelp() {
-	// fmt.Printf("\n\tquit\t\t\t\t\t\tQuit console\n\thelp\t\t\t\t\t\tPrint help menu\n\t--\n\tstep\t\t\t\t\t\tExecute current opcode\n\tstep <value>\t\t\t\t\tExecute <value> opcodes\n\tstep_limit <value>\t\t\t\tDefine the maximum steps allowed\n\t--\n\tadd_breakpoint <PC|A|X|Y|CYCLE>=<Value>\t\tAdd a breakpoint\n\tdel_breakpoint <index>\t\t\t\tDelete a breakpoint\n\tshow_breakpoints\t\t\t\tShow breakpoints\n\t--\n\tmem || mem <address> || mem <address> <address>\tDump address values\n\t--\n\trun\t\t\t\t\t\tRun the emulator\n\trun_limit <value>\t\t\t\tDefine the maximum steps allowed in RUN\n\n")
-	fmt.Printf("\n\tquit\t\t\t\t\t\tQuit console\n\thelp\t\t\t\t\t\tPrint help menu\n\t-")
-	fmt.Printf("\n\tstep\t\t\t\t\t\tExecute current opcode\n\tstep <value>\t\t\t\t\tExecute <value> opcodes\n\tstep_limit <value>\t\t\t\tDefine the maximum steps allowed\n\t-")
-	fmt.Printf("\n\tadd_breakpoint <PC|A|X|Y|CYCLE>=<Value>\t\tAdd a breakpoint\n\tdel_breakpoint <index>\t\t\t\tDelete a breakpoint\n\tshow_breakpoints\t\t\t\tShow breakpoints\n\t-")
-	fmt.Printf("\n\tmem\t\t\t\t\t\tDump full memory\n\tmem <address>\t\t\t\t\tDump memory address\n\tmem <start address> <end address>\t\tDump memory address range\n\t-")
-	fmt.Printf("\n\trun\t\t\t\t\t\tRun the emulator\n\trun_limit <value>\t\t\t\tDefine the maximum steps allowed in RUN\n\n")
-}
-
-func printAddBrkErr() {
-	fmt.Printf("Usage: add_breakpoint < PC | A | X | Y | CYCLE > = <Value>\n\n")
-}
-
-func printStepLimitErr() {
-	fmt.Printf("Usage: step_limit <Value>\n\n")
-}
-
-func printRunLimitErr() {
-	fmt.Printf("Usage: run_limit <Value>\n\n")
-}
-
-// Print current Processor Information
-func printHeader() {
-	fmt.Printf("  -------------------------------------------------------------------------\n")
-	fmt.Printf("  |   PC\tA\tX\tY\tSP\tNV-BDIZC\tCycle\n")
-	fmt.Printf("  |   %04X\t%02X\t%02X\t%02X\t%02X\t%d%d%d%d%d%d%d%d\t%d\n", CORE.PC, CORE.A, CORE.X, CORE.Y, CORE.SP, CORE.P[7], CORE.P[6], CORE.P[5], CORE.P[4], CORE.P[3], CORE.P[2], CORE.P[1], CORE.P[0], CORE.Cycle)
-	fmt.Printf("  -------------------------------------------------------------------------\n\n")
-}
-
-// Remove a value from a slice
-func RemoveIndex(s []breakpoint, index int) []breakpoint {
-	return append(s[:index], s[index+1:]...)
+	// term.Write([]byte(line))
 }
 
 // Interpreter
@@ -306,14 +231,14 @@ func CommandInterpreter(text string) {
 		os.Exit(0)
 
 	} else if strings.Contains(text, "help") || strings.Contains(text, "Help") { // Help
-		printHelp()
+		Console_PrintHelp()
 
 	} else if strings.Contains(text, "step") { // STEP
 
 		if strings.Compare("step", text) == 0 { // STEP
 
 			// Execute one instruction
-			step(opcode_map)
+			Console_Step(opcode_map)
 
 		} else if strings.HasPrefix(text, "step_limit") {
 
@@ -328,7 +253,7 @@ func CommandInterpreter(text string) {
 			} else if len(tmp_string) > 2 {
 
 				// Print step_limit usage
-				printStepLimitErr()
+				Console_PrintStepLimitErr()
 
 			} else {
 
@@ -360,10 +285,10 @@ func CommandInterpreter(text string) {
 					for i := 0; i < value; i++ {
 
 						// Execute one instruction
-						step(opcode_map)
+						Console_Step(opcode_map)
 
 						// Check Breakpoints
-						breakpoint_flag = check_breakpoints(breakpoint_flag)
+						breakpoint_flag = Console_Check_breakpoints(breakpoint_flag)
 
 						// Exit for loop if breakpoint has been found
 						if breakpoint_flag {
@@ -389,7 +314,7 @@ func CommandInterpreter(text string) {
 		if len(tmp_string) == 1 || len(tmp_string) > 2 {
 
 			// Print add_breakpoint usage
-			printAddBrkErr()
+			Console_PrintAddBrkErr()
 
 		} else {
 
@@ -398,7 +323,7 @@ func CommandInterpreter(text string) {
 			if len(tmp_string2) == 1 || len(tmp_string2) > 2 || tmp_string2[1] == "" || tmp_string2[0] == "" {
 
 				// Print add_breakpoint usage
-				printAddBrkErr()
+				Console_PrintAddBrkErr()
 
 			} else {
 
@@ -491,7 +416,7 @@ func CommandInterpreter(text string) {
 				} else {
 
 					// Print add_breakpoint usage
-					printAddBrkErr()
+					Console_PrintAddBrkErr()
 				}
 
 			}
@@ -512,7 +437,7 @@ func CommandInterpreter(text string) {
 				fmt.Printf("Invalid value %s\n\n", tmp_string[1])
 			} else {
 				if value < len(breakpoints) {
-					breakpoints = RemoveIndex(breakpoints, value)
+					breakpoints = Console_Remove_breakpoint(breakpoints, value)
 					fmt.Printf("Breakpoint %d removed.\n\n", value)
 				} else {
 					fmt.Printf("Breakpoint not found\n\n")
@@ -567,7 +492,7 @@ func CommandInterpreter(text string) {
 				}
 
 				// Check Breakpoints
-				breakpoint_flag = check_breakpoints(breakpoint_flag)
+				breakpoint_flag = Console_Check_breakpoints(breakpoint_flag)
 
 				// Exit for loop if breakpoint has been found
 				if breakpoint_flag {
@@ -581,12 +506,12 @@ func CommandInterpreter(text string) {
 				case <-CORE.Second_timer: // Show the header and debug each second
 
 					// Execute one instruction
-					step(opcode_map)
+					Console_Step(opcode_map)
 
 				default: // Just run the CPU
 
 					// Execute one instruction without print
-					step_without_debug(opcode_map)
+					Console_Step_without_debug(opcode_map)
 
 				}
 
@@ -611,7 +536,7 @@ func CommandInterpreter(text string) {
 			}
 
 			// Print Header
-			printHeader()
+			Console_PrintHeader()
 
 		} else if strings.HasPrefix(text, "run_limit") {
 
@@ -626,7 +551,7 @@ func CommandInterpreter(text string) {
 			} else if len(tmp_string) > 2 {
 
 				// Print run_limit usage
-				printRunLimitErr()
+				Console_PrintRunLimitErr()
 
 			} else {
 
@@ -641,6 +566,71 @@ func CommandInterpreter(text string) {
 				}
 
 			}
+
+		} else { // Command not found
+			fmt.Printf("Command not found\n\n")
+		}
+
+	} else if strings.Contains(text, "goto") { // GOTO
+
+		if strings.Compare("goto", text) == 0 { // GOTO
+
+			fmt.Println("GOTO WITHOUT - Print usage")
+
+			// // Check command "mem"
+			// if strings.Compare("mem", tmp_string[0]) == 0 {
+
+			// 	if len(tmp_string) == 1 { // Without arguments (show all memory)
+			// 		fmt.Printf("\t00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F\n")
+			// 		fmt.Printf("\t-----------------------------------------------")
+			// 		for i := 0; i < len(CORE.Memory); i++ {
+
+			// 			// Break lines
+			// 			if i%16 == 0 {
+			// 				fmt.Printf("\n%04X\t", i)
+			// 			}
+
+			// 			// Print memory
+			// 			fmt.Printf("%02X ", CORE.Memory[i])
+
+			// 		}
+			// 		fmt.Println()
+
+			// 	} else if len(tmp_string) == 2 { // Without ONE argument (show this memory value)
+
+			// 		var mem1 int
+
+			// 		// Test if the value start if 0x or 0X
+			// 		if strings.HasPrefix(tmp_string[1], "0x") || strings.HasPrefix(tmp_string[1], "0X") {
+
+			// 			// HEXADECIMAL Input
+
+			// 			var hexaString string = tmp_string[1]
+			// 			numberStr := strings.Replace(hexaString, "0x", "", -1)
+			// 			numberStr = strings.Replace(numberStr, "0X", "", -1)
+
+			// 			tmp_value, err := strconv.ParseInt(numberStr, 16, 64)
+
+			// 			if err != nil {
+			// 				fmt.Println("Invalid value.")
+			// 			} else {
+			// 				// Convert to decimal and set mem1 value
+			// 				mem1 = int(tmp_value)
+			// 			}
+
+			// 		} else {
+
+			// 			// DECIMAL Input
+
+			// 			tmp_value, err := strconv.Atoi(tmp_string[1])
+			// 			if err != nil {
+			// 				// handle error
+			// 				fmt.Printf("Invalid value %s\n\n", tmp_string[1])
+			// 			} else {
+			// 				// Set mem1 value
+			// 				mem1 = int(tmp_value)
+			// 			}
+			// 		}
 
 		} else { // Command not found
 			fmt.Printf("Command not found\n\n")
@@ -816,52 +806,4 @@ func CommandInterpreter(text string) {
 		fmt.Printf("Command not found\n\n")
 	}
 
-}
-
-func check_breakpoints(break_flag bool) bool {
-	// Check Breakpoints
-	if len(breakpoints) > 0 {
-		for i := 0; i < len(breakpoints); i++ {
-
-			// ------ PC ------ //
-			if breakpoints[i].location == "PC" {
-				if CORE.PC == breakpoints[i].value {
-					fmt.Printf("Breakpoint %d reached: %s=0x%04X\t(Decimal: %d)\n", i, breakpoints[i].location, breakpoints[i].value, breakpoints[i].value)
-					break_flag = true
-				}
-
-				// ------ A ------- //
-			} else if breakpoints[i].location == "A" {
-				if CORE.A == byte(breakpoints[i].value) {
-					fmt.Printf("Breakpoint %d reached: %s=0x%02X\t(Decimal: %d)\n", i, breakpoints[i].location, breakpoints[i].value, breakpoints[i].value)
-					break_flag = true
-				}
-
-				// ------ X ------- //
-			} else if breakpoints[i].location == "X" {
-				if CORE.X == byte(breakpoints[i].value) {
-					fmt.Printf("Breakpoint %d reached: %s=0x%02X\t(Decimal: %d)\n", i, breakpoints[i].location, breakpoints[i].value, breakpoints[i].value)
-					break_flag = true
-				}
-
-				// ------ Y ------- //
-			} else if breakpoints[i].location == "Y" {
-				if CORE.Y == byte(breakpoints[i].value) {
-					fmt.Printf("Breakpoint %d reached: %s=0x%02X\t(Decimal: %d)\n", i, breakpoints[i].location, breakpoints[i].value, breakpoints[i].value)
-					break_flag = true
-				}
-
-				// ------ Cycle ------- //
-			} else if breakpoints[i].location == "CYCLE" {
-				if CORE.Cycle >= uint64(breakpoints[i].value) {
-					fmt.Printf("Breakpoint %d reached: %s=%d\t(0x%02X)\n", i, breakpoints[i].location, breakpoints[i].value, breakpoints[i].value)
-					break_flag = true
-				}
-			}
-
-		}
-
-	}
-
-	return break_flag
 }
