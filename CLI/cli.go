@@ -6,8 +6,6 @@ import (
 	"flag"
 	"fmt"
 	"os"
-	"strconv"
-	"strings"
 )
 
 func CheckArgs() {
@@ -47,18 +45,16 @@ func CheckArgs() {
 	// PC
 	if *cliPC != "" {
 
-		var hexaString string = *cliPC
-		numberStr := strings.Replace(hexaString, "0x", "", -1)
-		numberStr = strings.Replace(numberStr, "0X", "", -1)
+		// Check if input is Decimar of Hexadecimal and convert to integer
+		output, error_flag := CONSOLE.Console_Hex_or_Dec(*cliPC)
 
-		output, err := strconv.ParseInt(numberStr, 16, 64)
-
-		if err != nil {
-			fmt.Println(err)
-			return
+		if error_flag {
+			fmt.Printf("Invalid CLI \"register_PC\" value. Exiting.\n\n")
+			os.Exit(0)
+		} else {
+			CORE.PC_as_argument = uint16(output)
 		}
 
-		CORE.PC_as_argument = uint16(output)
 	}
 
 	// Pause

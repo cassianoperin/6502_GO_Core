@@ -3,6 +3,8 @@ package CONSOLE
 import (
 	"6502/CORE"
 	"fmt"
+	"strconv"
+	"strings"
 )
 
 // --------------------------------------- Debug ---------------------------------------- //
@@ -17,16 +19,6 @@ func print_debug_console(opcode_map []instructuction) {
 		}
 
 	}
-}
-
-// Print Help Menu
-func Console_PrintHelp() {
-	// fmt.Printf("\n\tquit\t\t\t\t\t\tQuit console\n\thelp\t\t\t\t\t\tPrint help menu\n\t--\n\tstep\t\t\t\t\t\tExecute current opcode\n\tstep <value>\t\t\t\t\tExecute <value> opcodes\n\tstep_limit <value>\t\t\t\tDefine the maximum steps allowed\n\t--\n\tadd_breakpoint <PC|A|X|Y|CYCLE>=<Value>\t\tAdd a breakpoint\n\tdel_breakpoint <index>\t\t\t\tDelete a breakpoint\n\tshow_breakpoints\t\t\t\tShow breakpoints\n\t--\n\tmem || mem <address> || mem <address> <address>\tDump address values\n\t--\n\trun\t\t\t\t\t\tRun the emulator\n\trun_limit <value>\t\t\t\tDefine the maximum steps allowed in RUN\n\n")
-	fmt.Printf("\n\tquit\t\t\t\t\t\tQuit console\n\thelp\t\t\t\t\t\tPrint help menu\n\t-")
-	fmt.Printf("\n\tstep\t\t\t\t\t\tExecute current opcode\n\tstep <value>\t\t\t\t\tExecute <value> opcodes\n\tstep_limit <value>\t\t\t\tDefine the maximum steps allowed\n\t-")
-	fmt.Printf("\n\tadd_breakpoint <PC|A|X|Y|CYCLE>=<Value>\t\tAdd a breakpoint\n\tdel_breakpoint <index>\t\t\t\tDelete a breakpoint\n\tshow_breakpoints\t\t\t\tShow breakpoints\n\t-")
-	fmt.Printf("\n\tmem\t\t\t\t\t\tDump full memory\n\tmem <address>\t\t\t\t\tDump memory address\n\tmem <start address> <end address>\t\tDump memory address range\n\t-")
-	fmt.Printf("\n\trun\t\t\t\t\t\tRun the emulator\n\trun_limit <value>\t\t\t\tDefine the maximum steps allowed in RUN\n\n")
 }
 
 func Console_PrintAddBrkErr() {
@@ -90,7 +82,7 @@ func Console_Check_breakpoints(break_flag bool) bool {
 
 			// ------ PC ------ //
 			if breakpoints[i].location == "PC" {
-				if CORE.PC == breakpoints[i].value {
+				if CORE.PC == uint16(breakpoints[i].value) {
 					fmt.Printf("Breakpoint %d reached: %s=0x%04X\t(Decimal: %d)\n", i, breakpoints[i].location, breakpoints[i].value, breakpoints[i].value)
 					break_flag = true
 				}
@@ -129,4 +121,50 @@ func Console_Check_breakpoints(break_flag bool) bool {
 	}
 
 	return break_flag
+}
+
+func Console_Hex_or_Dec(value string) (int, bool) {
+
+	var (
+		mem1       int
+		error_flag bool
+	)
+
+	// Test if the value start if 0x or 0X
+	if strings.HasPrefix(value, "0x") || strings.HasPrefix(value, "0X") {
+
+		// HEXADECIMAL Input
+
+		var hexaString string = value
+		numberStr := strings.Replace(hexaString, "0x", "", 1)
+		numberStr = strings.Replace(numberStr, "0X", "", 1)
+
+		tmp_value, err := strconv.ParseInt(numberStr, 16, 64)
+
+		if err != nil {
+			// fmt.Println("Invalid value.")
+			error_flag = true
+		} else {
+			// Convert to decimal and set mem1 value
+			mem1 = int(tmp_value)
+		}
+
+	} else {
+
+		// DECIMAL Input
+
+		tmp_value, err := strconv.Atoi(value)
+		if err != nil {
+			// handle error
+			// fmt.Printf("Invalid value %s\n\n", value)
+			error_flag = true
+
+		} else {
+			// Set mem1 value
+			mem1 = int(tmp_value)
+		}
+	}
+
+	return mem1, error_flag
+
 }

@@ -4,8 +4,6 @@ import (
 	"6502/CORE"
 	"fmt"
 	"io"
-	"os"
-	"strconv"
 	"strings"
 
 	"github.com/cassianoperin/pseudo-terminal-go/terminal"
@@ -21,7 +19,7 @@ type instructuction struct {
 
 type breakpoint struct {
 	location string
-	value    uint16
+	value    uint64
 }
 
 var (
@@ -226,581 +224,54 @@ func CommandInterpreter(text string) {
 	// Remove duplicated spaces
 	text = strings.Join(strings.Fields(strings.TrimSpace(text)), " ")
 
-	if strings.Contains(text, "quit") || strings.Contains(text, "Quit") || strings.Contains(text, "exit") || strings.Contains(text, "Exit") {
-		fmt.Printf("Exiting console.\n")
-		os.Exit(0)
+	// Convert to Lower Case
+	text = strings.ToLower(text)
 
-	} else if strings.Contains(text, "help") || strings.Contains(text, "Help") { // Help
-		Console_PrintHelp()
+	// Split commands and arguments by Spaces
+	text_slice := strings.Split(text, " ")
 
-	} else if strings.Contains(text, "step") { // STEP
+	if text_slice[0] == "quit" || text_slice[0] == "exit" { // QUIT
 
-		if strings.Compare("step", text) == 0 { // STEP
+		Console_Command_Quit()
 
-			// Execute one instruction
-			Console_Step(opcode_map)
+	} else if text_slice[0] == "help" { // HELP
+		Console_Command_Help()
 
-		} else if strings.HasPrefix(text, "step_limit") {
+	} else if text_slice[0] == "step" { // STEP
 
-			tmp_string := strings.Split(text, " ")
+		Console_Command_Step(text_slice)
 
-			// Test the command syntax
-			if len(tmp_string) == 1 {
+	} else if text_slice[0] == "step_limit" { // STEP_LIMIT
 
-				// Show current value
-				fmt.Printf("Current Step Limit = %d\n\n", step_limit)
+		Console_Command_StepLimit(text_slice)
 
-			} else if len(tmp_string) > 2 {
+	} else if text_slice[0] == "add_breakpoint" { // ADD BREAKPOINT
 
-				// Print step_limit usage
-				Console_PrintStepLimitErr()
+		Console_Command_AddBreakpoint(text_slice)
 
-			} else {
+	} else if text_slice[0] == "del_breakpoint" { // DELETE BREAKPOINT
 
-				// Convert string value to integer
-				value, err := strconv.Atoi(strings.TrimPrefix(text, "step_limit "))
-				if err != nil {
-					// handle error
-					fmt.Printf("Invalid value: %s\n\n", strings.TrimPrefix(text, "step_limit "))
-				} else {
-					step_limit = value
-					fmt.Printf("New step limit = %d\n\n", step_limit)
-				}
+		Console_Command_DelBreakpoint(text_slice)
 
-			}
+	} else if text_slice[0] == "show_breakpoints" { // SHOW BREAKPOINTS
 
-		} else {
+		Console_Command_ShowBreakpoint(text_slice)
 
-			var breakpoint_flag bool
+	} else if text_slice[0] == "run" { // RUN
 
-			// Convert string value to integer
-			value, err := strconv.Atoi(strings.TrimPrefix(text, "step "))
-			if err != nil {
-				// handle error
-				fmt.Printf("Invalid value: %s\n\n", strings.TrimPrefix(text, "step "))
-			} else {
+		Console_Command_Run(text_slice)
 
-				// Number os steps
-				if value <= step_limit {
-					for i := 0; i < value; i++ {
+	} else if text_slice[0] == "run_limit" { // RUN LIMIT
 
-						// Execute one instruction
-						Console_Step(opcode_map)
+		Console_Command_RunLimit(text_slice)
 
-						// Check Breakpoints
-						breakpoint_flag = Console_Check_breakpoints(breakpoint_flag)
+	} else if text_slice[0] == "mem" { // MEMORY
 
-						// Exit for loop if breakpoint has been found
-						if breakpoint_flag {
-							break
-						}
+		Console_Command_Mem(text_slice)
 
-					}
-				} else {
-					fmt.Printf("Current step limit = %d\n\n", step_limit)
-				}
+	} else if text_slice[0] == "goto" { // GOTO
 
-			}
-
-		}
-
-	} else if strings.HasPrefix(text, "add_breakpoint") { // ADD BREAKPOINT
-
-		var tmp_string, tmp_string2 []string
-
-		tmp_string = strings.Split(text, " ") // First split command and values
-
-		// Test the command syntax
-		if len(tmp_string) == 1 || len(tmp_string) > 2 {
-
-			// Print add_breakpoint usage
-			Console_PrintAddBrkErr()
-
-		} else {
-
-			// If command syntax is ok, test the parameter syntax
-			tmp_string2 = strings.Split(tmp_string[1], "=") // After, split the argument in LOCATION=VALUE
-			if len(tmp_string2) == 1 || len(tmp_string2) > 2 || tmp_string2[1] == "" || tmp_string2[0] == "" {
-
-				// Print add_breakpoint usage
-				Console_PrintAddBrkErr()
-
-			} else {
-
-				location := strings.ToUpper(tmp_string2[0])
-
-				// Validate the value of locations
-				if location == "PC" || location == "A" || location == "X" || location == "Y" || location == "CYCLE" {
-
-					// Test if the value start if 0x or 0X
-					if strings.HasPrefix(tmp_string2[1], "0x") || strings.HasPrefix(tmp_string2[1], "0X") {
-						// fmt.Println("seria HEX")
-
-						var hexaString string = tmp_string2[1]
-						numberStr := strings.Replace(hexaString, "0x", "", -1)
-						numberStr = strings.Replace(numberStr, "0X", "", -1)
-
-						value, err := strconv.ParseInt(numberStr, 16, 64)
-
-						if err != nil {
-							fmt.Println("Invalid value.")
-						} else {
-							// Value limits
-							if location == "PC" {
-								if value <= 65535 && value >= 0 {
-									breakpoints = append(breakpoints, breakpoint{strings.ToUpper(tmp_string2[0]), uint16(value)})
-									fmt.Printf("Breakpoint %d created.\n\n", len(breakpoints)-1)
-								} else {
-									fmt.Println("Invalid value.")
-								}
-							}
-
-							if location == "A" || location == "X" || location == "Y" {
-								if value <= 255 && value >= 0 {
-									breakpoints = append(breakpoints, breakpoint{strings.ToUpper(tmp_string2[0]), uint16(value)})
-									fmt.Printf("Breakpoint %d created.\n\n", len(breakpoints)-1)
-								} else {
-									fmt.Println("Invalid value.")
-								}
-							}
-
-							if location == "CYCLE" {
-								if value >= 0 {
-									breakpoints = append(breakpoints, breakpoint{strings.ToUpper(tmp_string2[0]), uint16(value)})
-									fmt.Printf("Breakpoint %d created.\n\n", len(breakpoints)-1)
-								} else {
-									fmt.Println("Invalid value.")
-								}
-							}
-
-						}
-
-					} else {
-						// fmt.Println("seria DEC")
-
-						value, err := strconv.Atoi(tmp_string2[1])
-
-						if err != nil {
-							fmt.Println("Invalid value.")
-						} else {
-							// Value limits
-							if location == "PC" {
-								if value <= 65535 && value >= 0 {
-									breakpoints = append(breakpoints, breakpoint{strings.ToUpper(tmp_string2[0]), uint16(value)})
-									fmt.Printf("Breakpoint %d created.\n\n", len(breakpoints)-1)
-								} else {
-									fmt.Println("Invalid value.")
-								}
-							}
-
-							if location == "A" || location == "X" || location == "Y" {
-								if value <= 255 && value >= 0 {
-									breakpoints = append(breakpoints, breakpoint{strings.ToUpper(tmp_string2[0]), uint16(value)})
-									fmt.Printf("Breakpoint %d created.\n\n", len(breakpoints)-1)
-								} else {
-									fmt.Println("Invalid value.")
-								}
-							}
-
-							if location == "CYCLE" {
-								if value >= 0 {
-									breakpoints = append(breakpoints, breakpoint{strings.ToUpper(tmp_string2[0]), uint16(value)})
-									fmt.Printf("Breakpoint %d created.\n\n", len(breakpoints)-1)
-								} else {
-									fmt.Println("Invalid value.")
-								}
-							}
-
-						}
-					}
-				} else {
-
-					// Print add_breakpoint usage
-					Console_PrintAddBrkErr()
-				}
-
-			}
-
-		}
-
-	} else if strings.HasPrefix(text, "del_breakpoint") { // DELETE BREAKPOINT
-
-		if len(strings.Split(text, " ")) == 1 || len(strings.Split(text, " ")) > 2 {
-			fmt.Println("Usage: del_breakpoint <breakpoint number>\n")
-		} else {
-
-			tmp_string := strings.Split(text, " ")
-
-			value, err := strconv.Atoi(tmp_string[1])
-			if err != nil {
-				// handle error
-				fmt.Printf("Invalid value %s\n\n", tmp_string[1])
-			} else {
-				if value < len(breakpoints) {
-					breakpoints = Console_Remove_breakpoint(breakpoints, value)
-					fmt.Printf("Breakpoint %d removed.\n\n", value)
-				} else {
-					fmt.Printf("Breakpoint not found\n\n")
-				}
-
-			}
-		}
-
-	} else if strings.Contains(text, "show_breakpoints") { // SHOW BREAKPOINTS
-
-		tmp_string := strings.Split(text, " ")
-
-		// Test the command syntax
-		if len(tmp_string) == 1 {
-
-			for i := 0; i < len(breakpoints); i++ {
-				fmt.Printf("Breakpoint %d: %s=0x%02X\t(Decimal: %d)\n", i, breakpoints[i].location, breakpoints[i].value, breakpoints[i].value)
-				if i == len(breakpoints)-1 {
-					fmt.Println()
-				}
-			}
-
-			if len(breakpoints) == 0 {
-				fmt.Printf("No Breakpoint found.\n\n")
-			}
-
-		} else {
-
-			// Print add_breakpoint usage
-			fmt.Println("show_breakpoints doesn't accept arguments\n")
-
-		}
-
-	} else if strings.Contains(text, "run") { // RUN
-
-		if strings.Compare("run", text) == 0 { // RUN
-
-			var (
-				current_PC      uint16
-				step_count      int    = 0
-				loop_count      uint16 = 0
-				breakpoint_flag bool
-			)
-
-			for loop_count < CORE.Loop_detection { // Add breakpoint control here
-
-				// -------------------------- Start Checks --------------------------- //
-
-				// Check Run step limits
-				if step_count > run_limit {
-					break // Exit for loop
-				}
-
-				// Check Breakpoints
-				breakpoint_flag = Console_Check_breakpoints(breakpoint_flag)
-
-				// Exit for loop if breakpoint has been found
-				if breakpoint_flag {
-					break
-				}
-
-				// -------------- Finish checks and return to execution -------------- //
-				current_PC = CORE.PC
-
-				select {
-				case <-CORE.Second_timer: // Show the header and debug each second
-
-					// Execute one instruction
-					Console_Step(opcode_map)
-
-				default: // Just run the CPU
-
-					// Execute one instruction without print
-					Console_Step_without_debug(opcode_map)
-
-				}
-
-				// Increase steps count
-				step_count++
-
-				// Check for run_limit and print debug message prior to quit loop
-				if step_count > run_limit { // Print limit reached message
-					fmt.Printf("Run limit reached (%d)\n\n", run_limit)
-				}
-
-				// Increase the loop counter
-				if current_PC == CORE.PC {
-					loop_count++
-				}
-
-				// Check for loops and print debug message prior to quit loop
-				if loop_count >= CORE.Loop_detection {
-					fmt.Printf("Loop detected on PC=%04X (%d repetitions)\n", CORE.PC, CORE.Loop_detection)
-				}
-
-			}
-
-			// Print Header
-			Console_PrintHeader()
-
-		} else if strings.HasPrefix(text, "run_limit") {
-
-			tmp_string := strings.Split(text, " ")
-
-			// Test the command syntax
-			if len(tmp_string) == 1 {
-
-				// Show current value
-				fmt.Printf("Current Run Limit = %d\n\n", run_limit)
-
-			} else if len(tmp_string) > 2 {
-
-				// Print run_limit usage
-				Console_PrintRunLimitErr()
-
-			} else {
-
-				// Convert string value to integer
-				value, err := strconv.Atoi(strings.TrimPrefix(text, "run_limit "))
-				if err != nil {
-					// handle error
-					fmt.Printf("Invalid value: %s\n\n", strings.TrimPrefix(text, "run_limit "))
-				} else {
-					run_limit = value
-					fmt.Printf("New run limit = %d\n\n", run_limit)
-				}
-
-			}
-
-		} else { // Command not found
-			fmt.Printf("Command not found\n\n")
-		}
-
-	} else if strings.Contains(text, "goto") { // GOTO
-
-		if strings.Compare("goto", text) == 0 { // GOTO
-
-			fmt.Println("GOTO WITHOUT - Print usage")
-
-			// // Check command "mem"
-			// if strings.Compare("mem", tmp_string[0]) == 0 {
-
-			// 	if len(tmp_string) == 1 { // Without arguments (show all memory)
-			// 		fmt.Printf("\t00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F\n")
-			// 		fmt.Printf("\t-----------------------------------------------")
-			// 		for i := 0; i < len(CORE.Memory); i++ {
-
-			// 			// Break lines
-			// 			if i%16 == 0 {
-			// 				fmt.Printf("\n%04X\t", i)
-			// 			}
-
-			// 			// Print memory
-			// 			fmt.Printf("%02X ", CORE.Memory[i])
-
-			// 		}
-			// 		fmt.Println()
-
-			// 	} else if len(tmp_string) == 2 { // Without ONE argument (show this memory value)
-
-			// 		var mem1 int
-
-			// 		// Test if the value start if 0x or 0X
-			// 		if strings.HasPrefix(tmp_string[1], "0x") || strings.HasPrefix(tmp_string[1], "0X") {
-
-			// 			// HEXADECIMAL Input
-
-			// 			var hexaString string = tmp_string[1]
-			// 			numberStr := strings.Replace(hexaString, "0x", "", -1)
-			// 			numberStr = strings.Replace(numberStr, "0X", "", -1)
-
-			// 			tmp_value, err := strconv.ParseInt(numberStr, 16, 64)
-
-			// 			if err != nil {
-			// 				fmt.Println("Invalid value.")
-			// 			} else {
-			// 				// Convert to decimal and set mem1 value
-			// 				mem1 = int(tmp_value)
-			// 			}
-
-			// 		} else {
-
-			// 			// DECIMAL Input
-
-			// 			tmp_value, err := strconv.Atoi(tmp_string[1])
-			// 			if err != nil {
-			// 				// handle error
-			// 				fmt.Printf("Invalid value %s\n\n", tmp_string[1])
-			// 			} else {
-			// 				// Set mem1 value
-			// 				mem1 = int(tmp_value)
-			// 			}
-			// 		}
-
-		} else { // Command not found
-			fmt.Printf("Command not found\n\n")
-		}
-
-	} else if strings.HasPrefix(text, "mem") { // MEMORY
-
-		tmp_string := strings.Split(text, " ")
-
-		// Check command "mem"
-		if strings.Compare("mem", tmp_string[0]) == 0 {
-
-			if len(tmp_string) == 1 { // Without arguments (show all memory)
-				fmt.Printf("\t00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F\n")
-				fmt.Printf("\t-----------------------------------------------")
-				for i := 0; i < len(CORE.Memory); i++ {
-
-					// Break lines
-					if i%16 == 0 {
-						fmt.Printf("\n%04X\t", i)
-					}
-
-					// Print memory
-					fmt.Printf("%02X ", CORE.Memory[i])
-
-				}
-				fmt.Println()
-
-			} else if len(tmp_string) == 2 { // Without ONE argument (show this memory value)
-
-				var mem1 int
-
-				// Test if the value start if 0x or 0X
-				if strings.HasPrefix(tmp_string[1], "0x") || strings.HasPrefix(tmp_string[1], "0X") {
-
-					// HEXADECIMAL Input
-
-					var hexaString string = tmp_string[1]
-					numberStr := strings.Replace(hexaString, "0x", "", -1)
-					numberStr = strings.Replace(numberStr, "0X", "", -1)
-
-					tmp_value, err := strconv.ParseInt(numberStr, 16, 64)
-
-					if err != nil {
-						fmt.Println("Invalid value.")
-					} else {
-						// Convert to decimal and set mem1 value
-						mem1 = int(tmp_value)
-					}
-
-				} else {
-
-					// DECIMAL Input
-
-					tmp_value, err := strconv.Atoi(tmp_string[1])
-					if err != nil {
-						// handle error
-						fmt.Printf("Invalid value %s\n\n", tmp_string[1])
-					} else {
-						// Set mem1 value
-						mem1 = int(tmp_value)
-					}
-				}
-
-				// Print Memory Value
-				if mem1 < 0 || mem1 >= len(CORE.Memory) {
-					fmt.Printf("Invalid Address %d\n\n", mem1)
-				} else {
-					fmt.Printf("%02X\n\n", CORE.Memory[mem1])
-
-				}
-
-			} else if len(tmp_string) == 3 {
-
-				var mem1, mem2 int
-				var error_flag bool
-
-				// Test if the FIRST ARGUMENT start if 0x or 0X
-				if strings.HasPrefix(tmp_string[1], "0x") || strings.HasPrefix(tmp_string[1], "0X") {
-
-					// FIRST ARGUMENT HEXADECIMAL Input
-
-					var hexaString string = tmp_string[1]
-					numberStr := strings.Replace(hexaString, "0x", "", -1)
-					numberStr = strings.Replace(numberStr, "0X", "", -1)
-
-					tmp_value, err := strconv.ParseInt(numberStr, 16, 64)
-
-					if err != nil {
-						fmt.Println("Invalid value.")
-						error_flag = true
-					} else {
-						// Convert to decimal and set mem1 value
-						mem1 = int(tmp_value)
-					}
-
-				} else {
-
-					// FIRST ARGUMENT DECIMAL Input
-
-					tmp_value, err := strconv.Atoi(tmp_string[1])
-					if err != nil {
-						// handle error
-						fmt.Printf("Invalid value %s\n\n", tmp_string[1])
-						error_flag = true
-					} else {
-						// Set mem1 value
-						mem1 = int(tmp_value)
-					}
-				}
-
-				// Test if the SECOND ARGUMENT start if 0x or 0X
-				if strings.HasPrefix(tmp_string[2], "0x") || strings.HasPrefix(tmp_string[1], "0X") {
-
-					// SECOND ARGUMENT HEXADECIMAL Input
-
-					var hexaString string = tmp_string[2]
-					numberStr := strings.Replace(hexaString, "0x", "", -1)
-					numberStr = strings.Replace(numberStr, "0X", "", -1)
-
-					tmp_value, err := strconv.ParseInt(numberStr, 16, 64)
-
-					if err != nil {
-						fmt.Println("Invalid value.")
-						error_flag = true
-					} else {
-						// Convert to decimal and set mem1 value
-						mem2 = int(tmp_value)
-					}
-
-				} else {
-
-					// SECOND ARGUMENT DECIMAL Input
-
-					tmp_value, err := strconv.Atoi(tmp_string[2])
-					if err != nil {
-						// handle error
-						fmt.Printf("Invalid value %s\n\n", tmp_string[2])
-						error_flag = true
-					} else {
-						// Set mem1 value
-						mem2 = int(tmp_value)
-					}
-				}
-
-				if !error_flag {
-					// Print Memory Value
-					if mem1 < 0 || mem1 >= len(CORE.Memory) {
-						fmt.Printf("Invalid Address %d\n\n", mem1)
-						error_flag = true
-					} else if mem2 < 0 || mem2 >= len(CORE.Memory) {
-						fmt.Printf("Invalid Address %d\n\n", mem2)
-						error_flag = true
-					} else if mem1 > mem2 {
-						fmt.Printf("Start address should be less or equal end address\n\n")
-						error_flag = true
-					} else {
-						for i := mem1; i <= mem2; i++ {
-							fmt.Printf("%02X ", CORE.Memory[i])
-						}
-						fmt.Printf("\n\n")
-					}
-				}
-
-			} else {
-				fmt.Printf("Usage:\n   mem\n   mem <address>\n   mem <start address> <end address>\n\n")
-			}
-		} else {
-			fmt.Printf("Command not found\n\n")
-		}
+		Console_Command_Goto(text_slice)
 
 	} else { // Command not found
 		fmt.Printf("Command not found\n\n")
