@@ -1,6 +1,7 @@
 package CONSOLE
 
 import (
+	"6502/CORE"
 	"fmt"
 	"strconv"
 )
@@ -28,7 +29,11 @@ func Console_Command_Step(text_slice []string) {
 				for i := 0; i < value; i++ {
 
 					// Execute one instruction
-					Console_Step(opcode_map)
+					if CORE.Cycle < step_debug_start {
+						Console_Step_without_debug(opcode_map)
+					} else {
+						Console_Step(opcode_map)
+					}
 
 					// Check Breakpoints
 					breakpoint_flag = Console_Check_breakpoints(breakpoint_flag)

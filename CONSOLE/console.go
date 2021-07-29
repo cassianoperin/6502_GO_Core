@@ -23,10 +23,12 @@ type breakpoint struct {
 }
 
 var (
-	step_limit  int = 1000
-	run_limit   int = 100000
-	breakpoints []breakpoint
-	opcode_map  = []instructuction{
+	step_limit       int    = 1000
+	step_debug_start uint64 = 10
+	run_limit        int    = 100000
+	goto_limit       int    = 100000
+	breakpoints      []breakpoint
+	opcode_map       = []instructuction{
 		{0x0A, 1, 2, "ASL", "accumulator"},
 		{0x18, 1, 2, "CLC", "implied"},
 		{0xD8, 1, 2, "CLD", "implied"},
@@ -245,6 +247,10 @@ func CommandInterpreter(text string) {
 
 		Console_Command_StepLimit(text_slice)
 
+	} else if text_slice[0] == "step_debug_start" { // STEP_DEBUG_START
+
+		Console_Command_StepDebugStart(text_slice)
+
 	} else if text_slice[0] == "add_breakpoint" { // ADD BREAKPOINT
 
 		Console_Command_AddBreakpoint(text_slice)
@@ -272,6 +278,14 @@ func CommandInterpreter(text string) {
 	} else if text_slice[0] == "goto" { // GOTO
 
 		Console_Command_Goto(text_slice)
+
+	} else if text_slice[0] == "goto_limit" { // GOTO_LIMIT
+
+		Console_Command_GotoLimit(text_slice)
+
+	} else if text_slice[0] == "reset" { // RESET
+
+		Console_Command_Reset(text_slice)
 
 	} else { // Command not found
 		fmt.Printf("Command not found\n\n")

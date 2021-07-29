@@ -18,6 +18,8 @@ func Initialize() {
 	Y = 0
 	A = 0
 	P = [8]byte{}
+	// Cycle counter
+	Cycle = 0
 
 	// Initialize CPU
 	CPU_Enabled = true

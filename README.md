@@ -20,20 +20,14 @@ All opcodes and memory modes implemented and tested in Klaus Dormann test suite.
 
 ## Improvements
 
-* ![100%](https://progress-bar.dev/0) CONSOLE: Add GOTO function
-* ![100%](https://progress-bar.dev/0) CONSOLE: Add Reset function
 * ![100%](https://progress-bar.dev/50) CONSOLE: Create a disassembler to just decode address ranges
-* ![100%](https://progress-bar.dev/0) CONSOLE: Add a Memory position or value Breakpoint
-* ![100%](https://progress-bar.dev/0) CONSOLE: debug skip for x cycles to increase debug speed OR cycle to enable debug on RUN?
-* ![100%](https://progress-bar.dev/0) CONSOLE: Add memory representation of current memory mode
 * ![100%](https://progress-bar.dev/0) CONSOLE: Change registers, PC and memory values
-* ![100%](https://progress-bar.dev/0) Put debug message on start OR end of opcodes
+* ![100%](https://progress-bar.dev/0) Pixel?
 * ![100%](https://progress-bar.dev/0) IRQs
 * ![100%](https://progress-bar.dev/0) Opcode cycle precision mode
+* ![100%](https://progress-bar.dev/0) Put opcodes debug message on start OR end of opcodes
 * ![100%](https://progress-bar.dev/0) CONSOLE: Interrupt loops with CTRL-C (replace hard limits)
-
-
-
+* ![100%](https://progress-bar.dev/0) CONSOLE: Mem Dump supress repeated lines
 
 
 ## Documentation:

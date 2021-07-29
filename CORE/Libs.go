@@ -177,21 +177,28 @@ func debug_decode_opc(bytes uint16) string {
 }
 
 // Decode opcode for debug messages
-func Debug_decode_console(bytes byte) (string, string) {
+func Debug_decode_console(bytes byte) (string, string, string) {
 
 	var (
-		opcode_string  string
-		operand_string string
+		opcode_string            string
+		operand_string           string
+		operand_bigendian_string string
 	)
 
-	opcode_string = fmt.Sprintf("%02X", Memory[PC])
+	// Operator (opcode)
+	opcode_string = fmt.Sprintf("%02x", Memory[PC])
 
-	// Decode opcode and operators
+	// Decode operators
 	for i := 1; i < int(bytes); i++ {
-		operand_string += fmt.Sprintf("%02X", Memory[PC+uint16(i)])
+		operand_string += fmt.Sprintf("%02x", Memory[PC+uint16(i)])
 	}
 
-	return opcode_string, operand_string
+	// Decode operators (big endian)
+	for i := int(bytes) - 1; i >= 1; i-- {
+		operand_bigendian_string += fmt.Sprintf("%02x", Memory[PC+uint16(i)])
+	}
+
+	return opcode_string, operand_string, operand_bigendian_string
 }
 
 // Print internal opcode cycle in debug mode

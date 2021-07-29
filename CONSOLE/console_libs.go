@@ -3,6 +3,7 @@ package CONSOLE
 import (
 	"6502/CORE"
 	"fmt"
+	"os"
 	"strconv"
 	"strings"
 )
@@ -11,11 +12,69 @@ import (
 
 // Print the debub information in console
 func print_debug_console(opcode_map []instructuction) {
+
+	var mem_string string
+
 	for i := 0; i < len(opcode_map); i++ {
 
+		// if CORE.Memory[CORE.PC] == opcode_map[i].code {
+		// 	opc_string, opc_operand, operand_bigendian_string := CORE.Debug_decode_console(opcode_map[i].bytes)
+		// 	fmt.Printf("\n--> $%04X\t%s %s\t%s %s (%s)\n\n", CORE.PC, opc_string, opc_operand, opcode_map[i].description, operand_bigendian_string, opcode_map[i].memory_mode)
+		// }
+
 		if CORE.Memory[CORE.PC] == opcode_map[i].code {
-			opc_string, opc_operand := CORE.Debug_decode_console(opcode_map[i].bytes)
-			fmt.Printf("\n--> $%04X\t%s %s\t%s %s (%s)\n\n", CORE.PC, opc_string, opc_operand, opcode_map[i].description, opc_operand, opcode_map[i].memory_mode)
+
+			opc_string, opc_operand, operand_bigendian_string := CORE.Debug_decode_console(opcode_map[i].bytes)
+
+			// Map Opcode
+			switch opcode_map[i].memory_mode {
+
+			case "implied":
+				mem_string = ""
+
+			case "accumulator":
+				mem_string = "A"
+
+			case "relative", "":
+				mem_string = "$" + operand_bigendian_string
+
+			case "immediate":
+				mem_string = "#$" + operand_bigendian_string
+
+			case "absolute":
+				mem_string = "$" + operand_bigendian_string
+
+			case "absolute,X":
+				mem_string = "$" + operand_bigendian_string + ",X"
+
+			case "absolute,Y":
+				mem_string = "$" + operand_bigendian_string + ",Y"
+
+			case "zeropage":
+				mem_string = "$" + operand_bigendian_string
+
+			case "zeropage,X":
+				mem_string = "$" + operand_bigendian_string + ",X"
+
+			case "zeropage,Y":
+				mem_string = "$" + operand_bigendian_string + ",Y"
+
+			case "indirect":
+				mem_string = "($" + operand_bigendian_string + ")"
+
+			case "(indirect,X)":
+				mem_string = "($" + operand_bigendian_string + ",X)"
+
+			case "(indirect),Y":
+				mem_string = "($" + operand_bigendian_string + "),Y"
+
+			default:
+				fmt.Printf("print_debug_console(): Memory mode not mapped\n\n")
+				os.Exit(2)
+			}
+
+			fmt.Printf("\n--> $%04X\t%s %s\t%s %s\t(%s)\n\n", CORE.PC, opc_string, opc_operand, opcode_map[i].description, mem_string, opcode_map[i].memory_mode)
+
 		}
 
 	}
@@ -27,6 +86,10 @@ func Console_PrintAddBrkErr() {
 
 func Console_PrintStepLimitErr() {
 	fmt.Printf("Usage: step_limit <Value>\n\n")
+}
+
+func Console_PrintGotoLimitErr() {
+	fmt.Printf("Usage: goto_limit <Value>\n\n")
 }
 
 func Console_PrintRunLimitErr() {
