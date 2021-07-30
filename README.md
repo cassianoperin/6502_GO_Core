@@ -19,15 +19,15 @@ All opcodes and memory modes implemented and tested in Klaus Dormann test suite.
 
 
 ## Improvements
-
-* ![100%](https://progress-bar.dev/50) CONSOLE: Create a disassembler to just decode address ranges
 * ![100%](https://progress-bar.dev/0) CONSOLE: Change registers, PC and memory values
-* ![100%](https://progress-bar.dev/0) Pixel?
+
+## Improvements (Later)
+* ![100%](https://progress-bar.dev/0) Pixel? Draw input commands on screen.
 * ![100%](https://progress-bar.dev/0) IRQs
 * ![100%](https://progress-bar.dev/0) Opcode cycle precision mode
 * ![100%](https://progress-bar.dev/0) Put opcodes debug message on start OR end of opcodes
 * ![100%](https://progress-bar.dev/0) CONSOLE: Interrupt loops with CTRL-C (replace hard limits)
-* ![100%](https://progress-bar.dev/0) CONSOLE: Mem Dump supress repeated lines
+* ![100%](https://progress-bar.dev/0) CONSOLE: Mem Dump suppress repeated lines
 
 
 ## Documentation:

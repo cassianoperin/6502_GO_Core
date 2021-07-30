@@ -5,7 +5,7 @@ import (
 	"strconv"
 )
 
-// Print Help Menu
+// Console step_limit command
 func Console_Command_StepLimit(text_slice []string) {
 	// Test the command syntax
 	if len(text_slice) == 1 {

@@ -5,26 +5,12 @@ import (
 	"fmt"
 )
 
-// Console mem command
-func Console_Command_Mem(text_slice []string) {
+// Console disassemble command
+func Console_Command_Disassemble(text_slice []string) {
 
-	if len(text_slice) == 1 { // Without arguments (show all memory)
-		fmt.Printf("\t00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F\n")
-		fmt.Printf("\t-----------------------------------------------")
-		for i := 0; i < len(CORE.Memory); i++ {
+	if len(text_slice) == 2 { // With ONE argument (show this memory value)
 
-			// Break lines
-			if i%16 == 0 {
-				fmt.Printf("\n%04X\t", i)
-			}
-
-			// Print memory
-			fmt.Printf("%02X ", CORE.Memory[i])
-
-		}
 		fmt.Println()
-
-	} else if len(text_slice) == 2 { // With ONE argument (show this memory value)
 
 		// Check if input is Decimar of Hexadecimal and convert to integer
 		mem_arg, error_flag := Console_Hex_or_Dec(text_slice[1])
@@ -35,14 +21,18 @@ func Console_Command_Mem(text_slice []string) {
 			if mem_arg < 0 || mem_arg >= len(CORE.Memory) {
 				fmt.Printf("Invalid Address. Should be in range 0x0000 and 0xFFFF (65536)\n\n")
 			} else {
-				fmt.Printf("%02X\n\n", CORE.Memory[mem_arg])
+				// Disassemble Memory address
+				print_debug_console(opcode_map, mem_arg)
 			}
 
 		} else {
 			fmt.Printf("Invalid value %s\n\n", text_slice[1])
 		}
+		fmt.Println()
 
 	} else if len(text_slice) == 3 { // With TWO argument (show memory value of the range)
+
+		fmt.Println()
 
 		// Check if input is Decimar of Hexadecimal and convert to integer
 		mem_arg, error_flag := Console_Hex_or_Dec(text_slice[1])
@@ -61,9 +51,24 @@ func Console_Command_Mem(text_slice []string) {
 				error_flag = true
 			} else { // Print Memory Value
 				for i := mem_arg; i <= mem_arg2; i++ {
-					fmt.Printf("%02X ", CORE.Memory[i])
+
+					var opc_bytes byte = 1
+
+					// Get the number of bytes of the opcode to skip the operands
+					for j := 0; j < len(opcode_map); j++ {
+
+						if CORE.Memory[i] == opcode_map[j].code {
+							opc_bytes = opcode_map[j].bytes
+						}
+					}
+
+					// Disassemble Memory address
+					print_debug_console(opcode_map, i)
+
+					// Skip the operands based on the number of bytes of the last instruction
+					i += int(opc_bytes - 1)
 				}
-				fmt.Printf("\n\n")
+				fmt.Println()
 			}
 		} else {
 			// Invalid values
@@ -77,6 +82,6 @@ func Console_Command_Mem(text_slice []string) {
 		}
 
 	} else {
-		fmt.Printf("Usage:\n   mem\n   mem <address>\n   mem <start address> <end address>\n\n")
+		fmt.Printf("Usage:\n   disassemble <address>\n   disassemble <start address> <end address>\n\n")
 	}
 }

@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-// Print Help Menu
+// Console run command
 func Console_Command_Run(text_slice []string) {
 	var (
 		current_PC      uint16

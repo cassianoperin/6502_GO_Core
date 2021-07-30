@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-// Print Help Menu
+// Console add_breakpoint command
 func Console_Command_AddBreakpoint(text_slice []string) {
 
 	var location_value []string

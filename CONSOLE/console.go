@@ -24,7 +24,7 @@ type breakpoint struct {
 
 var (
 	step_limit       int    = 1000
-	step_debug_start uint64 = 10
+	step_debug_start uint64 = 0
 	run_limit        int    = 100000
 	goto_limit       int    = 100000
 	breakpoints      []breakpoint
@@ -286,6 +286,10 @@ func CommandInterpreter(text string) {
 	} else if text_slice[0] == "reset" { // RESET
 
 		Console_Command_Reset(text_slice)
+
+	} else if text_slice[0] == "disassemble" { // DISASSEMBLE
+
+		Console_Command_Disassemble(text_slice)
 
 	} else { // Command not found
 		fmt.Printf("Command not found\n\n")

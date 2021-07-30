@@ -5,7 +5,7 @@ import (
 	"strconv"
 )
 
-// Print Help Menu
+// Console del_breakpoint command
 func Console_Command_DelBreakpoint(text_slice []string) {
 
 	// Test the command syntax

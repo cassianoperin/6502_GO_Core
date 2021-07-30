@@ -6,7 +6,7 @@ import (
 	"strconv"
 )
 
-// Print Help Menu
+// Console step command
 func Console_Command_Step(text_slice []string) {
 
 	if len(text_slice) == 1 {

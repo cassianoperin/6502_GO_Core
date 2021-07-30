@@ -6,7 +6,7 @@ import (
 	"fmt"
 )
 
-// Print Help Menu
+// Console reset command
 func Console_Command_Reset(text_slice []string) {
 	// Test the command syntax
 	if len(text_slice) > 1 {

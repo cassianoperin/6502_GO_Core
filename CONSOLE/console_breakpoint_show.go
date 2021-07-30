@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-// Print Help Menu
+// Console show_breakpoint command
 func Console_Command_ShowBreakpoint(text_slice []string) {
 
 	// Test the command syntax

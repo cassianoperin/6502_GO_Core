@@ -5,18 +5,18 @@ import (
 	"strconv"
 )
 
-// Print Help Menu
-func Console_Command_StepSkipDebug(text_slice []string) {
+// Console step_debug_start command
+func Console_Command_StepDebugStart(text_slice []string) {
 	// Test the command syntax
 	if len(text_slice) == 1 {
 
 		// Show current value
-		fmt.Printf("Current Step Limit = %d\n\n", step_limit)
+		fmt.Printf("Step debug messages starts on cycle = %d\n\n", step_debug_start)
 
 	} else if len(text_slice) > 2 {
 
-		// Print step_limit usage
-		Console_PrintStepLimitErr()
+		// Print step_debug_start usage
+		fmt.Printf("Usage: step_debug_start <Value>\n\n")
 
 	} else {
 
@@ -26,8 +26,8 @@ func Console_Command_StepSkipDebug(text_slice []string) {
 			// handle error
 			fmt.Printf("Invalid value: %s\n\n", text_slice[1])
 		} else {
-			step_limit = value
-			fmt.Printf("New step limit = %d\n\n", step_limit)
+			step_debug_start = uint64(value)
+			fmt.Printf("Now Step command will start showing debug after cycle = %d\n\n", step_debug_start)
 		}
 	}
 }

@@ -10,33 +10,31 @@ import (
 
 // --------------------------------------- Debug ---------------------------------------- //
 
-// Print the debub information in console
-func print_debug_console(opcode_map []instructuction) {
+// Print the debub information in console for step and disassemble operation
+func print_debug_console(opcode_map []instructuction, mem_arg int) {
 
 	var mem_string string
+	var opcode_found bool
 
 	for i := 0; i < len(opcode_map); i++ {
 
-		// if CORE.Memory[CORE.PC] == opcode_map[i].code {
-		// 	opc_string, opc_operand, operand_bigendian_string := CORE.Debug_decode_console(opcode_map[i].bytes)
-		// 	fmt.Printf("\n--> $%04X\t%s %s\t%s %s (%s)\n\n", CORE.PC, opc_string, opc_operand, opcode_map[i].description, operand_bigendian_string, opcode_map[i].memory_mode)
-		// }
+		if CORE.Memory[mem_arg] == opcode_map[i].code {
 
-		if CORE.Memory[CORE.PC] == opcode_map[i].code {
+			opcode_found = true
 
-			opc_string, opc_operand, operand_bigendian_string := CORE.Debug_decode_console(opcode_map[i].bytes)
+			opc_string, opc_operand, operand_bigendian_string := CORE.Debug_decode_console(opcode_map[i].bytes, uint16(mem_arg))
 
 			// Map Opcode
 			switch opcode_map[i].memory_mode {
 
 			case "implied":
-				mem_string = ""
+				mem_string = "    "
 
 			case "accumulator":
-				mem_string = "A"
+				mem_string = "A   "
 
 			case "relative", "":
-				mem_string = "$" + operand_bigendian_string
+				mem_string = "$" + operand_bigendian_string + "  "
 
 			case "immediate":
 				mem_string = "#$" + operand_bigendian_string
@@ -51,7 +49,7 @@ func print_debug_console(opcode_map []instructuction) {
 				mem_string = "$" + operand_bigendian_string + ",Y"
 
 			case "zeropage":
-				mem_string = "$" + operand_bigendian_string
+				mem_string = "$" + operand_bigendian_string + "  "
 
 			case "zeropage,X":
 				mem_string = "$" + operand_bigendian_string + ",X"
@@ -69,14 +67,18 @@ func print_debug_console(opcode_map []instructuction) {
 				mem_string = "($" + operand_bigendian_string + "),Y"
 
 			default:
-				fmt.Printf("print_debug_console(): Memory mode not mapped\n\n")
+				fmt.Printf("print_debug_console_disassembler(): Memory mode not mapped\n\n")
 				os.Exit(2)
 			}
 
-			fmt.Printf("\n--> $%04X\t%s %s\t%s %s\t(%s)\n\n", CORE.PC, opc_string, opc_operand, opcode_map[i].description, mem_string, opcode_map[i].memory_mode)
+			fmt.Printf("   $%04X\t%s %s\t\t%s %s\t(%s)\n", mem_arg, opc_string, opc_operand, opcode_map[i].description, mem_string, opcode_map[i].memory_mode)
 
 		}
 
+	}
+
+	if !opcode_found {
+		fmt.Printf("   $%04X\t???\n", mem_arg)
 	}
 }
 
@@ -109,7 +111,8 @@ func Console_PrintHeader() {
 // Execute the necessary cycles for next instruction
 func Console_Step(opcode_map []instructuction) {
 	// Print the opcode debug
-	print_debug_console(opcode_map)
+	print_debug_console(opcode_map, int(CORE.PC))
+	fmt.Println()
 
 	for !CORE.NewInstruction {
 		CORE.CPU_Interpreter()

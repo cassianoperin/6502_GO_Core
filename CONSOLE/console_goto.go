@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-// Print Help Menu
+// Console goto command
 func Console_Command_Goto(text_slice []string) {
 
 	var (

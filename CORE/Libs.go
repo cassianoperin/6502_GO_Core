@@ -177,7 +177,7 @@ func debug_decode_opc(bytes uint16) string {
 }
 
 // Decode opcode for debug messages
-func Debug_decode_console(bytes byte) (string, string, string) {
+func Debug_decode_console(bytes byte, mem_addr uint16) (string, string, string) {
 
 	var (
 		opcode_string            string
@@ -186,16 +186,16 @@ func Debug_decode_console(bytes byte) (string, string, string) {
 	)
 
 	// Operator (opcode)
-	opcode_string = fmt.Sprintf("%02x", Memory[PC])
+	opcode_string = fmt.Sprintf("%02x", Memory[mem_addr])
 
 	// Decode operators
 	for i := 1; i < int(bytes); i++ {
-		operand_string += fmt.Sprintf("%02x", Memory[PC+uint16(i)])
+		operand_string += fmt.Sprintf("%02x", Memory[mem_addr+uint16(i)])
 	}
 
 	// Decode operators (big endian)
 	for i := int(bytes) - 1; i >= 1; i-- {
-		operand_bigendian_string += fmt.Sprintf("%02x", Memory[PC+uint16(i)])
+		operand_bigendian_string += fmt.Sprintf("%02x", Memory[mem_addr+uint16(i)])
 	}
 
 	return opcode_string, operand_string, operand_bigendian_string
