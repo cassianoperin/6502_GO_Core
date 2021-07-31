@@ -29,6 +29,89 @@ All opcodes and memory modes implemented and tested in Klaus Dormann test suite.
 * ![100%](https://progress-bar.dev/0) CONSOLE: Multiple commands with ";"
 * ![100%](https://progress-bar.dev/0) Opcode cycle precision mode (what is done in each cycle)
 
+## EMULATOR Build Instructions
+
+1) MAC
+* Install GO:
+
+	 `brew install go`
+
+* Install library requisites:
+
+	`go get github.com/cassianoperin/pseudo-terminal-go/terminal`
+
+
+* Compile:
+
+	`go build -ldflags="-s -w" 6502.go`
+
+2) Windows and Linux
+
+* Not tested yet.
+
+
+## Usage
+
+	`$./6502 [options] PROGRAM_NAME`
+
+
+- Options:
+
+	`-debug`       Enable Debug Mode
+
+	`-register_PC` Set the Program Counter Address (Hexadecimal)
+
+	`-help`        Show this menu
+
+
+## CONSOLE
+
+- Options:
+
+	`quit`	Quit console
+
+	`help`	Print help menu
+
+	`reset`	Reinitialize CPU and reload program to memory
+
+	`step`	Execute current opcode
+
+	`step <value>`	Execute <value> opcodes
+
+	`step_limit <value>`	Define the maximum steps allowed
+
+	`step_debug_start <value>`	Set the cycle to step start showing the debug messages
+
+	`add_breakpoint <PC|A|X|Y|CYCLE>=<value>`	Quit console
+
+	`del_breakpoint <index>`	Delete a breakpoint
+
+	`show_breakpoints`	Show breakpoints
+
+	`registers  <PC|A|X|Y>=<Value>`	Change registers values
+
+	`processor_status  <N|V|B|D|I|Z|C>=<Value>`	Change processor status registers values
+
+	`debug  <on|off>`	Enable or Disable Debug mode
+
+	`mem`	Dump full memory
+
+	`mem <address>`	Dump memory address
+ 
+ `mem <start address> <end address>`	Dump memory address range
+ 
+ `disassemble <address>`	Disassemble memory address
+
+ `disassemble <start address> <end address>`	Disassemble memory address range
+
+ `goto <address>`	Run until PC=<address>
+ 
+ `goto_limit <value>`	Define the maximum steps allowed in GOTO
+ 
+ `run`	Run the emulator
+ 
+ `run_limit <value>`	Define the maximum steps allowed in RUN
+
 
 ## Documentation:
 
