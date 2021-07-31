@@ -73,7 +73,7 @@ Options:
 
    help						Print help menu
 
-   reset						Reinitialize CPU and reload program to memory
+   reset					Reinitialize CPU and reload program to memory
 
    step						Execute current opcode
 
@@ -83,29 +83,29 @@ Options:
 
    step_debug_start <value>			Set the cycle to step start showing the debug messages
 
-   add_breakpoint <PC|A|X|Y|CYCLE>=<value>		Quit console
+   add_breakpoint <PC|A|X|Y|CYCLE>=<value>	Add a breakpoint
 
-   del_breakpoint <index>				Delete a breakpoint
+   del_breakpoint <index>			Delete a breakpoint
 
    show_breakpoints				Show breakpoints
 
-   registers  <PC|A|X|Y>=<Value>			Change registers values
+   registers  <PC|A|X|Y>=<Value>		Change registers values
 
    processor_status  <N|V|B|D|I|Z|C>=<Value>	Change processor status registers values
 
-   debug  <on|off>					Enable or Disable Debug mode
+   debug  <on|off>				Enable or Disable Debug mode
 
    mem						Dump full memory
 
-   mem <address>					Dump memory address
+   mem <address>				Dump memory address
  
    mem <start address> <end address>		Dump memory address range
  
-   disassemble <address>				Disassemble memory address
+   disassemble <address>			Disassemble memory address
 
    disassemble <start address> <end address>	Disassemble memory address range
 
-   goto <address>					Run until PC=<address>
+   goto <address>				Run until PC=<address>
  
    goto_limit <value>				Define the maximum steps allowed in GOTO
  
@@ -124,7 +124,7 @@ https://web.archive.org/web/20150217073759/http://homepage.ntlworld.com/cyborgsy
 
 http://datasheets.chipdb.org/Synertek/6502.pdf
 
-## Architecture
+### Architecture
 
 http://www.obelisk.me.uk/6502/architecture.html
 
@@ -147,22 +147,22 @@ http://www.obelisk.me.uk/6502/addressing.html
 
 http://www.emulator101.com/6502-addressing-modes.html
 
-## Stack:
+### Stack:
 
 https://wiki.nesdev.com/w/index.php/Stack
 
-## Interrupts:
+### Interrupts:
 
 http://www.cs.jhu.edu/~phi/csf/slides/lecture-6502-interrupt.pdf
 
 
-## BUSES
+### Buses
 
 http://www.plingboot.com/2015/10/homebrew-6502-part-2/
 
 https://slideplayer.com/slide/3944506/
 
-## Console
+### Console
 
 https://tutorialedge.net/golang/reading-console-input-golang/
 
