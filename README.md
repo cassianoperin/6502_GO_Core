@@ -52,7 +52,7 @@ All opcodes and memory modes implemented and tested in Klaus Dormann test suite.
 
 ## Usage
 
-	`$./6502 [options] PROGRAM_NAME`
+	$./6502 [options] PROGRAM_NAME
 
 
 - Options:
@@ -66,52 +66,53 @@ All opcodes and memory modes implemented and tested in Klaus Dormann test suite.
 
 ## CONSOLE
 
-- Options:
+```
+Options:
 
-	`quit`						Quit console
+	quit						Quit console
 
-	`help`						Print help menu
+	help						Print help menu
 
-	`reset`						Reinitialize CPU and reload program to memory
+	reset						Reinitialize CPU and reload program to memory
 
-	`step`						Execute current opcode
+	step						Execute current opcode
 
-	`step <value>`					Execute <value> opcodes
+	step <value>					Execute <value> opcodes
 
-	`step_limit <value>`				Define the maximum steps allowed
+	step_limit <value>				Define the maximum steps allowed
 
-	`step_debug_start <value>`			Set the cycle to step start showing the debug messages
+	step_debug_start <value>			Set the cycle to step start showing the debug messages
 
-	`add_breakpoint <PC|A|X|Y|CYCLE>=<value>`	Quit console
+	add_breakpoint <PC|A|X|Y|CYCLE>=<value>		Quit console
 
-	`del_breakpoint <index>`			Delete a breakpoint
+	del_breakpoint <index>				Delete a breakpoint
 
-	`show_breakpoints`				Show breakpoints
+	show_breakpoints				Show breakpoints
 
-	`registers  <PC|A|X|Y>=<Value>`			Change registers values
+	registers  <PC|A|X|Y>=<Value>			Change registers values
 
-	`processor_status  <N|V|B|D|I|Z|C>=<Value>`	Change processor status registers values
+	processor_status  <N|V|B|D|I|Z|C>=<Value>	Change processor status registers values
 
-	`debug  <on|off>`				Enable or Disable Debug mode
+	debug  <on|off>					Enable or Disable Debug mode
 
-	`mem`						Dump full memory
+	mem						Dump full memory
 
-	`mem <address>`					Dump memory address
+	mem <address>					Dump memory address
  
- 	`mem <start address> <end address>`		Dump memory address range
+ 	mem <start address> <end address>		Dump memory address range
  
- 	`disassemble <address>`				Disassemble memory address
+ 	disassemble <address>				Disassemble memory address
 
- 	`disassemble <start address> <end address>`	Disassemble memory address range
+ 	disassemble <start address> <end address>	Disassemble memory address range
 
- 	`goto <address>`				Run until PC=<address>
+ 	goto <address>					Run until PC=<address>
  
- 	`goto_limit <value>`				Define the maximum steps allowed in GOTO
+ 	goto_limit <value>				Define the maximum steps allowed in GOTO
  
- 	`run`						Run the emulator
+ 	run						Run the emulator
  
- 	`run_limit <value>`				Define the maximum steps allowed in RUN
-
+ 	run_limit <value>				Define the maximum steps allowed in RUN
+```
 
 ## Documentation:
 
