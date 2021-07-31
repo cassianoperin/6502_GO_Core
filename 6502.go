@@ -2,11 +2,10 @@ package main
 
 import (
 	"6502/CLI"
+	"6502/CONSOLE"
 	"6502/CORE"
 	"flag"
 	"fmt"
-
-	"github.com/faiface/pixel/pixelgl"
 )
 
 func main() {
@@ -30,7 +29,7 @@ func main() {
 	// Reset system
 	CORE.Reset()
 
-	// Start Window System and draw Graphics
-	pixelgl.Run(CORE.Run)
+	// Start Console Mode
+	CONSOLE.StartConsole()
 
 }
