@@ -71,14 +71,14 @@ func print_debug_console(opcode_map []instructuction, mem_arg int) {
 				os.Exit(2)
 			}
 
-			fmt.Printf("   $%04X\t%s %s\t\t%s %s\t(%s)\n", mem_arg, opc_string, opc_operand, opcode_map[i].description, mem_string, opcode_map[i].memory_mode)
+			fmt.Printf("\t$%04X\t%s %s\t\t%s %s\t(%s)\n", mem_arg, opc_string, opc_operand, opcode_map[i].description, mem_string, opcode_map[i].memory_mode)
 
 		}
 
 	}
 
 	if !opcode_found {
-		fmt.Printf("   $%04X\t???\n", mem_arg)
+		fmt.Printf("\t$%04X\t???\n", mem_arg)
 	}
 }
 
@@ -100,6 +100,7 @@ func Console_PrintRunLimitErr() {
 
 // Print current Processor Information
 func Console_PrintHeader() {
+	fmt.Printf("\n\n\n")
 	fmt.Printf("  -------------------------------------------------------------------------\n")
 	fmt.Printf("  |   PC\tA\tX\tY\tSP\tNV-BDIZC\tCycle\n")
 	fmt.Printf("  |   %04X\t%02X\t%02X\t%02X\t%02X\t%d%d%d%d%d%d%d%d\t%d\n", CORE.PC, CORE.A, CORE.X, CORE.Y, CORE.SP, CORE.P[7], CORE.P[6], CORE.P[5], CORE.P[4], CORE.P[3], CORE.P[2], CORE.P[1], CORE.P[0], CORE.Cycle)
@@ -109,8 +110,18 @@ func Console_PrintHeader() {
 // ---------------------------------------- Libs ---------------------------------------- //
 
 // Execute the necessary cycles for next instruction
-func Console_Step(opcode_map []instructuction) {
+func Console_Step(opcode_map []instructuction, origin_command string) {
+
+	// Keep current debug value
+	current_debug := CORE.Debug
+
+	// Debug is only used in STEP command
+	if origin_command == "run" || origin_command == "goto" {
+		CORE.Debug = false // Force disable debug
+	}
+
 	// Print the opcode debug
+	fmt.Println()
 	print_debug_console(opcode_map, int(CORE.PC))
 	fmt.Println()
 
@@ -123,10 +134,23 @@ func Console_Step(opcode_map []instructuction) {
 
 	// Print the Header
 	Console_PrintHeader()
+
+	// Debug is only used in STEP command
+	if origin_command == "run" || origin_command == "goto" {
+		CORE.Debug = current_debug // // Return original Debug value
+	}
 }
 
 // Execute the necessary cycles for next instruction without print on console
-func Console_Step_without_debug(opcode_map []instructuction) {
+func Console_Step_without_debug(opcode_map []instructuction, origin_command string) {
+
+	// Keep current debug value
+	current_debug := CORE.Debug
+
+	// Debug is only used in STEP command
+	if origin_command == "run" || origin_command == "goto" {
+		CORE.Debug = false // Force disable debug
+	}
 
 	for !CORE.NewInstruction {
 		CORE.CPU_Interpreter()
@@ -134,6 +158,12 @@ func Console_Step_without_debug(opcode_map []instructuction) {
 
 	// Reset new instruction flag
 	CORE.NewInstruction = false
+
+	// Debug is only used in STEP command
+	if origin_command == "run" || origin_command == "goto" {
+		CORE.Debug = current_debug // // Return original Debug value
+	}
+
 }
 
 // Remove a value from a slice

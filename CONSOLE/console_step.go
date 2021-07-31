@@ -10,8 +10,9 @@ import (
 func Console_Command_Step(text_slice []string) {
 
 	if len(text_slice) == 1 {
+
 		// Execute one instruction
-		Console_Step(opcode_map)
+		Console_Step(opcode_map, text_slice[0])
 
 	} else if len(text_slice) == 2 {
 
@@ -30,9 +31,9 @@ func Console_Command_Step(text_slice []string) {
 
 					// Execute one instruction
 					if CORE.Cycle < step_debug_start {
-						Console_Step_without_debug(opcode_map)
+						Console_Step_without_debug(opcode_map, text_slice[0])
 					} else {
-						Console_Step(opcode_map)
+						Console_Step(opcode_map, text_slice[0])
 					}
 
 					// Check Breakpoints

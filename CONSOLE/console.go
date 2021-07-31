@@ -25,8 +25,8 @@ type breakpoint struct {
 var (
 	step_limit       int    = 1000
 	step_debug_start uint64 = 0
-	run_limit        int    = 100000
-	goto_limit       int    = 100000
+	run_limit        int    = 1000
+	goto_limit       int    = 1000
 	breakpoints      []breakpoint
 	opcode_map       = []instructuction{
 		{0x0A, 1, 2, "ASL", "accumulator"},
@@ -290,6 +290,18 @@ func CommandInterpreter(text string) {
 	} else if text_slice[0] == "disassemble" { // DISASSEMBLE
 
 		Console_Command_Disassemble(text_slice)
+
+	} else if text_slice[0] == "registers" { // REGISTERS
+
+		Console_Command_Registers(text_slice)
+
+	} else if text_slice[0] == "processor_status" { // PROCESSOR STATUS
+
+		Console_Command_ProcessorStatus(text_slice)
+
+	} else if text_slice[0] == "debug" { // DEBUG
+
+		Console_Command_Debug(text_slice)
 
 	} else { // Command not found
 		fmt.Printf("Command not found\n\n")

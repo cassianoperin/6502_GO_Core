@@ -72,11 +72,11 @@ func CPU_Interpreter() {
 	opcode = Memory[PC]
 
 	// Show Debug Header
-	if Debug {
-		if opc_cycle_count == 1 { // Just in the first opcode cycle
-			ShowDebugHeader()
-		}
-	}
+	// if Debug {
+	// 	if opc_cycle_count == 1 { // Just in the first opcode cycle
+	// 		ShowDebugHeader()
+	// 	}
+	// }
 
 	// Map Opcode
 	switch opcode {
@@ -1154,9 +1154,8 @@ func CPU_Interpreter() {
 
 	// // END
 	// if PC == uint16(Pause_addr) {
-	// 	// Pause = true
 	// 	Debug = true
-	// 	fmt.Println("ACABOOOOOOOOOOU o TESTEEEEE!!!!!!!")
+	// 	fmt.Println("Finished Klays Tests !!!!!!!")
 	// 	fmt.Println(Cycle)
 	// 	// os.Exit(2)
 	// }

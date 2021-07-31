@@ -17,19 +17,12 @@ func Keyboard(target *pixelgl.Window) {
 		Debug = !Debug
 		target.UpdateInputWait(time.Second)
 
-		// if Debug {
-		// 	Debug = false
-		// 	Pause = true
-		// } else {
-		// 	Debug = true
-		// 	Pause = true
-
-		// }
 	}
 
 	// Reset
 	if target.JustPressed(pixelgl.Key0) {
 
+		Initialize()
 		Reset()
 
 	}
@@ -51,8 +44,7 @@ func Keyboard(target *pixelgl.Window) {
 	// Step Forward
 	if target.Pressed(pixelgl.KeyI) {
 		if Pause {
-			// if Debug {
-			// for dbg_running_opc == true {
+
 			fmt.Printf("\t\tStep Forward\n")
 
 			target.UpdateInput()
@@ -60,18 +52,10 @@ func Keyboard(target *pixelgl.Window) {
 			if CPU_Enabled {
 				CPU_Interpreter()
 			}
-
 		}
-
-		// After being paused by the end of opcode, set again to start the new one
-		// dbg_running_opc = true
 
 		// Control repetition
 		target.UpdateInputWait(time.Second)
-		// }
-
-		// }
-
 	}
 
 }

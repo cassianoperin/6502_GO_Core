@@ -12,22 +12,30 @@ All opcodes and memory modes implemented and tested in Klaus Dormann test suite.
 * ![100%](https://progress-bar.dev/100) One 8-bit accumulator register (A)
 * ![100%](https://progress-bar.dev/100) Two 8-bit index registers (X and Y)
 * ![100%](https://progress-bar.dev/100) Seven 1-bit processor status flag bits (P)
-* ![100%](https://progress-bar.dev/100) Opcode cycle count
+* ![100%](https://progress-bar.dev/100) Opcode cycles counter
 * ![100%](https://progress-bar.dev/100) Address BUS
 * ![100%](https://progress-bar.dev/100) Data BUS
 * ![100%](https://progress-bar.dev/70) Console Mode
 
 
 ## Improvements
-* ![100%](https://progress-bar.dev/0) CONSOLE: Change registers, PC and memory values
+* ![100%](https://progress-bar.dev/0) Draw input commands on screen (and maybe registers?)
+* ![100%](https://progress-bar.dev/0) Improve README.md with gifs and images
+* ![100%](https://progress-bar.dev/0) Add a Klaus Test mode
+* ![100%](https://progress-bar.dev/0) Change the core into a GO Module?
 
 ## Improvements (Later)
-* ![100%](https://progress-bar.dev/0) Pixel? Draw input commands on screen.
+* ![100%](https://progress-bar.dev/0) Replace Pixel?
 * ![100%](https://progress-bar.dev/0) IRQs
-* ![100%](https://progress-bar.dev/0) Opcode cycle precision mode
 * ![100%](https://progress-bar.dev/0) Put opcodes debug message on start OR end of opcodes
 * ![100%](https://progress-bar.dev/0) CONSOLE: Interrupt loops with CTRL-C (replace hard limits)
 * ![100%](https://progress-bar.dev/0) CONSOLE: Mem Dump suppress repeated lines
+* ![100%](https://progress-bar.dev/0) CONSOLE: Multiple commands with ";"
+* ![100%](https://progress-bar.dev/0) Opcode cycle precision mode (what is done in each cycle)
+
+## DONE
+* ![100%](https://progress-bar.dev/0) CONSOLE: Change registers and processor status flags, debug mode on console
+
 
 
 ## Documentation:

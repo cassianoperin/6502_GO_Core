@@ -1,17 +1,11 @@
 package CORE
 
 import (
-	// "fmt"
-	// "os"
-	// "time"
-
 	"fmt"
 	"os"
 
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/pixelgl"
-	// "golang.org/x/image/colornames"
-	// "github.com/faiface/pixel/imdraw"
 )
 
 func Run() {
@@ -48,7 +42,7 @@ func Run() {
 		}
 
 		// Internal Loop to avoid slowness of !win.Closed() loop
-		for i := 0; i < 50000; i++ {
+		for i := 0; i < 1000; i++ {
 
 			// Esc to quit program
 			if win.JustPressed(pixelgl.KeyEscape) {

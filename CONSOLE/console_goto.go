@@ -52,12 +52,12 @@ func Console_Command_Goto(text_slice []string) {
 				case <-CORE.Second_timer: // Show the header and debug each second
 
 					// Execute one instruction
-					Console_Step(opcode_map)
+					Console_Step(opcode_map, text_slice[0])
 
 				default: // Just run the CPU
 
 					// Execute one instruction without print
-					Console_Step_without_debug(opcode_map)
+					Console_Step_without_debug(opcode_map, text_slice[0])
 
 				}
 

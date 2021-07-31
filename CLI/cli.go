@@ -65,8 +65,8 @@ func CheckArgs() {
 	// Console Mode
 	if *cliConsole {
 
-		if *cliDebug || *cliPause {
-			fmt.Printf("Console mode doesn't support Pause and Debug options.\n")
+		if *cliPause {
+			fmt.Printf("Console mode doesn't support Pause option.\n")
 			os.Exit(0)
 		}
 
