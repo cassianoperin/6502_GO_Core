@@ -17,28 +17,12 @@ All opcodes and memory modes implemented and tested in Klaus Dormann test suite.
 * ![100%](https://progress-bar.dev/100) Data BUS
 * ![100%](https://progress-bar.dev/100) Console Mode
 
-**Disassembler** | **Memory Dump**
-:-------------------------:|:-------------------------:
-<img width="430" alt="horizontal" src="https://github.com/cassianoperin/6502/blob/main/Images/disassembler.png">  |  <img width="430" alt="vertical" src="https://github.com/cassianoperin/6502/blob/main/Images/memdump.png">
-
-**Opcode Execution** | **Debug Mode**
-:-------------------------:|:-------------------------:
-<img width="430" alt="input" src="https://github.com/cassianoperin/6502/blob/main/Images/opcode_execution.png"> | <img width="430" alt="palette" src="https://github.com/cassianoperin/6502/blob/main/Images/debug.png">
-
-**Breakpoints** | **Registers and CPU Status changes**
-:-------------------------:|:-------------------------:
-<img width="430" alt="players" src="https://github.com/cassianoperin/6502/blob/main/Images/breakpoints.png"> | <img width="430" alt="scoreboard" src="https://github.com/cassianoperin/6502/blob/main/Images/registers_status.png">
-
-
 ## Improvements
 * ![100%](https://progress-bar.dev/0) Update the core to a GO Module
 
 ## Improvements (Later)
 * ![100%](https://progress-bar.dev/0) IRQs
 * ![100%](https://progress-bar.dev/0) Put opcodes debug message on start OR end of opcodes
-* ![100%](https://progress-bar.dev/0) CONSOLE: Interrupt loops with CTRL-C (replace hard limits)
-* ![100%](https://progress-bar.dev/0) CONSOLE: Mem Dump suppress repeated lines
-* ![100%](https://progress-bar.dev/0) CONSOLE: Multiple commands with ";"
 * ![100%](https://progress-bar.dev/0) Opcode cycle precision mode (what is done in each cycle)
 
 ## EMULATOR Build Instructions
@@ -66,65 +50,6 @@ All opcodes and memory modes implemented and tested in Klaus Dormann test suite.
 
 	$./6502 [options] PROGRAM_NAME
 
-
-- Options:
-
-	`-debug`       Enable Debug Mode
-
-	`-register_PC` Set the Program Counter Address (Hexadecimal)
-
-	`-help`        Show this menu
-
-
-## CONSOLE
-
-```
-Options:
-
-   quit						Quit console
-
-   help						Print help menu
-
-   reset					Reinitialize CPU and reload program to memory
-
-   step						Execute current opcode
-
-   step <value>					Execute <value> opcodes
-
-   step_limit <value>				Define the maximum steps allowed
-
-   step_debug_start <value>			Set the cycle to step start showing the debug messages
-
-   add_breakpoint <PC|A|X|Y|CYCLE>=<value>	Add a breakpoint
-
-   del_breakpoint <index>			Delete a breakpoint
-
-   show_breakpoints				Show breakpoints
-
-   registers  <PC|A|X|Y>=<Value>		Change registers values
-
-   processor_status  <N|V|B|D|I|Z|C>=<Value>	Change processor status registers values
-
-   debug  <on|off>				Enable or Disable Debug mode
-
-   mem						Dump full memory
-
-   mem <address>				Dump memory address
- 
-   mem <start address> <end address>		Dump memory address range
- 
-   disassemble <address>			Disassemble memory address
-
-   disassemble <start address> <end address>	Disassemble memory address range
-
-   goto <address>				Run until PC=<address>
- 
-   goto_limit <value>				Define the maximum steps allowed in GOTO
- 
-   run						Run the emulator
- 
-   run_limit <value>				Define the maximum steps allowed in RUN
-```
 
 ## Documentation:
 
@@ -173,14 +98,3 @@ http://www.cs.jhu.edu/~phi/csf/slides/lecture-6502-interrupt.pdf
 http://www.plingboot.com/2015/10/homebrew-6502-part-2/
 
 https://slideplayer.com/slide/3944506/
-
-### Console
-
-https://tutorialedge.net/golang/reading-console-input-golang/
-
-
-
-
-
- 
-
