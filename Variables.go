@@ -1,4 +1,4 @@
-package CORE
+package CPU_6502
 
 import "time"
 
@@ -47,34 +47,20 @@ var (
 	memValue   int8   // Receive the memory value needed by branches. Calculated in the first opc cycle to check for extra cycles, used in the last to perform the operation
 
 	// ------------------------------- Timers ------------------------------- //
-	clock_timer         *time.Ticker             // CPU Clock // CPU: MOS Technology 6507 @ 1.19 MHz;
-	Second_timer        = time.Tick(time.Second) // 1 second to track FPS and draws
-	screenRefresh_timer *time.Ticker             // Screen Refresh
+	clock_timer *time.Ticker // CPU Clock // CPU: MOS Technology 6507 @ 1.19 MHz;
 
 	// ------------------------ Command Line Interface ---------------------- //
-	PC_as_argument uint16        // Program Counter passed as CLI Argument (temp value)
-	Loop_detection uint16 = 1000 // Number of PC repetitions to consider a loop in console's run() function
+	PC_as_argument uint16 // Program Counter passed as CLI Argument (temp value)
 
-	// --------------------------- Debug Interface -------------------------- //
+	// ------------------------------- Debug -------------------------------- //
 	dbg_show_message string // Debug opcode detail messages
-
-	// ------------------------------ Graphics ------------------------------ //
-	// Screen Size
-	sizeX float64 = 160.0 // 68 color clocks (Horizontal Blank) + 160 color clocks (pixels)
-	sizeY float64 = 192.0 // 3 Vertical Sync, 37 Vertical Blank, 192 Visible Area and 30 Overscan
-	// Window Resolution
-	screenWidth  float64 = 1024
-	screenHeight float64 = 768
-	// Pixel size
-	width  float64
-	height float64
 
 	// Enable or disable CPU during WSYNC
 	CPU_Enabled bool
 
 	// Pause
-	Pause bool = false
+	Pause bool = true
 
 	// Debug
-	Debug bool = false
+	Debug bool = true
 )

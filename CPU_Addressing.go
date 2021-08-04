@@ -1,4 +1,4 @@
-package CORE
+package CPU_6502
 
 import (
 	"fmt"

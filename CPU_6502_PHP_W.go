@@ -1,8 +1,6 @@
-package CORE
+package CPU_6502
 
-import (
-	"fmt"
-)
+import "fmt"
 
 //      PHP  Push Processor Status on Stack
 //

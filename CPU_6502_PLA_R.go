@@ -1,8 +1,6 @@
-package CORE
+package CPU_6502
 
-import (
-	"fmt"
-)
+import "fmt"
 
 // PLA  Pull Accumulator from Stack
 //

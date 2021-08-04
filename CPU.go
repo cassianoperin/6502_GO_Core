@@ -1,4 +1,4 @@
-package CORE
+package CPU_6502
 
 import (
 	"fmt"
@@ -42,8 +42,7 @@ func Initialize() {
 
 func InitializeTimers() {
 	// Start Timers
-	clock_timer = time.NewTicker(time.Nanosecond)          // CPU Clock
-	screenRefresh_timer = time.NewTicker(time.Second / 30) // 60Hz Clock for screen refresh rate
+	clock_timer = time.NewTicker(time.Nanosecond) // CPU Clock
 }
 
 // Reset Vector // 0xFFFC | 0xFFFD (Little Endian)
@@ -72,11 +71,11 @@ func CPU_Interpreter() {
 	opcode = Memory[PC]
 
 	// Show Debug Header
-	// if Debug {
-	// 	if opc_cycle_count == 1 { // Just in the first opcode cycle
-	// 		ShowDebugHeader()
-	// 	}
-	// }
+	if Debug {
+		if opc_cycle_count == 1 { // Just in the first opcode cycle
+			ShowDebugHeader()
+		}
+	}
 
 	// Map Opcode
 	switch opcode {

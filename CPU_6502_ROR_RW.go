@@ -1,9 +1,6 @@
-package CORE
+package CPU_6502
 
-// import	"os"
-import (
-	"fmt"
-)
+import "fmt"
 
 // ROR  Rotate One Bit Right (Memory or Accumulator)
 //
