@@ -26,8 +26,8 @@ func opc_ADC(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 	// Print internal opcode cycle
 	debugInternalOpcCycleExtras(opc_cycles)
 
-	if opc_cycle_count < opc_cycles+opc_cycle_extra { // Just increment the Opcode cycle Counter
-		opc_cycle_count++
+	if Opc_cycle_count < opc_cycles+Opc_cycle_extra { // Just increment the Opcode cycle Counter
+		Opc_cycle_count++
 
 	} else { // After spending the cycles needed, execute the opcode
 

@@ -18,8 +18,8 @@ func opc_CPX(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 	// Print internal opcode cycle
 	debugInternalOpcCycle(opc_cycles)
 
-	if opc_cycle_count < opc_cycles { // Just increment the Opcode cycle Counter
-		opc_cycle_count++
+	if Opc_cycle_count < opc_cycles { // Just increment the Opcode cycle Counter
+		Opc_cycle_count++
 
 	} else { // After spending the cycles needed, execute the opcode
 

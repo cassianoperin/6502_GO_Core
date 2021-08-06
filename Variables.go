@@ -33,8 +33,8 @@ var (
 
 	// ------------------------------ Counters ------------------------------ //
 	// Internal Opcode counters
-	opc_cycle_count byte // Opcode cycle counter
-	opc_cycle_extra byte // Opcode extra cycle
+	Opc_cycle_count byte // Opcode cycle counter
+	Opc_cycle_extra byte // Opcode extra cycle
 	NewInstruction  bool // Easily detect when CPU finished running the cycles of an opcode
 	// General counters
 	Cycle uint64 // Cycles counter
@@ -43,7 +43,7 @@ var (
 
 	// -------------------------- Memory Variables -------------------------- //
 	memMode    string // Receive the addressing mode used in the debug
-	addressBUS uint16 // // 16 pins of processor that points to memory for read or write operations
+	AddressBUS uint16 // // 16 pins of processor that points to memory for read or write operations
 	memValue   int8   // Receive the memory value needed by branches. Calculated in the first opc cycle to check for extra cycles, used in the last to perform the operation
 
 	// ------------------------------- Timers ------------------------------- //

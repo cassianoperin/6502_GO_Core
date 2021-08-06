@@ -25,8 +25,8 @@ func opc_BPL(memAddr uint16, bytes uint16, opc_cycles byte) {
 		debugInternalOpcCycleBranch(opc_cycles)
 
 		// Just increment the Opcode cycle Counter
-		if opc_cycle_count < opc_cycles+1+opc_cycle_extra {
-			opc_cycle_count++
+		if Opc_cycle_count < opc_cycles+1+Opc_cycle_extra {
+			Opc_cycle_count++
 
 			// After spending the cycles needed, execute the opcode
 		} else {
@@ -49,8 +49,8 @@ func opc_BPL(memAddr uint16, bytes uint16, opc_cycles byte) {
 		debugInternalOpcCycle(opc_cycles)
 
 		// Just increment the Opcode cycle Counter
-		if opc_cycle_count < opc_cycles {
-			opc_cycle_count++
+		if Opc_cycle_count < opc_cycles {
+			Opc_cycle_count++
 
 			// After spending the cycles needed, execute the opcode
 		} else {

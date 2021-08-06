@@ -23,8 +23,8 @@ func opc_LSR_A(bytes uint16, opc_cycles byte) {
 	debugInternalOpcCycle(opc_cycles)
 
 	// Just increment the Opcode cycle Counter
-	if opc_cycle_count < opc_cycles {
-		opc_cycle_count++
+	if Opc_cycle_count < opc_cycles {
+		Opc_cycle_count++
 
 		// After spending the cycles needed, execute the opcode
 	} else {
@@ -43,7 +43,7 @@ func opc_LSR_A(bytes uint16, opc_cycles byte) {
 		PC += bytes
 
 		// Reset Opcode Cycle counter
-		opc_cycle_count = 1
+		Opc_cycle_count = 1
 	}
 
 }
@@ -64,8 +64,8 @@ func opc_LSR(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 	debugInternalOpcCycle(opc_cycles)
 
 	// Just increment the Opcode cycle Counter
-	if opc_cycle_count < opc_cycles {
-		opc_cycle_count++
+	if Opc_cycle_count < opc_cycles {
+		Opc_cycle_count++
 
 		// After spending the cycles needed, execute the opcode
 	} else {
