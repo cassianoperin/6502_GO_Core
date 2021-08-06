@@ -19,6 +19,9 @@ import "fmt"
 
 func opc_LSR_A(bytes uint16, opc_cycles byte) {
 
+	// Update Global Opc_cycles value
+	Opc_cycles = opc_cycles
+
 	// Print internal opcode cycle
 	debugInternalOpcCycle(opc_cycles)
 
@@ -59,6 +62,9 @@ func opc_LSR_A_DebugMsg(bytes uint16) {
 // --------------------------------------- Memory -------------------------------------- //
 
 func opc_LSR(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
+
+	// Update Global Opc_cycles value
+	Opc_cycles = opc_cycles
 
 	// Print internal opcode cycle
 	debugInternalOpcCycle(opc_cycles)

@@ -13,6 +13,9 @@ import "fmt"
 
 func opc_BVS(memAddr uint16, bytes uint16, opc_cycles byte) { // value is SIGNED
 
+	// Update Global Opc_cycles value
+	Opc_cycles = opc_cycles
+
 	// Read data from Memory (adress in Memory Bus) into Data Bus
 	memData := dataBUS_Read(memAddr)
 

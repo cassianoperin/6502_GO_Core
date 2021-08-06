@@ -12,6 +12,9 @@ import "fmt"
 
 func opc_PLP(bytes uint16, opc_cycles byte) {
 
+	// Update Global Opc_cycles value
+	Opc_cycles = opc_cycles
+
 	// Print internal opcode cycle
 	debugInternalOpcCycle(opc_cycles)
 

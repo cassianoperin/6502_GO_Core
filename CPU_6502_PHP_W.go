@@ -12,6 +12,9 @@ import "fmt"
 
 func opc_PHP(bytes uint16, opc_cycles byte) {
 
+	// Update Global Opc_cycles value
+	Opc_cycles = opc_cycles
+
 	var tmp_P byte
 
 	// Print internal opcode cycle

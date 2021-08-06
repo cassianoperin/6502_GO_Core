@@ -23,6 +23,9 @@ import (
 
 func opc_SBC(memAddr uint16, mode string, bytes uint16, opc_cycles byte) {
 
+	// Update Global Opc_cycles value
+	Opc_cycles = opc_cycles
+
 	// Print internal opcode cycle
 	debugInternalOpcCycleExtras(opc_cycles)
 

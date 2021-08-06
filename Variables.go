@@ -33,9 +33,11 @@ var (
 
 	// ------------------------------ Counters ------------------------------ //
 	// Internal Opcode counters
-	Opc_cycle_count byte // Opcode cycle counter
-	Opc_cycle_extra byte // Opcode extra cycle
-	NewInstruction  bool // Easily detect when CPU finished running the cycles of an opcode
+	Opc_cycles      byte   // Number of cycles from an opcode
+	Opc_bytes       uint16 // Number of bytes from an opcode
+	Opc_cycle_count byte   // Opcode cycle counter
+	Opc_cycle_extra byte   // Opcode extra cycle
+	NewInstruction  bool   // Easily detect when CPU finished running the cycles of an opcode
 	// General counters
 	Cycle uint64 // Cycles counter
 	CPS   uint64 // Cycles per second
