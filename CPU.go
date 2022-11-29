@@ -1137,25 +1137,4 @@ func CPU_Interpreter() {
 	Cycle++
 	CPS++
 
-	// ------------------------------------------------ KLAUS TESTS ------------------------------------------------ //
-
-	// // Status from ADC
-	// if PC == 0x335f {
-	// 	fmt.Printf("ADC / SBC = BINARY: %02X   %02X\n", Memory[0x0d], Memory[0x0e])
-	// }
-
-	// // Status from ADC
-	// if PC == 0x3490 {
-	// 	fmt.Printf("ADC / SBC = DECIMAL: %02X   %02X\n", Memory[0x0d], Memory[0x0e])
-	// }
-
-	// Pause_addr := 0x3469
-
-	// // END
-	// if PC == uint16(Pause_addr) {
-	// 	Debug = true
-	// 	fmt.Println("Finished Klays Tests !!!!!!!")
-	// 	fmt.Println(Cycle)
-	// 	// os.Exit(2)
-	// }
 }

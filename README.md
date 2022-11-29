@@ -1,8 +1,15 @@
-# 6502 Emulator
+# 6502 CPU Emulator
 
-MOS Technology 6502 8-bit microprocessor emulator written in Go.
+MOS Technology 6502 8-bit microprocessor core to be uses as a go module.
 
 All opcodes and memory modes implemented and tested in Klaus Dormann test suite.
+
+Currently project using this core:
+
+https://github.com/cassianoperin/6502_console
+
+https://github.com/cassianoperin/Atari2600
+
 
 ## Emulation Status
 
@@ -15,41 +22,11 @@ All opcodes and memory modes implemented and tested in Klaus Dormann test suite.
 * ![100%](https://progress-bar.dev/100) Opcode cycles counter
 * ![100%](https://progress-bar.dev/100) Address BUS
 * ![100%](https://progress-bar.dev/100) Data BUS
-* ![100%](https://progress-bar.dev/100) Console Mode
-
-## Improvements
-* ![100%](https://progress-bar.dev/0) Update the core to a GO Module
+* ![100%](https://progress-bar.dev/0)   IRQs
+* ![100%](https://progress-bar.dev/0)   NMIs
 
 ## Improvements (Later)
-* ![100%](https://progress-bar.dev/0) IRQs
-* ![100%](https://progress-bar.dev/0) Put opcodes debug message on start OR end of opcodes
-* ![100%](https://progress-bar.dev/0) Opcode cycle precision mode (what is done in each cycle)
-
-## EMULATOR Build Instructions
-
-1) MAC
-* Install GO:
-
-	 `brew install go`
-
-* Install library requisites:
-
-	`go get github.com/cassianoperin/pseudo-terminal-go/terminal`
-
-
-* Compile:
-
-	`go build -ldflags="-s -w" 6502.go`
-
-2) Windows and Linux
-
-* Not tested yet.
-
-
-## Usage
-
-	$./6502 [options] PROGRAM_NAME
-
+* ![100%](https://progress-bar.dev/0)   Put opcodes debug message on start OR end of opcodes
 
 ## Documentation:
 
