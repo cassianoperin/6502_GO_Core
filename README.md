@@ -47,7 +47,7 @@ https://github.com/cassianoperin/Atari2600
 
 #### Read ROM to the memory
 
-`CPU_6502.ReadROM(<filename string>)
+`CPU_6502.ReadROM(<filename string>)`
         
 #### Reset Vector: 0xFFFC | 0xFFFD (Little Endian)
 
