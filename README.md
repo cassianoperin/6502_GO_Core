@@ -25,8 +25,38 @@ https://github.com/cassianoperin/Atari2600
 * ![100%](https://progress-bar.dev/0)   IRQs
 * ![100%](https://progress-bar.dev/0)   NMIs
 
-## Improvements (Later)
+## Improvements
+
 * ![100%](https://progress-bar.dev/0)   Put opcodes debug message on start OR end of opcodes
+
+## Usage
+
+### Import 6502 CPU into the code
+
+`import CPU_6502 "github.com/cassianoperin/6502_GO_Core"`
+
+### Use the functions provided
+
+#### Initialize the CPU 
+
+`CPU_6502.Initialize()`
+
+#### Initialize Timers
+
+`CPU_6502.InitializeTimers()`
+
+#### Read ROM to the memory
+
+`CPU_6502.ReadROM(<filename string>)
+        
+#### Reset Vector: 0xFFFC | 0xFFFD (Little Endian)
+
+`CPU_6502.Reset()`
+
+#### Interpreter
+
+`CPU_6502.CPU_Interpreter()`
+
 
 ## Documentation:
 
